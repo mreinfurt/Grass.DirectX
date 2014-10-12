@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.10.12)  12 OCT 2014 21:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.10.12)  12 OCT 2014 21:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -149,7 +149,7 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen117
 \Gin@req@width=\dimen118
 )
-No file main.aux.
+(./main.aux)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 386.
@@ -164,7 +164,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 386.
 LaTeX Font Info:    ... okay on input line 386.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 386.
 LaTeX Font Info:    ... okay on input line 386.
-(/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
+ (/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count110
 \scratchdimen=\dimen119
@@ -226,50 +226,46 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 476.
+(Font)              <9> on input line 475.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 476.
+(Font)              <6> on input line 475.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 476.
+(Font)              <5> on input line 475.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 476.
+(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 475.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 655.
+(Font)              <8> on input line 654.
 
 <picture.png, id=1, 84.315pt x 98.3675pt>
 File: picture.png Graphic file (type png)
  <use picture.png>
-Package pdftex.def Info: picture.png used on input line 671.
+Package pdftex.def Info: picture.png used on input line 670.
 (pdftex.def)             Requested size: 72.27145pt x 84.3167pt.
 File: picture.png Graphic file (type png)
  <use picture.png>
-Package pdftex.def Info: picture.png used on input line 671.
+Package pdftex.def Info: picture.png used on input line 670.
 (pdftex.def)             Requested size: 72.27145pt x 84.3167pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 690.
+(Font)              <7> on input line 689.
 
 [1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./picture.png>] (./main.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+ <./picture.png>] (./main.aux) ) 
 Here is how much of TeX's memory you used:
- 2363 strings out of 493117
- 37823 string characters out of 6135432
- 102213 words of memory out of 5000000
+ 2365 strings out of 493117
+ 37841 string characters out of 6135432
+ 102216 words of memory out of 5000000
  5810 multiletter control sequences out of 15000+600000
  44590 words of font info for 80 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
  37i,10n,37p,230b,318s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/201
-4/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2014/texmf-d
-ist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/
-type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (1 page, 69003 bytes).
+{/usr/local/texlive/2014/texmf-dist/fonts/enc/d
+vips/base/8r.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmb
+8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></
+usr/local/texlive/2014/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/
+texlive/2014/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (1 page, 69205 bytes).
 PDF statistics:
  31 PDF objects out of 1000 (max. 8388607)
  19 compressed objects within 1 object stream
