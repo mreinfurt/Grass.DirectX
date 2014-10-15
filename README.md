@@ -1,5 +1,6 @@
 COGR
 ====
+Computer Graphics assignment for a masters course at the Hochschule Darmstadt. The goal is to implement realistic real time rendering of grass / wheat fields.
 
 ## Installation
 - Visual Studio 2013
