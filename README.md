@@ -4,8 +4,8 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 
 ## Installation
 - Visual Studio 2013
-- MonoGame 3.2
-- XNA Refresh 2013 (includes XNA 4.0 Redistribution, Platform Tools and Shared)
+- [MonoGame 3.2](http://www.monogame.net/downloads/)
+- [XNA Refresh 2013 (includes XNA 4.0 Redistribution, Platform Tools and Shared)](https://msxna.codeplex.com/releases/view/117230)
 
 ## Tutorials
 * [How to learn XNA (Primer)](http://gamedevelopment.tutsplus.com/articles/how-to-learn-xna--gamedev-150)
