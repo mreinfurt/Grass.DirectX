@@ -16,3 +16,6 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 ## Useful
 * [Converting .fx to MonoGame Effect file](http://stackoverflow.com/questions/23733470/monogame-and-fx-files)
 * [Setting up MonoGame Content Project](http://rbwhitaker.wikidot.com/monogame-managing-content)
+
+## Books
+* See Dropbox COGR directory
