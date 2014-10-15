@@ -52,6 +52,12 @@
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Content Processor\Content Processor\Content_Processor\Content_Processor.csproj">
+      <Project>{6774205d-7d3e-449e-8590-eb130818e17d}</Project>
+      <Name>Content_Processor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Content\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
