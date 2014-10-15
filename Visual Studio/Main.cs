@@ -18,6 +18,7 @@ namespace Wheat
     {
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
+        Texture2D _fireBall;
 
         public Main() : base() 
         {
@@ -33,8 +34,6 @@ namespace Wheat
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -46,8 +45,7 @@ namespace Wheat
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            _fireBall = Content.Load<Texture2D>("Textures/FireBall");
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace Wheat
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            Content.Unload();
         }
 
         /// <summary>
@@ -80,9 +78,11 @@ namespace Wheat
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_fireBall, new Vector2(100.0f, 100.0f));
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
