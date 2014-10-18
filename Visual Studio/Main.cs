@@ -1,12 +1,15 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Wheat.Environment;
+using Wheat.Manager;
 #endregion
 
 namespace Wheat
@@ -19,10 +22,16 @@ namespace Wheat
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         Texture2D _fireBall;
+        Camera _camera;
+        Terrain _terrain;
 
         public Main() : base() 
         {
             _graphics = new GraphicsDeviceManager(this);
+            _camera = new Camera();
+
+            _graphics.PreferredBackBufferWidth = _camera.BackBufferWidth;
+            _graphics.PreferredBackBufferHeight = _camera.BackBufferHeight;
             Content.RootDirectory = "Content";
         }
 
@@ -35,6 +44,7 @@ namespace Wheat
         protected override void Initialize()
         {
             base.Initialize();
+            _terrain = new Terrain(GraphicsDevice);
         }
 
         /// <summary>
@@ -83,6 +93,8 @@ namespace Wheat
             _spriteBatch.Begin();
             _spriteBatch.Draw(_fireBall, new Vector2(100.0f, 100.0f));
             _spriteBatch.End();
+
+            _terrain.Draw(GraphicsDevice, _camera);
 
             base.Draw(gameTime);
         }
