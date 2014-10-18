@@ -44,7 +44,6 @@ namespace Wheat
         protected override void Initialize()
         {
             base.Initialize();
-            _terrain = new Terrain(GraphicsDevice);
         }
 
         /// <summary>
@@ -56,6 +55,9 @@ namespace Wheat
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _fireBall = Content.Load<Texture2D>("Textures/FireBall");
+
+            _terrain = new Terrain(GraphicsDevice);
+            _terrain.LoadContent(Content);
         }
 
         /// <summary>
@@ -93,6 +95,10 @@ namespace Wheat
             _spriteBatch.Begin();
             _spriteBatch.Draw(_fireBall, new Vector2(100.0f, 100.0f));
             _spriteBatch.End();
+
+            RasterizerState rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.None;
+            GraphicsDevice.RasterizerState = rasterizerState;
 
             _terrain.Draw(GraphicsDevice, _camera);
 

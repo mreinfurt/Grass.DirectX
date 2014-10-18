@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Wheat.Manager;
 
@@ -14,6 +16,7 @@ namespace Wheat.Environment
 
         private VertexBuffer _vertexBuffer;
         private BasicEffect _basicEffect;
+        private Effect _effect;
 
         #endregion
 
@@ -32,6 +35,11 @@ namespace Wheat.Environment
             _vertexBuffer.SetData<VertexPositionColor>(vertices);
         }
 
+        public void LoadContent(ContentManager content)
+        {
+            content.Load<Effect>("Effects/Grass");
+        }
+
         public void Draw(GraphicsDevice graphicsDevice, Camera camera)
         {
             _basicEffect.World = camera.WorldMatrix;
@@ -40,10 +48,6 @@ namespace Wheat.Environment
             _basicEffect.VertexColorEnabled = true;
 
             graphicsDevice.SetVertexBuffer(_vertexBuffer);
-
-            RasterizerState rasterizerState = new RasterizerState();
-            rasterizerState.CullMode = CullMode.None;
-            graphicsDevice.RasterizerState = rasterizerState;
 
             foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
             {
