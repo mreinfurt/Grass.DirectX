@@ -15,8 +15,15 @@ namespace Wheat.Environment
         #region Fields
 
         private VertexBuffer _vertexBuffer;
-        private BasicEffect _basicEffect;
+
+        private Model _mesh;
         private Effect _effect;
+
+        EffectParameter _projectionParameter;
+        EffectParameter _viewParameter;
+        EffectParameter _worldParameter;
+        EffectParameter _ambientIntensityParameter;
+        EffectParameter _ambientColorParameter;
 
         #endregion
 
@@ -24,8 +31,6 @@ namespace Wheat.Environment
 
         public Terrain(GraphicsDevice graphicsDevice)
         {
-            _basicEffect = new BasicEffect(graphicsDevice);
-
             VertexPositionColor[] vertices = new VertexPositionColor[3];
             vertices[0] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Red);
             vertices[1] = new VertexPositionColor(new Vector3(+0.5f, 0, 0), Color.Green);
@@ -37,23 +42,51 @@ namespace Wheat.Environment
 
         public void LoadContent(ContentManager content)
         {
-            content.Load<Effect>("Effects/Grass");
+            _mesh = content.Load<Model>("Models/Object");
+            _effect = content.Load<Effect>("Effects/Grass");
+
+            // Bind the parameters with the shader.
+            _worldParameter = _effect.Parameters["World"];
+            _viewParameter = _effect.Parameters["View"];
+            _projectionParameter = _effect.Parameters["Projection"];
+
+            _ambientColorParameter = _effect.Parameters["AmbientColor"];
+            _ambientIntensityParameter = _effect.Parameters["AmbientIntensity"];
         }
 
         public void Draw(GraphicsDevice graphicsDevice, Camera camera)
         {
-            _basicEffect.World = camera.WorldMatrix;
-            _basicEffect.View = camera.ViewMatrix;
-            _basicEffect.Projection = camera.ProjectionMatrix;
-            _basicEffect.VertexColorEnabled = true;
+            _projectionParameter.SetValue(camera.ProjectionMatrix);
+            _viewParameter.SetValue(camera.ViewMatrix);
+            _worldParameter.SetValue(camera.WorldMatrix);
+            
+            _ambientIntensityParameter.SetValue(0.3f);
+            _ambientColorParameter.SetValue(new Vector4(1, 1, 1, 1));
 
             graphicsDevice.SetVertexBuffer(_vertexBuffer);
+            _effect.CurrentTechnique = _effect.Techniques["Technique1"];
+            foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+            }
 
+
+            // Mesh
+            /*
+            ModelMesh mesh = _mesh.Meshes[0];
+            ModelMeshPart meshPart = mesh.MeshParts[0];
+
+            //set the vertex source to the mesh's vertex buffer
+            //graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
+            //graphicsDevice.Indices = meshPart.IndexBuffer;
+             * 
             foreach (EffectPass pass in _basicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                 graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
             }
+             * */
         }
 
         #endregion
