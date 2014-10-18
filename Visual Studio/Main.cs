@@ -23,7 +23,10 @@ namespace Wheat
         SpriteBatch _spriteBatch;
         Texture2D _fireBall;
         Camera _camera;
+
+        // World objects
         Terrain _terrain;
+        Monkey _monkey;
 
         public Main() : base() 
         {
@@ -58,6 +61,9 @@ namespace Wheat
 
             _terrain = new Terrain(GraphicsDevice);
             _terrain.LoadContent(Content);
+
+            _monkey = new Monkey(GraphicsDevice);
+            _monkey.LoadContent(Content);
         }
 
         /// <summary>
@@ -101,6 +107,7 @@ namespace Wheat
             GraphicsDevice.RasterizerState = rasterizerState;
 
             _terrain.Draw(GraphicsDevice, _camera);
+            _monkey.Draw(GraphicsDevice, _camera);
 
             base.Draw(gameTime);
         }

@@ -58,7 +58,7 @@ namespace Wheat.Manager
 
             // Create default camera position
             _worldMatrix = Matrix.Identity;
-            _viewMatrix = Matrix.CreateLookAt(new Vector3(0, 0, 3), Vector3.Zero, Vector3.Up);
+            _viewMatrix = Matrix.CreateLookAt(new Vector3(0, -2, 8), Vector3.Zero, Vector3.Up);
             _projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), BackBufferWidth / BackBufferHeight, 0.01f, 100f);
         }
 

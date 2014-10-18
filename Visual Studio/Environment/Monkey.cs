@@ -10,7 +10,7 @@ using Wheat.Manager;
 
 namespace Wheat.Environment
 {
-    class Terrain
+    class Monkey
     {
         #region Fields
 
@@ -18,18 +18,20 @@ namespace Wheat.Environment
 
         private Model _mesh;
         private Effect _effect;
+        private Texture2D _texture;
 
         EffectParameter _projectionParameter;
         EffectParameter _viewParameter;
         EffectParameter _worldParameter;
         EffectParameter _ambientIntensityParameter;
         EffectParameter _ambientColorParameter;
+        EffectParameter _diffuseTexture;
 
         #endregion
 
         #region Public Methods
 
-        public Terrain(GraphicsDevice graphicsDevice)
+        public Monkey(GraphicsDevice graphicsDevice)
         {
             VertexPositionColor[] vertices = new VertexPositionColor[3];
             vertices[0] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Red);
@@ -43,7 +45,8 @@ namespace Wheat.Environment
         public void LoadContent(ContentManager content)
         {
             _mesh = content.Load<Model>("Models/Object");
-            _effect = content.Load<Effect>("Effects/Basic");
+            _effect = content.Load<Effect>("Effects/Object");
+            _texture = content.Load<Texture2D>("Models/model_diff");
 
             // Bind the parameters with the shader.
             _worldParameter = _effect.Parameters["World"];
@@ -52,6 +55,7 @@ namespace Wheat.Environment
 
             _ambientColorParameter = _effect.Parameters["AmbientColor"];
             _ambientIntensityParameter = _effect.Parameters["AmbientIntensity"];
+            _diffuseTexture = _effect.Parameters["DiffuseTexture"];
         }
 
         public void Draw(GraphicsDevice graphicsDevice, Camera camera)
@@ -62,13 +66,20 @@ namespace Wheat.Environment
             
             _ambientIntensityParameter.SetValue(0.3f);
             _ambientColorParameter.SetValue(new Vector4(1, 1, 1, 1));
-            
-            graphicsDevice.SetVertexBuffer(_vertexBuffer);
+
+            _diffuseTexture.SetValue(_texture);
+
+            // Mesh
+            ModelMesh mesh = _mesh.Meshes[0];
+            ModelMeshPart meshPart = mesh.MeshParts[0];
+
+            graphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
+            graphicsDevice.Indices = meshPart.IndexBuffer;
             _effect.CurrentTechnique = _effect.Techniques["Technique1"];
             foreach (EffectPass pass in _effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 1);
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, meshPart.NumVertices, meshPart.StartIndex, meshPart.PrimitiveCount);
             }
         }
 

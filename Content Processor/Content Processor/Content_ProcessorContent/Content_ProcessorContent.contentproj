@@ -48,8 +48,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Effects\Grass.fx">
-      <Name>Grass</Name>
+    <Compile Include="Effects\Basic.fx">
+      <Name>Basic</Name>
       <Importer>EffectImporter</Importer>
       <Processor>MGEffectProcessor</Processor>
     </Compile>
@@ -73,6 +73,13 @@
       <Name>model_diff</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Effects\Object.fx">
+      <Name>Object</Name>
+      <Importer>EffectImporter</Importer>
+      <Processor>MGEffectProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

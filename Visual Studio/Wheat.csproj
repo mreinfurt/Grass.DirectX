@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Environment\Skybox.cs" />
+    <Compile Include="Environment\Monkey.cs" />
     <Compile Include="Environment\Terrain.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Manager\Camera.cs" />
