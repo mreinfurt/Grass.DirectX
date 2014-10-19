@@ -4,9 +4,11 @@ using Ninject;
 using Ninject.Extensions.Logging.Log4net;
 using Ninject.Modules;
 using SharpDX;
-
+using SharpDX.Direct3D11;
+using SharpDX.XInput;
 using Wheat.Components;
 using Wheat.Environment;
+using Wheat.Grass;
 
 namespace Wheat
 {
@@ -35,6 +37,7 @@ namespace Wheat
         private BasicEffect basicEffect;
         private GeometricPrimitive primitive;
         private Terrain terrain;
+        private GrassController grass;
 
         // Input
         private KeyboardManager keyboard;
@@ -91,6 +94,7 @@ namespace Wheat
             // Creates torus primitive
             primitive = ToDisposeContent(GeometricPrimitive.Teapot.New(GraphicsDevice));
             terrain = new Terrain(this.GraphicsDevice, Content);
+            grass = new GrassController(this.GraphicsDevice, Content);
 
             base.LoadContent();
         }
@@ -109,7 +113,6 @@ namespace Wheat
 
             keyboardState = keyboard.GetState();
             mouseState = mouse.GetState();
-
             _camera.Update(gameTime);
         }
 
@@ -120,20 +123,21 @@ namespace Wheat
         protected override void Draw(GameTime gameTime)
         {
             var time = (float)gameTime.TotalGameTime.TotalSeconds;
-
-            // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.Black);
 
+            this.SetUpBlendState();
+            this.SetUpRasterizerState();
 
             basicEffect.World = Matrix.Scaling(2.0f, 2.0f, 2.0f) *
                                 Matrix.RotationX(0.8f * (float)Math.Sin(time * 1.45)) *
                                 Matrix.RotationY(time * 2.0f) *
                                 Matrix.RotationZ(0) *
-                                Matrix.Translation(0, 1.0f, 0);
+                                Matrix.Translation(8, 1.0f, 0);
 
 
             primitive.Draw(basicEffect);
             terrain.Draw(_camera);
+            grass.Draw(_camera);
 
             // ------------------------------------------------------------------------
             // Draw the some 2d text
@@ -154,6 +158,44 @@ namespace Wheat
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Sets the blending state.
+        /// </summary>
+        private void SetUpBlendState()
+        {
+            var blendStateDesc = new BlendStateDescription();
+            blendStateDesc.AlphaToCoverageEnable = true;
+            blendStateDesc.IndependentBlendEnable = false;
+            blendStateDesc.RenderTarget[0].IsBlendEnabled = true;
+            blendStateDesc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
+
+            blendStateDesc.RenderTarget[0].SourceBlend = BlendOption.SourceAlpha;
+            blendStateDesc.RenderTarget[0].DestinationBlend = BlendOption.InverseSourceAlpha;
+            blendStateDesc.RenderTarget[0].BlendOperation = BlendOperation.Add;
+
+            blendStateDesc.RenderTarget[0].SourceAlphaBlend = BlendOption.SourceAlpha;
+            blendStateDesc.RenderTarget[0].DestinationAlphaBlend = BlendOption.DestinationAlpha;
+            blendStateDesc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+
+            BlendState blendState = BlendState.New(this.GraphicsDevice, blendStateDesc);
+            this.GraphicsDevice.SetBlendState(blendState);
+        }
+
+        /// <summary>
+        /// Sets the state of the rasterizer.
+        /// </summary>
+        private void SetUpRasterizerState()
+        {
+            RasterizerStateDescription stateDescription = new RasterizerStateDescription();
+            stateDescription.FillMode = FillMode.Solid;
+            stateDescription.CullMode = CullMode.None;
+            this.GraphicsDevice.SetRasterizerState(RasterizerState.New(this.GraphicsDevice, stateDescription));
         }
 
         #endregion

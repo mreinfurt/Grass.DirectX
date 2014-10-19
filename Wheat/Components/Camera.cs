@@ -34,18 +34,18 @@ namespace Wheat.Components
             this.BackBufferHeight = (int)backBufferHeight;
 
             // Create default camera position
-            this.Position = new Vector3(0, 10, 5);
+            this.Position = new Vector3(0, 10, 10);
             this.World = Matrix.Identity;
 
             // Calculates the world and the view based on the model size
-            this.View = Matrix.LookAtRH(this.Position, new Vector3(0, 0.0f, 0), Vector3.UnitY);
+            this.View = Matrix.LookAtRH(this.Position, new Vector3(0, 0, 0), Vector3.UnitY);
             this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.01f, 100.0f);
         }
 
         public void Update(GameTime gameTime)
         {
             _rotation += gameTime.ElapsedGameTime.Milliseconds / 1000.0;
-            //this.View = Matrix.LookAtRH(new Vector3(this.Position.X * (float)Math.Cos(_rotation), this.Position.Y, this.Position.Y * (float)Math.Sin(_rotation)), new Vector3(0, 2, 0), Vector3.Up);
+            this.View = Matrix.LookAtRH(new Vector3(this.Position.X * (float)Math.Cos(_rotation), this.Position.Y, this.Position.Y * (float)Math.Sin(_rotation)), new Vector3(0, 2, 0), Vector3.Up);
         }
 
         #endregion

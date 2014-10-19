@@ -16,12 +16,12 @@ namespace Wheat.Environment
     {
         #region Fields
 
+        private GraphicsDevice graphicsDevice;
         private GeometricPrimitive plane; 
         private Texture2D texture;
         private Effect effect;
-        private SharpDX.Toolkit.Graphics.Buffer<VertexPositionNormalTexture> vertexBuffer;
+        private Buffer<VertexPositionNormalTexture> vertexBuffer;
 
-        private GraphicsDevice graphicsDevice;
         #endregion
 
         #region Public Methods
@@ -42,13 +42,11 @@ namespace Wheat.Environment
             vertices[3] = new VertexPositionNormalTexture(new Vector3(size, -size, 0), Vector3.Up, new Vector2(1, 1));
 
             this.vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices);
-            //this.vertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), 4, BufferUsage.WriteOnly);
-            //this.vertexBuffer.SetData<VertexPositionNormalTexture>(vertices);
         }
 
         public void Draw(Camera camera)
         {
-            this.effect.Parameters["World"].SetValue(Matrix.RotationX(-90));
+            this.effect.Parameters["World"].SetValue(Matrix.RotationX(MathUtil.DegreesToRadians(90)));
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
