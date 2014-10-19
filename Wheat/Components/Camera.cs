@@ -13,7 +13,7 @@ namespace Wheat.Components
         #region Fields
 
         // Camera Movement
-        const float rotationSpeed = 0.5f;
+        const float rotationSpeed = 0.35f;
         const float movementSpeed = 30.0f;
         float horizontalRotation = MathUtil.PiOverTwo;
         float verticalRotation = -MathUtil.Pi / 10.0f;
@@ -100,7 +100,7 @@ namespace Wheat.Components
             {
                 moveVector += new Vector3(0, 1, 0);                
             }
-            if (keyState.IsKeyDown(Keys.Z))
+            if (keyState.IsKeyDown(Keys.Y))
             {
                 moveVector += new Vector3(0, -1, 0);                
             }

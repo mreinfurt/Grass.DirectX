@@ -55,6 +55,8 @@ namespace Wheat
         public Wheat()
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this);
+            this.graphicsDeviceManager.PreferredBackBufferWidth = 1280;
+            this.graphicsDeviceManager.PreferredBackBufferHeight = 800;
             Content.RootDirectory = "Content";
 
             // Input
