@@ -15,6 +15,7 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 * [TU Wien: Instant Animated Grass](http://www.cg.tuwien.ac.at/research/publications/2007/Habel_2007_IAG/)
 * [Grass Shader Discussion](http://www.garagegames.com/community/forums/viewthread/74768)
 * [Siggraph](http://www.siggraph.org/s2006/main.php?f=conference&p=sketches&s=6)
+* [Blog Article: Summary](http://users.csc.calpoly.edu/~zwood/teaching/csc471/finalprojw12/rsteiger/)
 
 ## Tutorials
 * [How to learn XNA (Primer)](http://gamedevelopment.tutsplus.com/articles/how-to-learn-xna--gamedev-150)
