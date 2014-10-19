@@ -146,7 +146,7 @@ namespace Wheat
 
 
             primitive.Draw(basicEffect);
-            //terrain.Draw(camera);
+            terrain.Draw(camera);
             grass.Draw(gameTime, camera);
 
             // ------------------------------------------------------------------------
