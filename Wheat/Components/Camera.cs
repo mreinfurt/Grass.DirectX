@@ -1,89 +1,51 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpDX;
 
 namespace Wheat.Components
 {
+    // Use these namespaces here to override SharpDX.Direct3D11
+    using SharpDX.Toolkit;
+    using SharpDX.Toolkit.Graphics;
+
     class Camera
     {
         #region Fields
 
-        private Matrix _worldMatrix;
-        private Matrix _viewMatrix;
-        private Matrix _projectionMatrix;
-
-        private Vector3 _position;
-        private int _backBufferWidth;
-        private int _backBufferHeight;
-
-        private float _rotation;
+        private double _rotation;
 
         #endregion
 
         #region Properties
+        public Matrix World { get; private set; }
+        public Matrix View { get; private set; }
+        public Matrix Projection { get; private set; }
 
-        public Matrix WorldMatrix
-        {
-            get { return _worldMatrix; }
-        }
+        public Vector3 Position { get; private set; }
 
-        public Matrix ViewMatrix
-        {
-            get { return _viewMatrix; }
-        }
-
-        public Matrix ProjectionMatrix
-        {
-            get { return _projectionMatrix; }
-        }
-
-        public Vector3 Position
-        {
-            get { return _position; }
-        }
-
-        public int BackBufferWidth
-        {
-            get { return _backBufferWidth; }
-            set { _backBufferWidth = value; }
-        }
-
-        public int BackBufferHeight
-        {
-            get { return _backBufferHeight; }
-            set { _backBufferHeight = value; }
-        }
-
+        public int BackBufferWidth { get; set; }
+        public int BackBufferHeight { get; set; }
         #endregion
 
         #region Public Methods
 
-        public Camera(int backBufferWidth, int backBufferHeight)
+        public Camera(GraphicsDevice graphicsDevice, float backBufferWidth = 800, float backBufferHeight = 600)
         {
-            // Prepare matrices
-            _position = new Vector3(0, 10, -10);
-            _viewMatrix = Matrix.LookAtLH(_position, new Vector3(0, 0, 0), Vector3.UnitY);
-            _projectionMatrix = Matrix.Identity;
+            this.BackBufferWidth = (int)backBufferWidth;
+            this.BackBufferHeight = (int)backBufferHeight;
 
-            _backBufferWidth = backBufferWidth;
-            _backBufferHeight = backBufferHeight;
+            // Create default camera position
+            this.Position = new Vector3(0, 10, 20);
+            this.World = Matrix.Identity;
+
+            // Calculates the world and the view based on the model size
+            this.View = Matrix.LookAtRH(new Vector3(0.0f, 0.0f, 7.0f), new Vector3(0, 0.0f, 0), Vector3.UnitY);
+            this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
         }
 
-        public void Update(float time)
+        public void Update(GameTime gameTime)
         {
-            _rotation += 0.000005f;
-            //_viewMatrix = Matrix.LookAtLH(new Vector3(_position.X * (float)Math.Cos(_rotation), _position.Y, _position.Z * (float)Math.Sin(_rotation)), new Vector3(0, 0, 0), Vector3.Up);
-        }
-
-        /// <summary>
-        /// Resizes this instance.
-        /// </summary>
-        public void Resize(int backBufferWidth, int backBufferHeight)
-        {
-            _projectionMatrix = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, backBufferWidth / (float)backBufferHeight, 0.1f, 100.0f);
+            _rotation += gameTime.ElapsedGameTime.Milliseconds / 1000.0;
+            this.View = Matrix.LookAtRH(new Vector3(this.Position.X * (float)Math.Cos(_rotation), this.Position.Y, this.Position.Y * (float)Math.Sin(_rotation)), new Vector3(0, 2, 0), Vector3.Up);
         }
 
         #endregion
