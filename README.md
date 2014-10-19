@@ -16,6 +16,7 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 * [Grass Shader Discussion](http://www.garagegames.com/community/forums/viewthread/74768)
 * [Siggraph](http://www.siggraph.org/s2006/main.php?f=conference&p=sketches&s=6)
 * [Blog Article: Summary](http://users.csc.calpoly.edu/~zwood/teaching/csc471/finalprojw12/rsteiger/)
+* [Very Short Paper](http://stijndelaruelle.com/pdf/grass.pdf)
 
 ## Tutorials
 * [How to learn XNA (Primer)](http://gamedevelopment.tutsplus.com/articles/how-to-learn-xna--gamedev-150)
