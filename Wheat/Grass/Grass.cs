@@ -42,7 +42,7 @@ namespace Wheat.Grass
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
 
-            // 1. Create lots of independent vertices
+            // 1. Create lots of independent vertices (roots)
             int rows = 400;
             this.RootCount = rows * rows;
             int rootsPerRow = this.RootCount / rows;
@@ -59,8 +59,11 @@ namespace Wheat.Grass
             {
                 for (var j = 0; j < rootsPerRow; j++)
                 {
+                    // The Y position should be a bit randomized too, but we have to remain in the grid
+                    float randomizedYOffset = (float) rnd.NextDouble(-0.25, 0.25);
+
                     randomizedDistance = (float)rnd.NextDouble(0.3, 2);
-                    var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z);
+                    var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y + randomizedYOffset, startPosition.Z);
                     vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
