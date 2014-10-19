@@ -29,7 +29,7 @@ struct VSINPUT
 
 struct GEO_IN
 {
-    float4 Position : POSITION0;
+    float4 Position : SV_POSITION;
 };
 
 struct GEO_OUT
@@ -40,10 +40,7 @@ struct GEO_OUT
 
 void VS_Shader(inout VSINPUT input)
 {
-	// Position
-	float4 worldPosition = mul(input.Position, World);
-	float4 viewPosition = mul(worldPosition, View);
-	input.Position = mul(viewPosition, Projection);
+	input.Position = input.Position;
 }
 
 float4 PS_Shader(in GEO_OUT input) : SV_TARGET
@@ -55,24 +52,24 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 [maxvertexcount(6)]
 void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {    
-    float4 center = points[0].Position;
+    float4 root = points[0].Position;
 
     GEO_OUT v[4];
 
 	// Left top
-    v[0].Position = float4(center.x - 2, center.y + 4, 0, 1);
+    v[0].Position = float4(root.x - 2, root.y + 4, root.z, 1);
     v[0].TexCoord = float2(0, 0);
 
 	// Right top
-    v[1].Position = float4(center.x + 2, center.y + 4, 0, 1);
+    v[1].Position = float4(root.x + 2, root.y + 4, root.z, 1);
     v[1].TexCoord = float2(1, 0);
 
 	// Left Bottom
-    v[2].Position = float4(center.x - 2, center.y, 0, 1);
+    v[2].Position = float4(root.x - 2, root.y, root.z, 1);
     v[2].TexCoord = float2(0, 1);
 
 	// Right Bottom
-    v[3].Position = float4(center.x + 2, center.y, 0, 1);
+    v[3].Position = float4(root.x + 2, root.y, root.z, 1);
     v[3].TexCoord = float2(1, 1);
 
 	// Transform new vertices into Projection Space

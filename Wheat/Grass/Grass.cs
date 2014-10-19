@@ -26,6 +26,12 @@ namespace Wheat.Grass
 
         #endregion
 
+        #region Properties
+
+        public int RootCount;
+
+        #endregion
+
         #region Public Methods
 
         public GrassController(GraphicsDevice graphicsDevice, ContentManager content)
@@ -36,8 +42,29 @@ namespace Wheat.Grass
 
             // TODO
             // 1. Create lots of independent vertices
-            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[1];
-            vertices[0] = new VertexPositionNormalTexture(new Vector3(0, 0, 0), Vector3.Up, new Vector2(0, 0));
+
+            this.RootCount = 400;
+            int rows = 20;
+            int rootsPerRow = this.RootCount / rows;
+            int distance = 2;
+
+            Vector3 startPosition = new Vector3(-20, 0, -20);
+            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[this.RootCount];
+
+            int currentVertex = 0;
+
+            for (var i = 0; i < rows; i++)
+            {
+                for (var j = 0; j < rootsPerRow; j++)
+                {
+                    var currentPosition = new Vector3(startPosition.X + (j*distance), startPosition.Y, startPosition.Z);
+                    vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
+                    currentVertex++;
+                }
+
+                startPosition.Z += distance;
+            }
+
             this.vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices);
 
             // 2. Create geometry shader and make those vertices to quads
@@ -46,7 +73,7 @@ namespace Wheat.Grass
 
         public void Draw(Camera camera)
         {
-            this.effect.Parameters["World"].SetValue(Matrix.Translation(0, 0, 0) * Matrix.RotationX(0));
+            this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
@@ -56,7 +83,7 @@ namespace Wheat.Grass
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                this.graphicsDevice.Draw(PrimitiveType.PointList, 1);
+                this.graphicsDevice.Draw(PrimitiveType.PointList, this.RootCount);
             }
         }
 
