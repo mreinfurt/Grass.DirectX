@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Text;
+using Ninject;
+using Ninject.Extensions.Logging.Log4net;
+using Ninject.Modules;
 using SharpDX;
 
 using Wheat.Components;
+using Wheat.Environment;
 
 namespace Wheat
 {
@@ -30,6 +34,7 @@ namespace Wheat
         // Objects
         private BasicEffect basicEffect;
         private GeometricPrimitive primitive;
+        private Terrain terrain;
 
         // Input
         private KeyboardManager keyboard;
@@ -64,6 +69,7 @@ namespace Wheat
             _camera = new Camera(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
 
             base.Initialize();
+
         }
 
         /// <summary>
@@ -83,7 +89,8 @@ namespace Wheat
             basicEffect.EnableDefaultLighting();
 
             // Creates torus primitive
-            primitive = ToDisposeContent(GeometricPrimitive.GeoSphere.New(GraphicsDevice));
+            primitive = ToDisposeContent(GeometricPrimitive.Teapot.New(GraphicsDevice));
+            terrain = new Terrain(this.GraphicsDevice, Content);
 
             base.LoadContent();
         }
@@ -117,16 +124,16 @@ namespace Wheat
             // Clears the screen with the Color.CornflowerBlue
             GraphicsDevice.Clear(Color.Black);
 
-            // Constant used to translate 3d models
-            float translateX = 0.0f;
 
             basicEffect.World = Matrix.Scaling(2.0f, 2.0f, 2.0f) *
                                 Matrix.RotationX(0.8f * (float)Math.Sin(time * 1.45)) *
                                 Matrix.RotationY(time * 2.0f) *
                                 Matrix.RotationZ(0) *
-                                Matrix.Translation(translateX, -1.0f, 0);
+                                Matrix.Translation(0, 1.0f, 0);
+
 
             primitive.Draw(basicEffect);
+            terrain.Draw(_camera);
 
             // ------------------------------------------------------------------------
             // Draw the some 2d text

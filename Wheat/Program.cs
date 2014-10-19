@@ -20,7 +20,6 @@ namespace Wheat
         {
             using (var program = new Wheat())
                 program.Run();
-
         }
     }
 }
