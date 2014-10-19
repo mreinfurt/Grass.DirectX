@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Text;
 using Ninject;
 using Ninject.Extensions.Logging.Log4net;
@@ -7,8 +8,10 @@ using SharpDX;
 using SharpDX.Direct3D11;
 using SharpDX.XInput;
 using Wheat.Components;
+using Wheat.Core;
 using Wheat.Environment;
 using Wheat.Grass;
+using Color = SharpDX.Color;
 
 namespace Wheat
 {
@@ -30,8 +33,12 @@ namespace Wheat
         private Texture2D ballsTexture;
         private SpriteFont arial16Font;
 
+        // Engine
+        private GameCore gameCore;
+
         // Camera
-        private Camera _camera;
+        private Camera camera;
+        private ShadowCamera shadowCamera;
 
         // Objects
         private BasicEffect basicEffect;
@@ -84,17 +91,20 @@ namespace Wheat
 
             ballsTexture = Content.Load<Texture2D>("Textures/Balls");
             arial16Font = Content.Load<SpriteFont>("Fonts/Arial16");
-            _camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
+            camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
+            shadowCamera = new ShadowCamera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight);
 
             // Creates a basic effect
             basicEffect = ToDisposeContent(new BasicEffect(GraphicsDevice));
             basicEffect.PreferPerPixelLighting = true;
             basicEffect.EnableDefaultLighting();
 
+            gameCore = new GameCore(this.GraphicsDevice, this.Content, this.camera, this.shadowCamera);
+
             // Creates torus primitive
             primitive = ToDisposeContent(GeometricPrimitive.Teapot.New(GraphicsDevice));
-            terrain = new Terrain(this.GraphicsDevice, Content);
-            grass = new GrassController(this.GraphicsDevice, Content);
+            terrain = new Terrain(this.gameCore);
+            grass = new GrassController(this.gameCore);
 
             base.LoadContent();
         }
@@ -108,12 +118,12 @@ namespace Wheat
             base.Update(gameTime);
 
             // Update basic effect for rendering the Primitive
-            basicEffect.View = _camera.View;
-            basicEffect.Projection = _camera.Projection;
+            basicEffect.View = camera.View;
+            basicEffect.Projection = camera.Projection;
 
             keyboardState = keyboard.GetState();
             mouseState = mouse.GetState();
-            _camera.Update(gameTime);
+            camera.Update(gameTime);
         }
 
         /// <summary>
@@ -136,8 +146,8 @@ namespace Wheat
 
 
             primitive.Draw(basicEffect);
-            terrain.Draw(_camera);
-            grass.Draw(gameTime, _camera);
+            //terrain.Draw(camera);
+            grass.Draw(gameTime, camera);
 
             // ------------------------------------------------------------------------
             // Draw the some 2d text

@@ -93,6 +93,7 @@
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\InputController.cs" />
     <Compile Include="Components\ShadowCamera.cs" />
+    <Compile Include="Core\GameCore.cs" />
     <Compile Include="Environment\Terrain.cs" />
     <Compile Include="Grass\Grass.cs" />
     <Compile Include="Wheat.cs" />

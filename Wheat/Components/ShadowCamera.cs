@@ -27,7 +27,7 @@ namespace Wheat.Components
         {
             this.BackBufferWidth = (int)backBufferWidth;
             this.BackBufferHeight = (int)backBufferHeight;
-            this.Position = new Vector3(0, 20, 0);
+            this.Position = new Vector3(0, 10, 0);
         }
 
         public void Update(GameTime gameTime)

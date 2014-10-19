@@ -5,6 +5,7 @@ using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;
 using SharpDX.Toolkit.Content;
 using Wheat.Components;
+using Wheat.Core;
 
 namespace Wheat.Grass
 {
@@ -19,10 +20,11 @@ namespace Wheat.Grass
     {
         #region Fields
 
-        private GraphicsDevice graphicsDevice;
         private Texture2D texture;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
+
+        private GameCore core;
 
         #endregion
 
@@ -34,14 +36,14 @@ namespace Wheat.Grass
 
         #region Public Methods
 
-        public GrassController(GraphicsDevice graphicsDevice, ContentManager content)
+        public GrassController(GameCore core)
         {
-            this.graphicsDevice = graphicsDevice;
-            this.effect = content.Load<Effect>("Effects/Grass");
-            this.texture = content.Load<Texture2D>("Textures/grassBlade");
+            this.core = core;
+            this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
 
             // 1. Create lots of independent vertices
-            int rows = 100;
+            int rows = 400;
             this.RootCount = rows * rows;
             int rootsPerRow = this.RootCount / rows;
 
@@ -57,17 +59,17 @@ namespace Wheat.Grass
             {
                 for (var j = 0; j < rootsPerRow; j++)
                 {
-                    randomizedDistance = (float)rnd.NextDouble(0.6, 2);
+                    randomizedDistance = (float)rnd.NextDouble(0.3, 2);
                     var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z);
                     vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
 
-                randomizedDistance = (float)rnd.NextDouble(0, 2);
+                randomizedDistance = (float)rnd.NextDouble(0, 0.25);
                 startPosition.Z += randomizedDistance;
             }
 
-            this.vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices);
+            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
         }
 
         public void Draw(GameTime gameTime, Camera camera)
@@ -77,13 +79,14 @@ namespace Wheat.Grass
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
+            this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
-            this.graphicsDevice.SetVertexBuffer(this.vertexBuffer);
+            this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                this.graphicsDevice.Draw(PrimitiveType.PointList, this.RootCount);
+                this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.RootCount);
             }
         }
 

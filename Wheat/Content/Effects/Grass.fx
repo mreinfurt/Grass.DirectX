@@ -7,8 +7,6 @@ sampler TextureSampler = sampler_state
 	MaxAnisotropy = 16;
 };
 
-Texture2D TextureAlpha;
-
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
@@ -19,8 +17,11 @@ float AmbientIntensity;
 float3 DiffuseColor;
 float DiffuseIntensity;
 
+float3 LightPosition;
+
 float2 Time;
 
+////////////////////////////////////////////////////////////////////////////////////
 struct VSINPUT
 {
 	float4 Position : SV_POSITION;
@@ -30,40 +31,41 @@ struct VSINPUT
 
 struct GEO_IN
 {
-    float4 Position : SV_POSITION;
+    float4 Position			: SV_POSITION;
+	float4 Normal			: NORMAL0;
+	float3 VertexToLight	: NORMAL1;
 };
 
 struct GEO_OUT
 {
-    float4 Position : SV_POSITION;
-    float2 TexCoord : TEXCOORD;
+    float4 Position			: SV_POSITION;
+    float2 TexCoord			: TEXCOORD;
+	float4 Normal			: NORMAL0;
+	float3 VertexToLight	: NORMAL1;
 };
 
-void VS_Shader(inout VSINPUT input)
+////////////////////////////////////////////////////////////////////////////////////
+void VS_Shader(in VSINPUT input, out GEO_IN output)
 {
-	input.Position = input.Position;
+	output.Position = input.Position;
+	output.Normal = input.Normal;
 }
 
-float4 PS_Shader(in GEO_OUT input) : SV_TARGET
-{
-    float4 tcolor = Texture.Sample(TextureSampler, input.TexCoord);
-    return tcolor;
-}
-
+////////////////////////////////////////////////////////////////////////////////////
 [maxvertexcount(12)]
 void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {    
-    float4 root = points[0].Position;
+	float4 root = points[0].Position;
+	float halfPi = 1.5707;
+
+	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
+	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.y));
 
     GEO_OUT v[5];
 
-	float halfPi = 1.5707;
-
-	// Generate a random number between 0.0 to 1.0 by using the root position
-	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.y));
-
+	float minHeight = 0.5;
 	float sizeX = 0.1;
-	float sizeY = 0.5 + random * 3;
+	float sizeY = minHeight + (random * 3);
 
 	float toTheLeft = sin(Time.x);
 
@@ -83,15 +85,33 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	v[3].Position = float4(root.x + sizeX, root.y, root.z, 1);
     v[3].TexCoord = float2(1, 1);
 
-	v[4].Position = float4(root.x - toTheLeft * 1.5, root.y + sizeY * 1.5, root.z, 1);
+	// Top vertex
+	// The movementMultiplier is used, because the vertex on the top is bending more to left and right
+	float movementMultiplier = 1.5;
+	v[4].Position = float4(root.x - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
     v[4].TexCoord = float2(0.5, 0);
 
+	// TODO: Calculate normal for light
 	// Transform new vertices into Projection Space
 	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
+	v[0].VertexToLight = normalize(LightPosition - mul(v[0].Position, World).xyz);
+	v[0].Normal = normalize(float4(0, 0.8, 0, 1));;
+
 	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
+	v[1].VertexToLight = normalize(LightPosition - mul(v[1].Position, World).xyz);
+	v[1].Normal = normalize(float4(0, 0.8, 0, 1));
+
 	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
+	v[2].VertexToLight = normalize(LightPosition - mul(v[2].Position, World).xyz);
+	v[2].Normal = normalize(float4(0, 0.5, 0, 1));
+
 	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
+	v[3].VertexToLight = normalize(LightPosition - mul(v[3].Position, World).xyz);
+	v[3].Normal = normalize(float4(0, 0.5, 0, 1));
+
 	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
+	v[4].VertexToLight = normalize(LightPosition - mul(v[4].Position, World).xyz);
+	v[4].Normal = float4(0, 1, 0, 1);
 
     output.Append(v[2]);
     output.Append(v[1]);
@@ -110,6 +130,17 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
     output.Append(v[0]);
 
     output.RestartStrip();
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+float4 PS_Shader(in GEO_OUT input) : SV_TARGET
+{
+	float ambientLight = 0.2;
+	float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal.xyz));
+
+	float4 textureColor = float4(Texture.Sample(TextureSampler, input.TexCoord).xyz * diffuseLight, 1);
+
+	return textureColor;
 }
 
 technique Technique1

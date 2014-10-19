@@ -5,6 +5,7 @@ using SharpDX.Direct2D1;
 using SharpDX.Direct3D11;
 using SharpDX.Toolkit.Content;
 using Wheat.Components;
+using Wheat.Core;
 
 namespace Wheat.Environment
 {
@@ -16,7 +17,7 @@ namespace Wheat.Environment
     {
         #region Fields
 
-        private GraphicsDevice graphicsDevice;
+        private GameCore core;
         private GeometricPrimitive plane; 
         private Texture2D texture;
         private Effect effect;
@@ -26,12 +27,12 @@ namespace Wheat.Environment
 
         #region Public Methods
 
-        public Terrain(GraphicsDevice graphicsDevice, ContentManager content)
+        public Terrain(GameCore core)
         {
-            this.effect = content.Load<Effect>("Effects/Terrain");
-            this.plane = GeometricPrimitive.Plane.New(graphicsDevice, 50, 50);
-            this.texture = content.Load<Texture2D>("Textures/planeGrass");
-            this.graphicsDevice = graphicsDevice;
+            this.core = core;
+            this.effect = this.core.ContentManager.Load<Effect>("Effects/Terrain");
+            this.plane = GeometricPrimitive.Plane.New(this.core.GraphicsDevice, 50, 50);
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/planeGrass");
 
             float size = 20.0f;
 
@@ -41,7 +42,7 @@ namespace Wheat.Environment
             vertices[2] = new VertexPositionNormalTexture(new Vector3(-size, -size, 0), Vector3.Up, new Vector2(0, 1));
             vertices[3] = new VertexPositionNormalTexture(new Vector3(size, -size, 0), Vector3.Up, new Vector2(1, 1));
 
-            this.vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices);
+            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
         }
 
         public void Draw(Camera camera)
@@ -51,12 +52,12 @@ namespace Wheat.Environment
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
 
-            this.graphicsDevice.SetVertexBuffer(this.vertexBuffer);
+            this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                this.graphicsDevice.Draw(PrimitiveType.TriangleStrip, 4);
+                this.core.GraphicsDevice.Draw(PrimitiveType.TriangleStrip, 4);
             }
         }
 
