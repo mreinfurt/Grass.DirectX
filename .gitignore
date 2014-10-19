@@ -137,6 +137,8 @@ publish/
 **/packages/*
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
+# except sharpdx MSBuild
+!**/packages/SharpDX.2.6.2/build/SharpDX.targets
 # If using the old MSBuild-Integrated Package Restore, uncomment this:
 #!**/packages/repositories.config
 
