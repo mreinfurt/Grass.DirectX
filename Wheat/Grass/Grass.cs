@@ -40,9 +40,7 @@ namespace Wheat.Grass
             this.effect = content.Load<Effect>("Effects/Grass");
             this.texture = content.Load<Texture2D>("Textures/billboardFlowers");
 
-            // TODO
             // 1. Create lots of independent vertices
-
             this.RootCount = 400;
             int rows = 20;
             int rootsPerRow = this.RootCount / rows;
@@ -52,7 +50,6 @@ namespace Wheat.Grass
             VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[this.RootCount];
 
             int currentVertex = 0;
-
             for (var i = 0; i < rows; i++)
             {
                 for (var j = 0; j < rootsPerRow; j++)
@@ -66,9 +63,6 @@ namespace Wheat.Grass
             }
 
             this.vertexBuffer = Buffer.Vertex.New(graphicsDevice, vertices);
-
-            // 2. Create geometry shader and make those vertices to quads
-
         }
 
         public void Draw(Camera camera)
