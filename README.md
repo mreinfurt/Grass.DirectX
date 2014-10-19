@@ -22,9 +22,5 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 * [XNA Tutorials](http://www.catalinzima.com/xna/tutorials/)
 * [XNA Shader Tutorials](http://digitalerr0r.wordpress.com/2011/12/12/xna-4-0-shader-programming-1intro-to-hlsl-ambient-light/)
 
-## Useful
-* [Converting .fx to MonoGame Effect file](http://stackoverflow.com/questions/23733470/monogame-and-fx-files)
-* [Setting up MonoGame Content Project](http://rbwhitaker.wikidot.com/monogame-managing-content)
-
 ## Books
 * See Dropbox COGR directory
