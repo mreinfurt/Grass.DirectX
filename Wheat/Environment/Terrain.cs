@@ -51,6 +51,7 @@ namespace Wheat.Environment
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
+            this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
 

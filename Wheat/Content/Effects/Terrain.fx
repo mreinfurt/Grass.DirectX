@@ -12,24 +12,37 @@ float AmbientIntensity;
 float3 DiffuseColor;
 float DiffuseIntensity;
 
+float3 LightPosition;
+
 struct VSINPUT
 {
 	float4 Position : SV_POSITION;
-	//float4 Color	: COLOR0;
+	float3 Normal	: NORMAL0;
 	float2 TexCoord	: TEXCOORD0;
 };
 
-void VS_Shader(inout VSINPUT input)
+struct PSINPUT {
+	float4 Position : SV_POSITION;
+	float3 Normal	: NORMAL0;
+	float2 TexCoord	: TEXCOORD0;
+	float3 VertexToLight : NORMAL1;
+};
+
+void VS_Shader(in VSINPUT input, out PSINPUT output)
 {
 	// Position
 	float4 worldPosition = mul(input.Position, World);
 	float4 viewPosition = mul(worldPosition, View);
-	input.Position = mul(viewPosition, Projection);
+	output.Position = mul(viewPosition, Projection);
+	output.TexCoord = input.TexCoord;
+	output.VertexToLight = normalize(LightPosition - worldPosition.xyz);
+	output.Normal = float3(0, 1, 0);
 }
 
-float4 PS_Shader(in VSINPUT input) : SV_TARGET
+float4 PS_Shader(in PSINPUT input) : SV_TARGET
 {
-    float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb;
+	float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal));
+    float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb * diffuseLight;
     return float4(tcolor, 1);
 }
 

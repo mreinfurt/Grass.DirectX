@@ -1,4 +1,4 @@
-﻿Texture2D Texture : register(t0);
+﻿Texture2D Texture;
 sampler TextureSampler = sampler_state
 {
 	AddressU = WRAP;
