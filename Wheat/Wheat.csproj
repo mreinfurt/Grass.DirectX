@@ -87,6 +87,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Camera.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

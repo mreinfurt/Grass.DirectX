@@ -12,7 +12,7 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.Windows;
-
+using Wheat.Components;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
@@ -41,6 +41,9 @@ namespace Wheat
         // Object
         private Buffer _vertices;
         private Buffer _constantBuffer;
+
+        // Components
+        private Camera _camera;
 
         #endregion
 
@@ -73,6 +76,8 @@ namespace Wheat
             // Ignore all windows events
             _factory = _swapChain.GetParent<Factory>();
             _factory.MakeWindowAssociation(_renderForm.Handle, WindowAssociationFlags.IgnoreAll);
+        
+            _camera = new Camera(_renderForm.ClientSize.Width, _renderForm.ClientSize.Height);
         }
 
         /// <summary>
@@ -87,9 +92,6 @@ namespace Wheat
 
         public void Run()
         {
-            // Prepare matrices
-            var view = Matrix.LookAtLH(new Vector3(0, 0, -5), new Vector3(0, 0, 0), Vector3.UnitY);
-            Matrix proj = Matrix.Identity;
 
             // Use clock
             var clock = new Stopwatch();
@@ -168,7 +170,7 @@ namespace Wheat
                     _context.OutputMerger.SetTargets(depthView, renderView);
 
                     // Setup new projection matrix with correct aspect ratio
-                    proj = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, _renderForm.ClientSize.Width / (float)_renderForm.ClientSize.Height, 0.1f, 100.0f);
+                    _camera.Resize(_renderForm.ClientSize.Width, _renderForm.ClientSize.Height);
 
                     // We are done resizing
                     userResized = false;
@@ -176,14 +178,17 @@ namespace Wheat
 
                 var time = clock.ElapsedMilliseconds / 1000.0f;
 
-                var viewProj = Matrix.Multiply(view, proj);
+                var viewProj = Matrix.Multiply(_camera.ViewMatrix, _camera.ProjectionMatrix);
 
                 // Clear views
                 _context.ClearDepthStencilView(depthView, DepthStencilClearFlags.Depth, 1.0f, 0);
                 _context.ClearRenderTargetView(renderView, Color.Black);
 
+                _camera.Update(time);
+
                 // Update WorldViewProj Matrix
-                var worldViewProj = Matrix.RotationX(time) * Matrix.RotationY(time * 2) * Matrix.RotationZ(time * .7f) * viewProj;
+                //var worldViewProj = Matrix.RotationX(time) * Matrix.RotationY(time * 2) * Matrix.RotationZ(time * .7f) * viewProj;
+                var worldViewProj = Matrix.Identity*viewProj;
                 worldViewProj.Transpose();
                 _context.UpdateSubresource(ref worldViewProj, _constantBuffer);
 
