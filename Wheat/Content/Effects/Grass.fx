@@ -54,7 +54,7 @@ void VS_Shader(in VSINPUT input, out GEO_IN output)
 ////////////////////////////////////////////////////////////////////////////////////
 [maxvertexcount(12)]
 void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
-{    
+{
 	float4 root = points[0].Position;
 	float halfPi = 1.5707;
 

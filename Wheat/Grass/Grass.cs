@@ -43,7 +43,7 @@ namespace Wheat.Grass
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
 
             // 1. Create lots of independent vertices (roots)
-            int rows = 400;
+            int rows = 100;
             this.RootCount = rows * rows;
             int rootsPerRow = this.RootCount / rows;
 
@@ -55,20 +55,20 @@ namespace Wheat.Grass
             Random rnd = new Random();
             float randomizedDistance = 0;
 
-            for (var i = 0; i < rows; i++)
+            for (var i = 0; i < rootsPerRow; i++)
             {
                 for (var j = 0; j < rootsPerRow; j++)
                 {
-                    // The Y position should be a bit randomized too, but we have to remain in the grid
-                    float randomizedYOffset = (float) rnd.NextDouble(-0.25, 0.25);
+                    // The Z position should be a bit randomized too, but we have to remain in the grid
+                    float randomizedZOffset = (float) rnd.NextDouble(-0.3, 0.3);
 
-                    randomizedDistance = (float)rnd.NextDouble(0.3, 2);
-                    var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y + randomizedYOffset, startPosition.Z);
+                    randomizedDistance = (float)rnd.NextDouble(0.1, 0.4);
+                    var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
                     vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
 
-                randomizedDistance = (float)rnd.NextDouble(0, 0.25);
+                randomizedDistance = (float)rnd.NextDouble(0.1, 0.4);
                 startPosition.Z += randomizedDistance;
             }
 
