@@ -161,8 +161,9 @@ namespace Wheat
                 this.Exit();
             }
 
+            float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
             // Display mouse coordinates and mouse button status
-            text.AppendFormat("Mouse ({0},{1}) Left: {2}, Right {3}", mouseState.X, mouseState.Y, mouseState.LeftButton, mouseState.RightButton).AppendLine();
+            text.AppendFormat("Mouse ({0},{1}); FPS: {2}", mouseState.X, mouseState.Y, frameRate).AppendLine();
             
             spriteBatch.DrawString(arial16Font, text.ToString(), new Vector2(16, 16), Color.White);
             spriteBatch.End();
