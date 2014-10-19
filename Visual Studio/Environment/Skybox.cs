@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Wheat.Environment
+﻿namespace Wheat.Environment
 {
     class Skybox
     {

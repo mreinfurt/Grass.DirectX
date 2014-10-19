@@ -31,10 +31,13 @@ namespace Wheat
         public Main() : base() 
         {
             _graphics = new GraphicsDeviceManager(this);
-            _camera = new Camera();
 
-            _graphics.PreferredBackBufferWidth = _camera.BackBufferWidth;
-            _graphics.PreferredBackBufferHeight = _camera.BackBufferHeight;
+            int width = 800;
+            int height = 680;
+
+            _graphics.PreferredBackBufferWidth = width;
+            _graphics.PreferredBackBufferHeight = height;
+
             Content.RootDirectory = "Content";
         }
 
@@ -46,6 +49,7 @@ namespace Wheat
         /// </summary>
         protected override void Initialize()
         {
+            _camera = new Camera(GraphicsDevice, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             base.Initialize();
         }
 
@@ -85,7 +89,7 @@ namespace Wheat
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            _camera.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -104,6 +108,7 @@ namespace Wheat
 
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
+            rasterizerState.FillMode = FillMode.Solid;
             GraphicsDevice.RasterizerState = rasterizerState;
 
             _terrain.Draw(GraphicsDevice, _camera);

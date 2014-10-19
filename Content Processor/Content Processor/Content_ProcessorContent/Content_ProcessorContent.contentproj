@@ -72,7 +72,7 @@
     <Compile Include="Models\model_diff.jpg">
       <Name>model_diff</Name>
       <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
+      <Processor>MGTextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -80,6 +80,7 @@
       <Name>Object</Name>
       <Importer>EffectImporter</Importer>
       <Processor>MGEffectProcessor</Processor>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

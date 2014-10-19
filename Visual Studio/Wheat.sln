@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wheat", "Wheat.csproj", "{3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content_Processor", "..\Content Processor\Content Processor\Content_Processor\Content_Processor.csproj", "{6774205D-7D3E-449E-8590-EB130818E17D}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "Content_ProcessorContent", "..\Content Processor\Content Processor\Content_ProcessorContent\Content_ProcessorContent.contentproj", "{DF96CD7F-A18D-4150-85E0-3E10201D0D3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Content_ProcessorContent", "..\Content Processor\Content Processor\Content_ProcessorContent\Content_ProcessorContent.contentproj", "{DF96CD7F-A18D-4150-85E0-3E10201D0D3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +130,7 @@ Global
 		{6774205D-7D3E-449E-8590-EB130818E17D}.Windows8|Mixed Platforms.ActiveCfg = Windows8|Any CPU
 		{6774205D-7D3E-449E-8590-EB130818E17D}.Windows8|Mixed Platforms.Build.0 = Windows8|Any CPU
 		{6774205D-7D3E-449E-8590-EB130818E17D}.Windows8|x86.ActiveCfg = Windows8|Any CPU
+		{6774205D-7D3E-449E-8590-EB130818E17D}.Windows8|x86.Build.0 = Windows8|Any CPU
 		{DF96CD7F-A18D-4150-85E0-3E10201D0D3F}.Android|Any CPU.ActiveCfg = Android|Any CPU
 		{DF96CD7F-A18D-4150-85E0-3E10201D0D3F}.Android|Mixed Platforms.ActiveCfg = Android|Any CPU
 		{DF96CD7F-A18D-4150-85E0-3E10201D0D3F}.Android|x86.ActiveCfg = Android|Any CPU

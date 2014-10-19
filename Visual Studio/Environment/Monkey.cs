@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mime;
-using System.Text;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+
 using Wheat.Manager;
 
 namespace Wheat.Environment
@@ -14,18 +10,17 @@ namespace Wheat.Environment
     {
         #region Fields
 
-        private VertexBuffer _vertexBuffer;
-
-        private Model _mesh;
-        private Effect _effect;
-        private Texture2D _texture;
+        Model _mesh;
+        Effect _effect;
+        Texture2D _texture;
 
         EffectParameter _projectionParameter;
         EffectParameter _viewParameter;
         EffectParameter _worldParameter;
         EffectParameter _ambientIntensityParameter;
         EffectParameter _ambientColorParameter;
-        EffectParameter _diffuseTexture;
+        EffectParameter _diffuseIntensityParameter;
+        EffectParameter _diffuseColorParameter;
 
         #endregion
 
@@ -33,20 +28,13 @@ namespace Wheat.Environment
 
         public Monkey(GraphicsDevice graphicsDevice)
         {
-            VertexPositionColor[] vertices = new VertexPositionColor[3];
-            vertices[0] = new VertexPositionColor(new Vector3(0, 1, 0), Color.Red);
-            vertices[1] = new VertexPositionColor(new Vector3(+0.5f, 0, 0), Color.Green);
-            vertices[2] = new VertexPositionColor(new Vector3(-0.5f, 0, 0), Color.Blue);
-
-            _vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
-            _vertexBuffer.SetData<VertexPositionColor>(vertices);
         }
 
         public void LoadContent(ContentManager content)
         {
             _mesh = content.Load<Model>("Models/Object");
-            _effect = content.Load<Effect>("Effects/Object");
             _texture = content.Load<Texture2D>("Models/model_diff");
+            _effect = content.Load<Effect>("Effects/Object");
 
             // Bind the parameters with the shader.
             _worldParameter = _effect.Parameters["World"];
@@ -55,21 +43,26 @@ namespace Wheat.Environment
 
             _ambientColorParameter = _effect.Parameters["AmbientColor"];
             _ambientIntensityParameter = _effect.Parameters["AmbientIntensity"];
-            _diffuseTexture = _effect.Parameters["DiffuseTexture"];
+            _diffuseColorParameter = _effect.Parameters["DiffuseColor"];
+            _diffuseIntensityParameter = _effect.Parameters["DiffuseIntensity"];
         }
 
         public void Draw(GraphicsDevice graphicsDevice, Camera camera)
         {
+            // Prepare shader
             _projectionParameter.SetValue(camera.ProjectionMatrix);
             _viewParameter.SetValue(camera.ViewMatrix);
             _worldParameter.SetValue(camera.WorldMatrix);
             
             _ambientIntensityParameter.SetValue(0.3f);
-            _ambientColorParameter.SetValue(new Vector4(1, 1, 1, 1));
+            _ambientColorParameter.SetValue(new Vector3(1, 1, 1));
 
-            _diffuseTexture.SetValue(_texture);
+            _diffuseIntensityParameter.SetValue(1.0f);
+            _diffuseColorParameter.SetValue(new Vector3(0, 1, 1));
 
-            // Mesh
+            //_effect.Parameters["cTexture"].SetValue(_texture);
+
+            // Draw mesh
             ModelMesh mesh = _mesh.Meshes[0];
             ModelMeshPart meshPart = mesh.MeshParts[0];
 

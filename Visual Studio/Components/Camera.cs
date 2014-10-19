@@ -15,8 +15,11 @@ namespace Wheat.Manager
         private Matrix _viewMatrix;
         private Matrix _projectionMatrix;
 
+        private Vector3 _position;
         private int _backBufferWidth;
         private int _backBufferHeight;
+
+        private double _rotation;
         
         #endregion
 
@@ -36,6 +39,11 @@ namespace Wheat.Manager
             get { return _projectionMatrix; }
         }
 
+        public Vector3 Position
+        {
+            get { return _position; }
+        }
+
         public int BackBufferWidth
         {
             get { return _backBufferWidth; }
@@ -51,18 +59,24 @@ namespace Wheat.Manager
 
         #region Public Methods
 
-        public Camera(int backBufferWidth = 800, int backBufferHeight = 600)
+        public Camera(GraphicsDevice graphicsDevice, int backBufferWidth = 800, int backBufferHeight = 600)
         {
             BackBufferWidth = backBufferWidth;
             BackBufferHeight = backBufferHeight;
 
             // Create default camera position
+            _position = new Vector3(0, 10, 20);
             _worldMatrix = Matrix.Identity;
-            _viewMatrix = Matrix.CreateLookAt(new Vector3(0, -2, 8), Vector3.Zero, Vector3.Up);
-            _projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), BackBufferWidth / BackBufferHeight, 0.01f, 100f);
+            _viewMatrix = Matrix.CreateLookAt(_position, Vector3.Zero, Vector3.Up);
+            _projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians(45), graphicsDevice.Viewport.AspectRatio, 1f, 1000f);
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            _rotation += gameTime.ElapsedGameTime.Milliseconds / 1000.0;
+            _viewMatrix = Matrix.CreateLookAt(new Vector3(5.0f * (float)Math.Cos(_rotation), 2, 5.0f * (float)Math.Sin(_rotation)), new Vector3(0, 2, 0), Vector3.Up);
         }
 
         #endregion
-
     }
 }
