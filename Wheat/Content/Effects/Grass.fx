@@ -93,28 +93,28 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 	// TODO: Calculate normal for light
 	// Transform new vertices into Projection Space
-	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
 	float3 positionWS = mul(v[0].Position, World).xyz;
+	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
 	v[0].VertexToLight = normalize(LightPosition - positionWS.xyz);
 	v[0].Normal = normalize(float4(0, 0.7, 0, 1));;
 
-	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
 	positionWS = mul(v[1].Position, World).xyz;
+	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
 	v[1].VertexToLight = normalize(LightPosition - positionWS.xyz);
 	v[1].Normal = normalize(float4(0, 0.7, 0, 1));
 
-	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
 	positionWS = mul(v[2].Position, World).xyz;
+	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
 	v[2].VertexToLight = normalize(LightPosition - positionWS.xyz);
 	v[2].Normal = normalize(float4(0, 0.2, 0, 1));
 
-	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
 	positionWS = mul(v[3].Position, World).xyz;
+	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
 	v[3].VertexToLight = normalize(LightPosition - positionWS.xyz);
 	v[3].Normal = normalize(float4(0, 0.2, 0, 1));
 
-	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
 	positionWS = mul(v[4].Position, World).xyz;
+	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
 	v[4].VertexToLight = normalize(LightPosition - positionWS.xyz);
 	v[4].Normal = float4(0, 1, 0, 1);
 
