@@ -63,7 +63,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.y));
 
 	float sizeX = 0.1;
-	float sizeY = random * 3;
+	float sizeY = 0.5 + random * 3;
 
 	float toTheLeft = sin(Time.x);
 
@@ -83,8 +83,8 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	v[3].Position = float4(root.x + sizeX, root.y, root.z, 1);
     v[3].TexCoord = float2(1, 1);
 
-	v[4].Position = float4(root.x - toTheLeft, root.y + sizeY * 1.25, root.z, 1);
-    v[4].TexCoord = float2(0, 0);
+	v[4].Position = float4(root.x - toTheLeft * 1.5, root.y + sizeY * 1.5, root.z, 1);
+    v[4].TexCoord = float2(0.5, 0);
 
 	// Transform new vertices into Projection Space
 	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);

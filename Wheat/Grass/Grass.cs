@@ -57,7 +57,7 @@ namespace Wheat.Grass
             {
                 for (var j = 0; j < rootsPerRow; j++)
                 {
-                    randomizedDistance = (float)rnd.NextDouble(0.3, 2);
+                    randomizedDistance = (float)rnd.NextDouble(0.6, 2);
                     var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z);
                     vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
