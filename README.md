@@ -17,6 +17,7 @@ Computer Graphics assignment for a masters course at the Hochschule Darmstadt. T
 * [Siggraph](http://www.siggraph.org/s2006/main.php?f=conference&p=sketches&s=6)
 * [Blog Article: Summary](http://users.csc.calpoly.edu/~zwood/teaching/csc471/finalprojw12/rsteiger/)
 * [Very Short Paper](http://stijndelaruelle.com/pdf/grass.pdf)
+* [Tillmann](http://www.bth.se/fou/cuppsats.nsf/all/9b18626fa27d52c9c1257bae002ca00d/$file/BTH2013Tillman.pdf)
 
 ## Tutorials
 * [How to learn XNA (Primer)](http://gamedevelopment.tutsplus.com/articles/how-to-learn-xna--gamedev-150)
