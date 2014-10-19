@@ -60,7 +60,6 @@ namespace Wheat
             // Input
             this.keyboard = new KeyboardManager(this);
             this.mouse = new MouseManager(this);
-            this.IsMouseVisible = true;
         }
 
         /// <summary>
@@ -69,10 +68,7 @@ namespace Wheat
         protected override void Initialize()
         {
             Window.Title = "Wheat";
-            _camera = new Camera(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-
             base.Initialize();
-
         }
 
         /// <summary>
@@ -85,6 +81,7 @@ namespace Wheat
 
             ballsTexture = Content.Load<Texture2D>("Textures/Balls");
             arial16Font = Content.Load<SpriteFont>("Fonts/Arial16");
+            _camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
 
             // Creates a basic effect
             basicEffect = ToDisposeContent(new BasicEffect(GraphicsDevice));
