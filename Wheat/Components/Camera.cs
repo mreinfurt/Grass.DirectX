@@ -96,10 +96,12 @@ namespace Wheat.Components
             {
                 moveVector += new Vector3(-1, 0, 0);                
             }
+
             if (keyState.IsKeyDown(Keys.Q))
             {
                 moveVector += new Vector3(0, 1, 0);                
             }
+
             if (keyState.IsKeyDown(Keys.Y))
             {
                 moveVector += new Vector3(0, -1, 0);                

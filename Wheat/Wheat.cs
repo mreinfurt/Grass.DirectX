@@ -57,6 +57,7 @@ namespace Wheat
             this.graphicsDeviceManager = new GraphicsDeviceManager(this);
             this.graphicsDeviceManager.PreferredBackBufferWidth = 1280;
             this.graphicsDeviceManager.PreferredBackBufferHeight = 800;
+            this.graphicsDeviceManager.PreferMultiSampling = true;
             Content.RootDirectory = "Content";
 
             // Input
@@ -136,7 +137,7 @@ namespace Wheat
 
             primitive.Draw(basicEffect);
             terrain.Draw(_camera);
-            grass.Draw(_camera);
+            grass.Draw(gameTime, _camera);
 
             // ------------------------------------------------------------------------
             // Draw the some 2d text
