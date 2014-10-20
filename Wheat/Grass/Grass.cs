@@ -23,6 +23,7 @@ namespace Wheat.Grass
         private Texture2D texture;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
+        private VertexInputLayout vertexInputLayout;
 
         private GameCore core;
 
@@ -73,6 +74,7 @@ namespace Wheat.Grass
             }
 
             this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
+            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
         }
 
         public void Draw(GameTime gameTime, Camera camera)
@@ -85,6 +87,7 @@ namespace Wheat.Grass
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
+            this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {

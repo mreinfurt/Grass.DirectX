@@ -22,6 +22,7 @@ namespace Wheat.Environment
         private Texture2D texture;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
+        private VertexInputLayout vertexInputLayout;
 
         #endregion
 
@@ -43,6 +44,7 @@ namespace Wheat.Environment
             vertices[3] = new VertexPositionNormalTexture(new Vector3(size, -size, 0), Vector3.Up, new Vector2(1, 1));
 
             this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
+            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
         }
 
         public void Draw(Camera camera)
@@ -54,6 +56,7 @@ namespace Wheat.Environment
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
+            this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
