@@ -96,7 +96,6 @@ namespace Wheat
 
             terrain = new Terrain(this.gameCore);
             grass = new GrassController(this.gameCore);
-
             base.LoadContent();
         }
 
@@ -110,7 +109,7 @@ namespace Wheat
 
             keyboardState = keyboard.GetState();
             mouseState = mouse.GetState();
-            camera.Update(gameTime);
+            camera.Update(gameTime, this.IsActive);
         }
 
         /// <summary>

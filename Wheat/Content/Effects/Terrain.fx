@@ -1,5 +1,12 @@
-﻿Texture2D Texture : register(t0);
-SamplerState TextureSampler : register(s0);
+﻿Texture2D Texture;
+sampler TextureSampler = sampler_state
+{
+	AddressU = WRAP;
+	AddressV = WRAP;
+	Filter = D3D11_FILTER_MAXIMUM_ANISOTROPIC;
+	MaxAnisotropy = 16;
+};
+
 Texture2D TextureAlpha;
 
 float4x4 World;

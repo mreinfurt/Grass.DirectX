@@ -51,13 +51,13 @@ namespace Wheat.Components
 
             // Calculates the world and the view based on the model size
             this.View = Matrix.LookAtRH(this.Position, new Vector3(0, 0, 0), Vector3.UnitY);
-            this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.01f, 100.0f);
+            this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.01f, 1000.0f);
 
             mouse.SetPosition(new Vector2(0.5f, 0.5f));
             originalMouseState = mouse.GetState();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, bool isActive)
         {
             float amount = (float)gameTime.ElapsedGameTime.TotalMilliseconds / 1000.0f;
 
@@ -70,8 +70,11 @@ namespace Wheat.Components
                 horizontalRotation -= rotationSpeed * xDifference * amount;
                 verticalRotation -= rotationSpeed * yDifference * amount;
 
-                mouse.SetPosition(new Vector2(0.5f, 0.5f));
-                UpdateViewMatrix();
+                if (isActive)
+                {
+                    mouse.SetPosition(new Vector2(0.5f, 0.5f));
+                    UpdateViewMatrix();              
+                }
             }
 
             // Handle keyboard input

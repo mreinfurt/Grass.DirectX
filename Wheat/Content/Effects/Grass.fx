@@ -64,7 +64,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
     GEO_OUT v[5];
 
 	float minHeight = 0.5;
-	float sizeX = 0.1;
+	float sizeX = 0.05 + (random / 8);
 	float sizeY = minHeight + (random * 3);
 
 	float toTheLeft = sin(Time.x);
@@ -93,30 +93,32 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 	// TODO: Calculate normal for light
 	// Transform new vertices into Projection Space
-	float3 positionWS = mul(v[0].Position, World).xyz;
+	float3 positionWS[5];
+
+	positionWS[0] = mul(v[0].Position, World).xyz;
 	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
-	v[0].VertexToLight = normalize(LightPosition - positionWS.xyz);
-	v[0].Normal = normalize(float4(0, 0.7, 0, 1));;
+	v[0].VertexToLight = normalize(LightPosition - positionWS[0].xyz);
+	v[0].Normal = normalize(float4(0, 0.2, 0, 1));
 
-	positionWS = mul(v[1].Position, World).xyz;
+	positionWS[1] = mul(v[1].Position, World).xyz;
 	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
-	v[1].VertexToLight = normalize(LightPosition - positionWS.xyz);
-	v[1].Normal = normalize(float4(0, 0.7, 0, 1));
+	v[1].VertexToLight = normalize(LightPosition - positionWS[1].xyz);
+	v[1].Normal = normalize(float4(0, 0.2, 0, 1));
 
-	positionWS = mul(v[2].Position, World).xyz;
+	positionWS[2] = mul(v[2].Position, World).xyz;
 	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
-	v[2].VertexToLight = normalize(LightPosition - positionWS.xyz);
-	v[2].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[2].VertexToLight = normalize(LightPosition - positionWS[2].xyz);
+	v[2].Normal = normalize(float4(0, 0.0, 0, 1));
 
-	positionWS = mul(v[3].Position, World).xyz;
+	positionWS[3] = mul(v[3].Position, World).xyz;
 	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
-	v[3].VertexToLight = normalize(LightPosition - positionWS.xyz);
-	v[3].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[3].VertexToLight = normalize(LightPosition - positionWS[3].xyz);
+	v[3].Normal = normalize(float4(0, 0.0, 0, 1));
 
-	positionWS = mul(v[4].Position, World).xyz;
+	positionWS[4] = mul(v[4].Position, World).xyz;
 	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
-	v[4].VertexToLight = normalize(LightPosition - positionWS.xyz);
-	v[4].Normal = float4(0, 1, 0, 1);
+	v[4].VertexToLight = normalize(LightPosition - positionWS[4].xyz);
+	v[4].Normal = normalize(float4(0, 0.5, 0, 1));
 
     output.Append(v[2]);
     output.Append(v[1]);
@@ -140,9 +142,8 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 ////////////////////////////////////////////////////////////////////////////////////
 float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
-	float ambientLight = 0.4;
-	float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal.xyz));
-
+	float ambientLight = 0.2;
+	float diffuseLight = ambientLight + saturate(dot(input.VertexToLight, input.Normal.xyz));
 	float4 textureColor = float4(Texture.Sample(TextureSampler, input.TexCoord).xyz * diffuseLight, 1);
 
 	return textureColor;
