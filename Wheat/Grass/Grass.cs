@@ -110,7 +110,7 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfRows = 300;
+            this.NumberOfRows = 200;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
             this.DistanceSpaceX = new Vector2(0.1f, 0.4f);

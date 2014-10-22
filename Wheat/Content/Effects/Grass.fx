@@ -57,9 +57,12 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {
 	float4 root = points[0].Position;
 	float halfPi = 1.5707;
+	float quarterPi = 0.7853;
 
 	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
+
+	float randomRotation = (quarterPi * frac(root.x) + quarterPi * frac(root.z));
 
 	// Properties of the grass blade
 	float minHeight = 0.5;
@@ -104,6 +107,25 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	v[5].Position = float4(root.x + sizeX - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
     v[5].TexCoord = float2(1, 0);
 
+	float3x3 rotationMatrix = { cos(randomRotation), 0, sin(randomRotation),
+								0,			 1, 0,
+								-sin(randomRotation), 0, cos(randomRotation) };
+	
+	/*
+	[loop]
+	for( uint i = 0; i < 6; i++)
+	{
+		v[i].Position = float4(mul(v[i].Position, rotationMatrix), 1);
+	}
+	*/
+
+	v[0].Position = float4(mul(v[0].Position, rotationMatrix), 1);
+	v[1].Position = float4(mul(v[1].Position, rotationMatrix), 1);
+	v[2].Position = float4(mul(v[2].Position, rotationMatrix), 1);
+	v[3].Position = float4(mul(v[3].Position, rotationMatrix), 1);
+	v[4].Position = float4(mul(v[4].Position, rotationMatrix), 1);
+	v[5].Position = float4(mul(v[5].Position, rotationMatrix), 1);
+
 	/////////////////////////////////
 	// Light Calculation
 	/////////////////////////////////
@@ -132,12 +154,12 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	positionWS[4] = mul(v[4].Position, World).xyz;
 	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
 	v[4].VertexToLight = normalize(LightPosition - positionWS[4].xyz);
-	v[4].Normal = normalize(float4(0, 0.3, 0, 1));
+	v[4].Normal = normalize(float4(0, 0.6, 0, 1));
 
 	positionWS[5] = mul(v[5].Position, World).xyz;
 	v[5].Position = mul(mul(mul(v[5].Position, World), View), Projection);
 	v[5].VertexToLight = normalize(LightPosition - positionWS[5].xyz);
-	v[5].Normal = normalize(float4(0, 0.3, 0, 1));
+	v[5].Normal = normalize(float4(0, 0.6, 0, 1));
 
 	/////////////////////////////////
 	// Creating the object
