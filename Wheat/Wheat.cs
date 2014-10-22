@@ -41,8 +41,6 @@ namespace Wheat
         private ShadowCamera shadowCamera;
 
         // Objects
-        private BasicEffect basicEffect;
-        private GeometricPrimitive primitive;
         private Terrain terrain;
         private GrassController grass;
 
@@ -94,18 +92,10 @@ namespace Wheat
             camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
             shadowCamera = new ShadowCamera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight);
 
-            // Creates a basic effect
-            basicEffect = ToDisposeContent(new BasicEffect(GraphicsDevice));
-            basicEffect.PreferPerPixelLighting = true;
-            basicEffect.EnableDefaultLighting();
-
             gameCore = new GameCore(this.GraphicsDevice, this.Content, this.camera, this.shadowCamera);
 
-            // Creates torus primitive
-            primitive = ToDisposeContent(GeometricPrimitive.Teapot.New(GraphicsDevice));
             terrain = new Terrain(this.gameCore);
             grass = new GrassController(this.gameCore);
-
             base.LoadContent();
         }
 
@@ -117,13 +107,9 @@ namespace Wheat
         {
             base.Update(gameTime);
 
-            // Update basic effect for rendering the Primitive
-            basicEffect.View = camera.View;
-            basicEffect.Projection = camera.Projection;
-
             keyboardState = keyboard.GetState();
             mouseState = mouse.GetState();
-            camera.Update(gameTime);
+            camera.Update(gameTime, this.IsActive);
         }
 
         /// <summary>
@@ -138,33 +124,21 @@ namespace Wheat
             this.SetUpBlendState();
             this.SetUpRasterizerState();
 
-            basicEffect.World = Matrix.Scaling(2.0f, 2.0f, 2.0f) *
-                                Matrix.RotationX(0.8f * (float)Math.Sin(time * 1.45)) *
-                                Matrix.RotationY(time * 2.0f) *
-                                Matrix.RotationZ(0) *
-                                Matrix.Translation(8, 1.0f, 0);
-
-
-            primitive.Draw(basicEffect);
-            terrain.Draw(camera);
-            grass.Draw(gameTime, camera);
-
-            // ------------------------------------------------------------------------
-            // Draw the some 2d text
-            // ------------------------------------------------------------------------
-            spriteBatch.Begin();
-            var text = new StringBuilder("");
-
-            // Display pressed keys
+            // Input
             if (keyboardState.IsKeyDown(Keys.Escape))
             {
                 this.Exit();
             }
 
+            // Objects
+            terrain.Draw(camera);
+            grass.Draw(gameTime, camera);
+
+            // Draw string (Mouse position and FPS)
+            spriteBatch.Begin();
+            var text = new StringBuilder("");
             float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-            // Display mouse coordinates and mouse button status
             text.AppendFormat("Mouse ({0},{1}); FPS: {2}", mouseState.X, mouseState.Y, frameRate).AppendLine();
-            
             spriteBatch.DrawString(arial16Font, text.ToString(), new Vector2(16, 16), Color.White);
             spriteBatch.End();
 
