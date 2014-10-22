@@ -61,80 +61,108 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
 
-    GEO_OUT v[5];
-
+	// Properties of the grass blade
 	float minHeight = 0.5;
 	float sizeX = 0.05 + (random / 8);
 	float sizeY = minHeight + (random * 3);
 
+	// Animation
 	float toTheLeft = sin(Time.x);
 
-	// Left top
-	v[0].Position = float4(root.x - sizeX - toTheLeft, root.y + sizeY, root.z, 1);
-    v[0].TexCoord = float2(0, 0.5);
-
-	// Right top
-	v[1].Position = float4(root.x + sizeX - toTheLeft, root.y + sizeY, root.z, 1);
-    v[1].TexCoord = float2(1, 0.5);
-
-	// Left Bottom
-	v[2].Position = float4(root.x - sizeX, root.y, root.z, 1);
-    v[2].TexCoord = float2(0, 1);
-
-	// Right Bottom
-	v[3].Position = float4(root.x + sizeX, root.y, root.z, 1);
-    v[3].TexCoord = float2(1, 1);
-
-	// Top vertex
 	// The movementMultiplier is used, because the vertex on the top is bending more to left and right
 	float movementMultiplier = 1.5;
-	v[4].Position = float4(root.x - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
-    v[4].TexCoord = float2(0.5, 0);
 
-	// TODO: Calculate normal for light
+	/////////////////////////////////
+	// Generating vertices
+	/////////////////////////////////
+    GEO_OUT v[6];
+	float3 positionWS[6];
+
+	// Starting at the bottom going up
+	
+	// Bottom Left
+	v[0].Position = float4(root.x - sizeX, root.y, root.z, 1);
+    v[0].TexCoord = float2(0, 1);
+
+	// Bottom Right
+	v[1].Position = float4(root.x + sizeX, root.y, root.z, 1);
+    v[1].TexCoord = float2(1, 1);
+
+	// Middle Left
+	v[2].Position = float4(root.x - sizeX - toTheLeft, root.y + sizeY, root.z, 1);
+    v[2].TexCoord = float2(0, 0.5);
+
+	// Middle Right
+	v[3].Position = float4(root.x + sizeX - toTheLeft, root.y + sizeY, root.z, 1);
+    v[3].TexCoord = float2(1, 0.5);
+
+	// Top Left
+	v[4].Position = float4(root.x - sizeX - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
+    v[4].TexCoord = float2(0.0, 0);
+
+	// Top Right
+	v[5].Position = float4(root.x + sizeX - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
+    v[5].TexCoord = float2(1, 0);
+
+	/////////////////////////////////
+	// Light Calculation
+	/////////////////////////////////
+
 	// Transform new vertices into Projection Space
-	float3 positionWS[5];
-
 	positionWS[0] = mul(v[0].Position, World).xyz;
 	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
 	v[0].VertexToLight = normalize(LightPosition - positionWS[0].xyz);
-	v[0].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[0].Normal = normalize(float4(0, 0.0, 0, 1));
 
 	positionWS[1] = mul(v[1].Position, World).xyz;
 	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
 	v[1].VertexToLight = normalize(LightPosition - positionWS[1].xyz);
-	v[1].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[1].Normal = normalize(float4(0, 0.0, 0, 1));
 
 	positionWS[2] = mul(v[2].Position, World).xyz;
 	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
 	v[2].VertexToLight = normalize(LightPosition - positionWS[2].xyz);
-	v[2].Normal = normalize(float4(0, 0.0, 0, 1));
+	v[2].Normal = normalize(float4(0, 0.2, 0, 1));
 
 	positionWS[3] = mul(v[3].Position, World).xyz;
 	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
 	v[3].VertexToLight = normalize(LightPosition - positionWS[3].xyz);
-	v[3].Normal = normalize(float4(0, 0.0, 0, 1));
+	v[3].Normal = normalize(float4(0, 0.2, 0, 1));
 
 	positionWS[4] = mul(v[4].Position, World).xyz;
 	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
 	v[4].VertexToLight = normalize(LightPosition - positionWS[4].xyz);
-	v[4].Normal = normalize(float4(0, 0.5, 0, 1));
+	v[4].Normal = normalize(float4(0, 0.3, 0, 1));
 
-    output.Append(v[2]);
-    output.Append(v[1]);
+	positionWS[5] = mul(v[5].Position, World).xyz;
+	v[5].Position = mul(mul(mul(v[5].Position, World), View), Projection);
+	v[5].VertexToLight = normalize(LightPosition - positionWS[5].xyz);
+	v[5].Normal = normalize(float4(0, 0.3, 0, 1));
+
+	/////////////////////////////////
+	// Creating the object
+	/////////////////////////////////
+    output.Append(v[0]);
     output.Append(v[3]);
+    output.Append(v[1]);
 
     output.RestartStrip();
 
-    output.Append(v[0]);
-    output.Append(v[1]);
     output.Append(v[2]);
+    output.Append(v[3]);
+    output.Append(v[0]);
 
     output.RestartStrip();
 
     output.Append(v[4]);
-    output.Append(v[1]);
-    output.Append(v[0]);
+    output.Append(v[3]);
+    output.Append(v[2]);
+
+    output.RestartStrip();
+
+    output.Append(v[5]);
+    output.Append(v[3]);
+    output.Append(v[4]);
 
     output.RestartStrip();
 }
@@ -144,9 +172,9 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
 	float ambientLight = 0.2;
 	float diffuseLight = ambientLight + saturate(dot(input.VertexToLight, input.Normal.xyz));
-	float4 textureColor = float4(Texture.Sample(TextureSampler, input.TexCoord).xyz * diffuseLight, 1);
+	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
 
-	return textureColor;
+	return float4(textureColor.rgb * diffuseLight, textureColor.a);
 }
 
 technique Technique1
