@@ -178,7 +178,7 @@ namespace Wheat
         private void SetUpRasterizerState()
         {
             RasterizerStateDescription stateDescription = new RasterizerStateDescription();
-            stateDescription.FillMode = FillMode.Wireframe;
+            stateDescription.FillMode = FillMode.Solid;
             stateDescription.CullMode = CullMode.None;
             this.GraphicsDevice.SetRasterizerState(RasterizerState.New(this.GraphicsDevice, stateDescription));
         }

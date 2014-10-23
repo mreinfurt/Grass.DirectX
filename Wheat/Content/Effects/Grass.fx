@@ -92,39 +92,36 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
     v[1].TexCoord = float2(1, 1);
 
 	// Middle Left
-	v[2].Position = float4(root.x - sizeX - toTheLeft, root.y + sizeY, root.z, 1);
+	v[2].Position = float4(root.x - sizeX, root.y + sizeY, root.z, 1);
     v[2].TexCoord = float2(0, 0.5);
 
 	// Middle Right
-	v[3].Position = float4(root.x + sizeX - toTheLeft, root.y + sizeY, root.z, 1);
+	v[3].Position = float4(root.x + sizeX, root.y + sizeY, root.z, 1);
     v[3].TexCoord = float2(1, 0.5);
 
 	// Top Left
-	v[4].Position = float4(root.x - sizeX - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
+	v[4].Position = float4(root.x - sizeX, root.y + sizeY * 1.5, root.z, 1);
     v[4].TexCoord = float2(0.0, 0);
 
 	// Top Right
-	v[5].Position = float4(root.x + sizeX - toTheLeft * movementMultiplier, root.y + sizeY * 1.5, root.z, 1);
+	v[5].Position = float4(root.x + sizeX, root.y + sizeY * 1.5, root.z, 1);
     v[5].TexCoord = float2(1, 0);
 
 	float3x3 rotationMatrix = { cos(randomRotation), 0, sin(randomRotation),
 								0,			 1, 0,
 								-sin(randomRotation), 0, cos(randomRotation) };
 	
-	/*
-	[loop]
+	
 	for( uint i = 0; i < 6; i++)
 	{
 		v[i].Position = float4(mul(v[i].Position, rotationMatrix), 1);
 	}
-	*/
 
-	v[0].Position = float4(mul(v[0].Position, rotationMatrix), 1);
-	v[1].Position = float4(mul(v[1].Position, rotationMatrix), 1);
-	v[2].Position = float4(mul(v[2].Position, rotationMatrix), 1);
-	v[3].Position = float4(mul(v[3].Position, rotationMatrix), 1);
-	v[4].Position = float4(mul(v[4].Position, rotationMatrix), 1);
-	v[5].Position = float4(mul(v[5].Position, rotationMatrix), 1);
+	// After rotation, animate the blade
+	v[2].Position.x = v[2].Position.x - toTheLeft;
+	v[3].Position.x = v[3].Position.x - toTheLeft;
+	v[4].Position.x = v[4].Position.x - toTheLeft * movementMultiplier;
+	v[5].Position.x = v[5].Position.x - toTheLeft * movementMultiplier;
 
 	/////////////////////////////////
 	// Light Calculation

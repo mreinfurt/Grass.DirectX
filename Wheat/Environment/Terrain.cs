@@ -44,18 +44,9 @@ namespace Wheat.Environment
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/planeGrass");
             this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
 
-            float size = 20.0f;
-
             LoadHeightData(this.heightMap);
             SetUpVertices();
             SetUpIndices();
-            int b = 0;
-//
-//            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[4];
-//            vertices[0] = new VertexPositionNormalTexture(new Vector3(-size, size, 0), Vector3.Up, new Vector2(0, 0));
-//            vertices[1] = new VertexPositionNormalTexture(new Vector3(size, size, 0), Vector3.Up, new Vector2(1, 0));
-//            vertices[2] = new VertexPositionNormalTexture(new Vector3(-size, -size, 0), Vector3.Up, new Vector2(0, 1));
-//            vertices[3] = new VertexPositionNormalTexture(new Vector3(size, -size, 0), Vector3.Up, new Vector2(1, 1));
 
            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.terrainVertices);
            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
