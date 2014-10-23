@@ -18,6 +18,7 @@ float3 DiffuseColor;
 float DiffuseIntensity;
 
 float3 LightPosition;
+float3 CameraPosition;
 
 float2 Time;
 
@@ -33,7 +34,6 @@ struct GEO_IN
 {
     float4 Position			: SV_POSITION;
 	float4 Normal			: NORMAL0;
-	float3 VertexToLight	: NORMAL1;
 };
 
 struct GEO_OUT
@@ -42,6 +42,7 @@ struct GEO_OUT
     float2 TexCoord			: TEXCOORD;
 	float4 Normal			: NORMAL0;
 	float3 VertexToLight	: NORMAL1;
+	float3 VertexToCamera	: NORMAL2;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +63,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
 
-	float randomRotation = (quarterPi * frac(root.x) + quarterPi * frac(root.z));
+	float randomRotation = (halfPi * frac(root.x) + halfPi * frac(root.z));
 
 	// Properties of the grass blade
 	float minHeight = 0.5;
@@ -114,7 +115,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	
 	for( uint i = 0; i < 6; i++)
 	{
-		v[i].Position = float4(mul(v[i].Position, rotationMatrix), 1);
+		v[i].Position = float4(mul(v[i].Position.xyz, rotationMatrix), 1);
 	}
 
 	// After rotation, animate the blade
@@ -141,22 +142,29 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	positionWS[2] = mul(v[2].Position, World).xyz;
 	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
 	v[2].VertexToLight = normalize(LightPosition - positionWS[2].xyz);
-	v[2].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[2].Normal = normalize(float4(0, 0.3, 0, 1));
 
 	positionWS[3] = mul(v[3].Position, World).xyz;
 	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
 	v[3].VertexToLight = normalize(LightPosition - positionWS[3].xyz);
-	v[3].Normal = normalize(float4(0, 0.2, 0, 1));
+	v[3].Normal = normalize(float4(0, 0.3, 0, 1));
 
 	positionWS[4] = mul(v[4].Position, World).xyz;
 	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
 	v[4].VertexToLight = normalize(LightPosition - positionWS[4].xyz);
-	v[4].Normal = normalize(float4(0, 0.6, 0, 1));
+	v[4].Normal = normalize(float4(0, 1.0, 0, 1));
 
 	positionWS[5] = mul(v[5].Position, World).xyz;
 	v[5].Position = mul(mul(mul(v[5].Position, World), View), Projection);
 	v[5].VertexToLight = normalize(LightPosition - positionWS[5].xyz);
-	v[5].Normal = normalize(float4(0, 0.6, 0, 1));
+	v[5].Normal = normalize(float4(0, 1.0, 0, 1));
+
+
+	// Specular lighting
+	for( uint i = 0; i < 6; i++)
+	{
+		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
+	}
 
 	/////////////////////////////////
 	// Creating the object
@@ -189,11 +197,18 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 ////////////////////////////////////////////////////////////////////////////////////
 float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
-	float ambientLight = 0.2;
-	float diffuseLight = ambientLight + saturate(dot(input.VertexToLight, input.Normal.xyz));
+	float3 r = normalize(reflect(input.VertexToLight.xyz, input.Normal.xyz));
+	float shininess = 2000;
+
+	float ambientLight = 0.1;
+	float diffuseLight = saturate(dot(input.VertexToLight, input.Normal.xyz));
+	float specularLight = dot(input.VertexToCamera, r);
+	specularLight = saturate(pow(specularLight, shininess));
+
+	float light = ambientLight + diffuseLight;
 	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
 
-	return float4(textureColor.rgb * diffuseLight, textureColor.a);
+	return float4(textureColor.rgb * light, textureColor.a);
 }
 
 technique Technique1

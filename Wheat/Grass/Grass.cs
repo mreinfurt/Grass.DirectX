@@ -71,7 +71,7 @@ namespace Wheat.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
 
             this.GenerateRoots();
         }
@@ -89,6 +89,7 @@ namespace Wheat.Grass
             this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
+            this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
@@ -110,11 +111,11 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfRows = 200;
+            this.NumberOfRows = 100;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
             this.DistanceSpaceX = new Vector2(0.1f, 0.4f);
-            this.DistanceSpaceZ = new Vector2(0.2f, 0.4f);
+            this.DistanceSpaceZ = new Vector2(0.1f, 0.4f);
 
             Random rnd = new Random();
             Vector3 startPosition = new Vector3(this.NumberOfRows * this.StartPositionOffset, 0, this.NumberOfRows * this.StartPositionOffset);
@@ -123,13 +124,15 @@ namespace Wheat.Grass
             // Generate roots in a grid
             int currentVertex = 0;
             int rootsPerRow = this.NumberOfRoots / this.NumberOfRows;
+
+            int[] randomizedOffsets = new int[rootsPerRow];
             for (var i = 0; i < rootsPerRow; i++)
             {
                 float randomizedDistance = 0;
                 for (var j = 0; j < rootsPerRow; j++)
                 {
                     // The Z position should be a bit randomized too, but we have to remain in the grid
-                    float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y);
+                    float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y); 
 
                     randomizedDistance = (float)rnd.NextDouble(this.DistanceSpaceX.X, this.DistanceSpaceX.Y);
                     var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
