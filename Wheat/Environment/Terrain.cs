@@ -21,8 +21,8 @@ namespace Wheat.Environment
         private GeometricPrimitive plane; 
         private Texture2D texture;
         private Effect effect;
-        private Buffer<VertexPositionColor> vertexBuffer;
-        private VertexPositionColor[] terrainVertices;
+        private Buffer<VertexPositionNormalTexture> vertexBuffer;
+        private VertexPositionNormalTexture[] terrainVertices;
 
         private Texture2D heightMap;
         private float[,] heightData;
@@ -49,7 +49,7 @@ namespace Wheat.Environment
             LoadHeightData(this.heightMap);
             SetUpVertices();
             SetUpIndices();
-
+            int b = 0;
 //
 //            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[4];
 //            vertices[0] = new VertexPositionNormalTexture(new Vector3(-size, size, 0), Vector3.Up, new Vector2(0, 0));
@@ -57,9 +57,9 @@ namespace Wheat.Environment
 //            vertices[2] = new VertexPositionNormalTexture(new Vector3(-size, -size, 0), Vector3.Up, new Vector2(0, 1));
 //            vertices[3] = new VertexPositionNormalTexture(new Vector3(size, -size, 0), Vector3.Up, new Vector2(1, 1));
 
-            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.terrainVertices);
-            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
-        }
+           this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.terrainVertices);
+           this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
+       }
 
         private void LoadHeightData(Texture2D heightMap)
         {
@@ -69,14 +69,13 @@ namespace Wheat.Environment
             Image image = heightMap.GetDataAsImage();
             heightData = new float[width,height];
 
-            float b = image.GetPixelBuffer(0, 0).GetPixel<Color4>(0, 0).Red;
 
-            for (int x = 0; x < width - 1; x++)
+            for (int x = 0; x < width ; x++)
             {
-                for (int y = 0; y < height - 1; y++)
+                for (int y = 0; y < height ; y++)
                 {
                     PixelData.R8G8B8A8 pixel = image.PixelBuffer[0].GetPixel<PixelData.R8G8B8A8>(x, y);
-                    heightData[x, y] = pixel.R / 5f;
+                    heightData[x, y] = pixel.R / 2f;
                 }
             }
 
@@ -86,13 +85,13 @@ namespace Wheat.Environment
         {
             int width = heightMap.Width;
             int height = heightMap.Height;
-            terrainVertices = new VertexPositionColor[width * height];
-            for (int x = 0; x < width; x++)
+            terrainVertices = new VertexPositionNormalTexture[width * height];
+            for (int x = 0; x < width ; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    terrainVertices[x + y * width].Position = new Vector3(x, heightData[x, y], y);
-                    terrainVertices[x + y * width].Color = new SharpDX.Color(1.0f, 1.0f, 1.0f, 1.0f); ;
+                    terrainVertices[x + y * width].Position = new Vector3(x, heightData[x, y], -y);
+                    //terrainVertices[x + y * width].Color = new SharpDX.Color(1.0f, 1.0f, 1.0f, 1.0f); ;
                 }
             }
 
@@ -122,6 +121,8 @@ namespace Wheat.Environment
                     indices[counter++] = topRight;
                     indices[counter++] = lowerRight;
 
+                   
+
                 }
             }
 
@@ -131,24 +132,22 @@ namespace Wheat.Environment
 
         public void Draw(Camera camera)
         {
-            this.effect.Parameters["World"].SetValue(Matrix.RotationX(MathUtil.DegreesToRadians(90)));
+            this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
-<<<<<<< HEAD
-            this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, false, 0);
-=======
+            this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true, 0);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
->>>>>>> origin/master
+ 
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
                // this.core.GraphicsDevice.Draw(PrimitiveType.TriangleStrip, 4);
-                this.core.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, terrainVertices.Length, 0, 0);
+                this.core.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, indexBuffer.ElementCount, 0, 0);
             }
         }
 

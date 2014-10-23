@@ -49,7 +49,7 @@ void VS_Shader(in VSINPUT input, out PSINPUT output)
 float4 PS_Shader(in PSINPUT input) : SV_TARGET
 {
 	float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal));
-    float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb * diffuseLight;
+    float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb * diffuseLight * 100;
     return float4(tcolor, 1);
 }
 
