@@ -115,12 +115,6 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 		} else { // 1, 3, 5
 			v[i].Position = float4(root.x + sizeX, root.y + currentVertexHeight, root.z, 1);
 			v[i].TexCoord = float2(1, currentV);
-
-			// Every 2 vertices - when we go one size up (Y), do...
-			currentV -= VOffset;
-			currentVertexHeight += sizeY;
-			sizeY /= 1.5; // Vertices on the top should be nearer together
-			currentNormalY += VOffset * 2;
 		}
 
 		// First rotate
@@ -136,7 +130,12 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
 
 		if (i % 2 != 0) {
+			// Every 2 vertices - when we go one size up (Y), do...
 			currentMovementMultiplier += movementMultiplier;
+			currentV -= VOffset;
+			currentVertexHeight += sizeY;
+			sizeY /= 1.5; // Vertices on the top should be nearer together
+			currentNormalY += VOffset * 2;
 		}
 	}
 
