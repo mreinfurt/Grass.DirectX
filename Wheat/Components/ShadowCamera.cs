@@ -1,11 +1,9 @@
-﻿using System;
-using SharpDX;
+﻿using SharpDX;
 
 namespace Wheat.Components
 {
     // Use these namespaces here to override SharpDX.Direct3D11
     using SharpDX.Toolkit;
-    using SharpDX.Toolkit.Graphics;
 
     class ShadowCamera
     {
@@ -23,7 +21,7 @@ namespace Wheat.Components
 
         #region Public Methods
 
-        public ShadowCamera(GraphicsDevice graphicsDevice, float backBufferWidth = 800, float backBufferHeight = 600)
+        public ShadowCamera(float backBufferWidth = 800, float backBufferHeight = 600)
         {
             this.BackBufferWidth = (int)backBufferWidth;
             this.BackBufferHeight = (int)backBufferHeight;

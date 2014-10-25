@@ -1,12 +1,8 @@
-﻿using System;
-using System.Drawing;
-using System.Text;
-using Ninject;
-using Ninject.Extensions.Logging.Log4net;
-using Ninject.Modules;
+﻿using System.Text;
+
 using SharpDX;
 using SharpDX.Direct3D11;
-using SharpDX.XInput;
+
 using Wheat.Components;
 using Wheat.Core;
 using Wheat.Environment;
@@ -28,9 +24,8 @@ namespace Wheat
         #region Fields
 
         // DirectX
-        private GraphicsDeviceManager graphicsDeviceManager;
+        private readonly GraphicsDeviceManager graphicsDeviceManager;
         private SpriteBatch spriteBatch;
-        private Texture2D ballsTexture;
         private SpriteFont arial16Font;
 
         // Engine
@@ -45,9 +40,9 @@ namespace Wheat
         private GrassController grass;
 
         // Input
-        private KeyboardManager keyboard;
+        private readonly KeyboardManager keyboard;
         private KeyboardState keyboardState;
-        private MouseManager mouse;
+        private readonly MouseManager mouse;
         private MouseState mouseState;
 
         #endregion
@@ -59,10 +54,14 @@ namespace Wheat
         /// </summary>
         public Wheat()
         {
-            this.graphicsDeviceManager = new GraphicsDeviceManager(this);
-            this.graphicsDeviceManager.PreferredBackBufferWidth = 1280;
-            this.graphicsDeviceManager.PreferredBackBufferHeight = 800;
-            this.graphicsDeviceManager.PreferMultiSampling = true;
+            this.graphicsDeviceManager = new GraphicsDeviceManager(this)
+            {
+                PreferredBackBufferWidth = 2880,
+                PreferredBackBufferHeight = 1800,
+                PreferMultiSampling = true,
+                IsFullScreen = true
+            };
+
             Content.RootDirectory = "Content";
 
             // Input
@@ -87,10 +86,9 @@ namespace Wheat
             // Instantiate a SpriteBatch
             spriteBatch = ToDisposeContent(new SpriteBatch(GraphicsDevice));
 
-            ballsTexture = Content.Load<Texture2D>("Textures/Balls");
             arial16Font = Content.Load<SpriteFont>("Fonts/Arial16");
             camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
-            shadowCamera = new ShadowCamera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight);
+            shadowCamera = new ShadowCamera(this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight);
 
             gameCore = new GameCore(this.GraphicsDevice, this.Content, this.camera, this.shadowCamera);
 
@@ -118,7 +116,6 @@ namespace Wheat
         /// <param name="gameTime">Time passed since the last call to Draw.</param>
         protected override void Draw(GameTime gameTime)
         {
-            var time = (float)gameTime.TotalGameTime.TotalSeconds;
             GraphicsDevice.Clear(Color.Black);
 
             this.SetUpBlendState();
@@ -154,9 +151,12 @@ namespace Wheat
         /// </summary>
         private void SetUpBlendState()
         {
-            var blendStateDesc = new BlendStateDescription();
-            blendStateDesc.AlphaToCoverageEnable = true;
-            blendStateDesc.IndependentBlendEnable = false;
+            var blendStateDesc = new BlendStateDescription
+            {
+                AlphaToCoverageEnable = true,
+                IndependentBlendEnable = false
+            };
+
             blendStateDesc.RenderTarget[0].IsBlendEnabled = true;
             blendStateDesc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
 
@@ -177,9 +177,12 @@ namespace Wheat
         /// </summary>
         private void SetUpRasterizerState()
         {
-            RasterizerStateDescription stateDescription = new RasterizerStateDescription();
-            stateDescription.FillMode = FillMode.Solid;
-            stateDescription.CullMode = CullMode.None;
+            RasterizerStateDescription stateDescription = new RasterizerStateDescription
+            {
+                FillMode = FillMode.Solid,
+                CullMode = CullMode.None
+            };
+
             this.GraphicsDevice.SetRasterizerState(RasterizerState.New(this.GraphicsDevice, stateDescription));
         }
 

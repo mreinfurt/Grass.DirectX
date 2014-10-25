@@ -1,16 +1,10 @@
-﻿using System;
-using System.Drawing;
-using SharpDX;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D11;
-using SharpDX.Toolkit.Content;
+﻿using SharpDX;
 using Wheat.Components;
 using Wheat.Core;
 
 namespace Wheat.Environment
 {
     // Use these namespaces here to override SharpDX.Direct3D11
-    using SharpDX.Toolkit;
     using SharpDX.Toolkit.Graphics;
 
     class Terrain
@@ -18,7 +12,6 @@ namespace Wheat.Environment
         #region Fields
 
         private GameCore core;
-        private GeometricPrimitive plane; 
         private Texture2D texture;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
@@ -40,7 +33,6 @@ namespace Wheat.Environment
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Terrain");
-            this.plane = GeometricPrimitive.Plane.New(this.core.GraphicsDevice, 50, 50);
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/planeGrass");
             this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
 
@@ -130,15 +122,14 @@ namespace Wheat.Environment
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
-            this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true, 0);
+            this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
  
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-               // this.core.GraphicsDevice.Draw(PrimitiveType.TriangleStrip, 4);
-                this.core.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, indexBuffer.ElementCount, 0, 0);
+                this.core.GraphicsDevice.DrawIndexed(PrimitiveType.TriangleList, indexBuffer.ElementCount);
             }
         }
 

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Drawing;
 using SharpDX;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D11;
-using SharpDX.Toolkit.Content;
 using Wheat.Components;
 using Wheat.Core;
 
@@ -20,12 +16,12 @@ namespace Wheat.Grass
     {
         #region Fields
 
-        private Texture2D texture;
-        private Effect effect;
+        private readonly Texture2D texture;
+        private readonly Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private VertexInputLayout vertexInputLayout;
 
-        private GameCore core;
+        private readonly GameCore core;
 
         #endregion
 
@@ -125,10 +121,9 @@ namespace Wheat.Grass
             int currentVertex = 0;
             int rootsPerRow = this.NumberOfRoots / this.NumberOfRows;
 
-            int[] randomizedOffsets = new int[rootsPerRow];
             for (var i = 0; i < rootsPerRow; i++)
             {
-                float randomizedDistance = 0;
+                float randomizedDistance;
                 for (var j = 0; j < rootsPerRow; j++)
                 {
                     // The Z position should be a bit randomized too, but we have to remain in the grid

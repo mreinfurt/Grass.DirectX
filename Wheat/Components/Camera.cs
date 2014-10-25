@@ -1,5 +1,4 @@
-﻿using System;
-using SharpDX;
+﻿using SharpDX;
 using SharpDX.Toolkit.Input;
 
 namespace Wheat.Components
@@ -13,8 +12,9 @@ namespace Wheat.Components
         #region Fields
 
         // Camera Movement
-        const float rotationSpeed = 0.35f;
-        const float movementSpeed = 30.0f;
+        const float RotationSpeed = 0.35f;
+        const float MovementSpeed = 30.0f;
+
         float horizontalRotation = MathUtil.PiOverTwo;
         float verticalRotation = -MathUtil.Pi / 10.0f;
         MouseState originalMouseState;
@@ -31,8 +31,8 @@ namespace Wheat.Components
         public int BackBufferWidth { get; set; }
         public int BackBufferHeight { get; set; }
 
-        private KeyboardManager keyboard;
-        private MouseManager mouse;
+        private readonly KeyboardManager keyboard;
+        private readonly MouseManager mouse;
         #endregion
 
         #region Public Methods
@@ -67,8 +67,8 @@ namespace Wheat.Components
             {
                 float xDifference = (currentMouseState.X * BackBufferWidth) - (originalMouseState.X * BackBufferWidth);
                 float yDifference = (currentMouseState.Y * BackBufferHeight) - (originalMouseState.Y * BackBufferHeight);
-                horizontalRotation -= rotationSpeed * xDifference * amount;
-                verticalRotation -= rotationSpeed * yDifference * amount;
+                horizontalRotation -= RotationSpeed * xDifference * amount;
+                verticalRotation -= RotationSpeed * yDifference * amount;
 
                 if (isActive)
                 {
@@ -140,7 +140,7 @@ namespace Wheat.Components
 
             Vector4 convertVectorRotatoin = Vector3.Transform(vectorToAdd, cameraRotation);
             Vector3 rotatedVector = new Vector3(convertVectorRotatoin.X, convertVectorRotatoin.Y, convertVectorRotatoin.Z);
-            this.Position += movementSpeed * rotatedVector;
+            this.Position += MovementSpeed * rotatedVector;
             UpdateViewMatrix();
         }
 

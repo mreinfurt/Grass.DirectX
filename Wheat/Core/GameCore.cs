@@ -1,15 +1,9 @@
-﻿using System;
-using System.Drawing;
-using SharpDX;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D11;
-using SharpDX.Toolkit.Content;
+﻿using SharpDX.Toolkit.Content;
 using Wheat.Components;
 
 namespace Wheat.Core
 {
     // Use these namespaces here to override SharpDX.Direct3D11
-    using SharpDX.Toolkit;
     using SharpDX.Toolkit.Graphics;
 
     class GameCore
