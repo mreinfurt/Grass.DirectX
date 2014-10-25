@@ -71,8 +71,8 @@ namespace Wheat.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
-
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
+            
             this.GenerateRoots();
         }
 
@@ -86,7 +86,7 @@ namespace Wheat.Grass
             this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
-            this.effect.Parameters["Texture"].SetResource(this.texture);
+            if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
@@ -114,8 +114,8 @@ namespace Wheat.Grass
             this.NumberOfRows = 100;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
-            this.DistanceSpaceX = new Vector2(0.1f, 0.4f);
-            this.DistanceSpaceZ = new Vector2(0.1f, 0.4f);
+            this.DistanceSpaceX = new Vector2(0.1f, 0.2f);
+            this.DistanceSpaceZ = new Vector2(0.1f, 0.2f);
 
             Random rnd = new Random();
             Vector3 startPosition = new Vector3(this.NumberOfRows * this.StartPositionOffset, 0, this.NumberOfRows * this.StartPositionOffset);

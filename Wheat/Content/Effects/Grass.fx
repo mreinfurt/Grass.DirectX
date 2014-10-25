@@ -22,6 +22,10 @@ float3 CameraPosition;
 
 float2 Time;
 
+// Our constants
+static const float halfPi = 1.5707;
+static const float quarterPi = 0.7853;
+
 ////////////////////////////////////////////////////////////////////////////////////
 struct VSINPUT
 {
@@ -53,145 +57,93 @@ void VS_Shader(in VSINPUT input, out GEO_IN output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-[maxvertexcount(12)]
+[maxvertexcount(40)]
 void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {
 	float4 root = points[0].Position;
-	float halfPi = 1.5707;
-	float quarterPi = 0.7853;
 
 	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
-
-	float randomRotation = (halfPi * frac(root.x) + halfPi * frac(root.z));
+	float randomRotation = random;
 
 	// Properties of the grass blade
-	float minHeight = 0.5;
-	float sizeX = 0.05 + (random / 8);
-	float sizeY = minHeight + (random * 3);
+	float minHeight = 0.7;
+	float sizeX = 0.1 + (random / 8);
+	float sizeY = minHeight + (random * 2);
 
 	// Animation
 	float toTheLeft = sin(Time.x);
+	float movementMultiplier = 0.5; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
 
-	// The movementMultiplier is used, because the vertex on the top is bending more to left and right
-	float movementMultiplier = 1.5;
+	// Rotate in Z-axis
+	float3x3 rotationMatrix = {		cos(randomRotation),	0,	sin(randomRotation),
+									0,						1,	0,
+									-sin(randomRotation),	0,	cos(randomRotation) };
 
 	/////////////////////////////////
 	// Generating vertices
 	/////////////////////////////////
-    GEO_OUT v[6];
-	float3 positionWS[6];
+	const float vertexCount = 8;
+    GEO_OUT v[vertexCount];
+	float3 positionWS[vertexCount];
 
-	// Starting at the bottom going up
-	
-	// Bottom Left
-	v[0].Position = float4(root.x - sizeX, root.y, root.z, 1);
-    v[0].TexCoord = float2(0, 1);
+	// This is used to calculate the current V position of our TexCoords.
+	// We know the U position, because even vertices (0, 2, 4, ...) always have X = 0
+	// And uneven vertices (1, 3, 5, ...) always have X = 1
+	float currentV = 1;
+	float VOffset = 1 / ((vertexCount / 2) - 1);
+	float currentVertexHeight = 0;
+	float currentMovementMultiplier = 0;
+	float currentNormalY = 0;
 
-	// Bottom Right
-	v[1].Position = float4(root.x + sizeX, root.y, root.z, 1);
-    v[1].TexCoord = float2(1, 1);
+	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
+	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
+	// Using pow, we can adjust the curve so that we get lower values on the bottom and higher values on the top.
+	float steepnessFactor = 6; 
 
-	// Middle Left
-	v[2].Position = float4(root.x - sizeX, root.y + sizeY, root.z, 1);
-    v[2].TexCoord = float2(0, 0.5);
-
-	// Middle Right
-	v[3].Position = float4(root.x + sizeX, root.y + sizeY, root.z, 1);
-    v[3].TexCoord = float2(1, 0.5);
-
-	// Top Left
-	v[4].Position = float4(root.x - sizeX, root.y + sizeY * 1.5, root.z, 1);
-    v[4].TexCoord = float2(0.0, 0);
-
-	// Top Right
-	v[5].Position = float4(root.x + sizeX, root.y + sizeY * 1.5, root.z, 1);
-    v[5].TexCoord = float2(1, 0);
-
-	float3x3 rotationMatrix = { cos(randomRotation), 0, sin(randomRotation),
-								0,			 1, 0,
-								-sin(randomRotation), 0, cos(randomRotation) };
-	
-	
-	for( uint i = 0; i < 6; i++)
+	// Transform into projection space and calculate vectors needed for light calculation
+	for( uint i = 0; i < vertexCount; i++)
 	{
+		// Fake creation of the normal. Pointing downwards on the bottom. Pointing upwards on the top. And then interpolating in between.
+		v[i].Normal = normalize(float4(0, pow(currentNormalY, steepnessFactor), 0, 1));
+
+		// Creating vertices and calculating Texcoords (UV)
+		// Vertices start at the bottom and go up. v(0) and v(1) are left bottom and right bottom.
+		if (i % 2 == 0) { // 0, 2, 4
+			v[i].Position = float4(root.x - sizeX, root.y + currentVertexHeight, root.z, 1);
+			v[i].TexCoord = float2(0, currentV);
+		} else { // 1, 3, 5
+			v[i].Position = float4(root.x + sizeX, root.y + currentVertexHeight, root.z, 1);
+			v[i].TexCoord = float2(1, currentV);
+
+			// Every 2 vertices - when we go one size up (Y), do...
+			currentV -= VOffset;
+			currentVertexHeight += sizeY;
+			// sizeY /= 2; // Vertices on the top should be nearer together
+			currentMovementMultiplier += movementMultiplier;
+			currentNormalY += VOffset * 2;
+		}
+
+		// First rotate
 		v[i].Position = float4(mul(v[i].Position.xyz, rotationMatrix), 1);
-	}
 
-	// After rotation, animate the blade
-	v[2].Position.x = v[2].Position.x - toTheLeft;
-	v[3].Position.x = v[3].Position.x - toTheLeft;
-	v[4].Position.x = v[4].Position.x - toTheLeft * movementMultiplier;
-	v[5].Position.x = v[5].Position.x - toTheLeft * movementMultiplier;
+		// Then animate
+		float currentMovement = toTheLeft * currentMovementMultiplier;
+		v[i].Position.x = v[i].Position.x - currentMovement;
+		positionWS[i] = mul(v[i].Position, World).xyz;
 
-	/////////////////////////////////
-	// Light Calculation
-	/////////////////////////////////
-
-	// Transform new vertices into Projection Space
-	positionWS[0] = mul(v[0].Position, World).xyz;
-	v[0].Position = mul(mul(mul(v[0].Position, World), View), Projection);
-	v[0].VertexToLight = normalize(LightPosition - positionWS[0].xyz);
-	v[0].Normal = normalize(float4(0, 0.0, 0, 1));
-
-	positionWS[1] = mul(v[1].Position, World).xyz;
-	v[1].Position = mul(mul(mul(v[1].Position, World), View), Projection);
-	v[1].VertexToLight = normalize(LightPosition - positionWS[1].xyz);
-	v[1].Normal = normalize(float4(0, 0.0, 0, 1));
-
-	positionWS[2] = mul(v[2].Position, World).xyz;
-	v[2].Position = mul(mul(mul(v[2].Position, World), View), Projection);
-	v[2].VertexToLight = normalize(LightPosition - positionWS[2].xyz);
-	v[2].Normal = normalize(float4(0, 0.3, 0, 1));
-
-	positionWS[3] = mul(v[3].Position, World).xyz;
-	v[3].Position = mul(mul(mul(v[3].Position, World), View), Projection);
-	v[3].VertexToLight = normalize(LightPosition - positionWS[3].xyz);
-	v[3].Normal = normalize(float4(0, 0.3, 0, 1));
-
-	positionWS[4] = mul(v[4].Position, World).xyz;
-	v[4].Position = mul(mul(mul(v[4].Position, World), View), Projection);
-	v[4].VertexToLight = normalize(LightPosition - positionWS[4].xyz);
-	v[4].Normal = normalize(float4(0, 1.0, 0, 1));
-
-	positionWS[5] = mul(v[5].Position, World).xyz;
-	v[5].Position = mul(mul(mul(v[5].Position, World), View), Projection);
-	v[5].VertexToLight = normalize(LightPosition - positionWS[5].xyz);
-	v[5].Normal = normalize(float4(0, 1.0, 0, 1));
-
-
-	// Specular lighting
-	for( uint i = 0; i < 6; i++)
-	{
+		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
+		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
 	}
 
-	/////////////////////////////////
-	// Creating the object
-	/////////////////////////////////
-    output.Append(v[0]);
-    output.Append(v[3]);
-    output.Append(v[1]);
-
-    output.RestartStrip();
-
-    output.Append(v[2]);
-    output.Append(v[3]);
-    output.Append(v[0]);
-
-    output.RestartStrip();
-
-    output.Append(v[4]);
-    output.Append(v[3]);
-    output.Append(v[2]);
-
-    output.RestartStrip();
-
-    output.Append(v[5]);
-    output.Append(v[3]);
-    output.Append(v[4]);
-
-    output.RestartStrip();
+	// Connect the vertices
+	for (uint p = 0; p < (vertexCount -2); p++) {
+		output.Append(v[p]);
+		output.Append(v[p+2]);
+		output.Append(v[p+1]);
+		output.RestartStrip();
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
