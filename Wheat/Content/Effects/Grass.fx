@@ -119,8 +119,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 			// Every 2 vertices - when we go one size up (Y), do...
 			currentV -= VOffset;
 			currentVertexHeight += sizeY;
-			// sizeY /= 2; // Vertices on the top should be nearer together
-			currentMovementMultiplier += movementMultiplier;
+			sizeY /= 1.5; // Vertices on the top should be nearer together
 			currentNormalY += VOffset * 2;
 		}
 
@@ -129,12 +128,16 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 		// Then animate
 		float currentMovement = toTheLeft * currentMovementMultiplier;
-		v[i].Position.x = v[i].Position.x - currentMovement;
+		v[i].Position.x += currentMovement;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
 		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
+
+		if (i % 2 != 0) {
+			currentMovementMultiplier += movementMultiplier;
+		}
 	}
 
 	// Connect the vertices
