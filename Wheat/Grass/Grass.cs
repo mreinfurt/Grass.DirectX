@@ -67,7 +67,7 @@ namespace Wheat.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade1");
             
             this.GenerateRoots();
         }
