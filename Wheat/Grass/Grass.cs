@@ -110,8 +110,8 @@ namespace Wheat.Grass
             this.NumberOfRows = 100;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
-            this.DistanceSpaceX = new Vector2(0.2f, 0.4f);
-            this.DistanceSpaceZ = new Vector2(0.2f, 0.4f);
+            this.DistanceSpaceX = new Vector2(0.4f, 0.8f);
+            this.DistanceSpaceZ = new Vector2(0.4f, 0.8f);
 
             Random rnd = new Random();
             Vector3 startPosition = new Vector3(this.NumberOfRows * this.StartPositionOffset, 0, this.NumberOfRows * this.StartPositionOffset);
