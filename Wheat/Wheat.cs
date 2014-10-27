@@ -128,7 +128,7 @@ namespace Wheat
             }
 
             // Objects
-            terrain.Draw(camera);
+            //terrain.Draw(camera);
             grass.Draw(gameTime, camera);
 
             // Draw string (Mouse position and FPS)

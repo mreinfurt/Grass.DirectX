@@ -69,7 +69,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	// Properties of the grass blade
 	float minHeight = 0.7;
 	float sizeX = 0.1 + (random / 8);
-	float sizeY = minHeight + (random * 2);
+	float sizeY = minHeight + (random);
 
 	// Animation
 	float toTheLeft = sin(Time.x);
