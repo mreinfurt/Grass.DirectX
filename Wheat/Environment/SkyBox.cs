@@ -21,14 +21,7 @@ namespace Wheat.Environment
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Sky");
-            //this.texture =
-
             this.texture = this.core.ContentManager.Load<TextureCube>("Textures/cubeStrip");
-           // texture = TextureCube.New(this.core.GraphicsDevice, );
-            
-            //  this.texture =  TextureCube.New(this.core.GraphicsDevice, blafu.GetData());
-           // this.texture = TextureCube.Load(this.core.GraphicsDevice, "Content/Textures/skyBox.dds");
-           // this.texture = TextureCube.Load(this.core.GraphicsDevice, "Content/Textures/skyBox.dds");
             SetUpVertices();
             SetUpIndices();
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
@@ -36,11 +29,8 @@ namespace Wheat.Environment
 
         private void SetUpVertices()
         {
-
             VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[8];
-
-            float scaleFactor = 100.0f;
-
+            
             vertices[0].Position = new Vector3(-1.0f, -1.0f, -1.0f);
             vertices[1].Position = new Vector3(-1.0f, -1.0f, 1.0f);
             vertices[2].Position = new Vector3(1.0f, -1.0f, 1.0f);
