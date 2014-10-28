@@ -182,7 +182,7 @@ namespace Wheat
         {
             RasterizerStateDescription stateDescription = new RasterizerStateDescription
             {
-                FillMode = FillMode.Wireframe,
+                FillMode = FillMode.Solid,
                 CullMode = CullMode.None
             };
 
