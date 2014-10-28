@@ -1,7 +1,6 @@
 ﻿TextureCube SkyBoxTexture;
-samplerCUBE SkyBoxSampler = sampler_state
+SamplerState SkyBoxSampler = sampler_state
 {
-	texture = <SkyBoxTexture>; 
 	magfilter = LINEAR;
 	minfilter = LINEAR;
 	mipfilter = LINEAR;
@@ -21,17 +20,16 @@ float AmbientIntensity;
 float3 DiffuseColor;
 float DiffuseIntensity;
 
-float3 LightPosition;
-
 float3 CameraPosition;
+float3 LightPosition;
 
 struct VSINPUT
 {
-	float4 Position : POSITION0;
+	float4 Position : SV_POSITION;
 };
 
 struct VSOUTPUT {
-  float4 Position : POSITION0;
+  float4 Position : SV_POSITION;
   float3 TextureCoordinate : TEXCOORD0;
 };
 
@@ -45,11 +43,11 @@ void VS_Shader(in VSINPUT input, out VSOUTPUT output)
     output.TextureCoordinate = VertexPosition - CameraPosition;
 }
 
-float4 PS_Shader(in VSOUTPUT input) : COLOR0
+float4 PS_Shader(in VSOUTPUT input) : SV_TARGET
 {
 	//float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal));
 	//float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb * diffuseLight * 100;
-	return SkyBoxTexture.Sample(SkyBoxSampler, input.TextureCoordinate)
+	return SkyBoxTexture.Sample(SkyBoxSampler, input.TextureCoordinate);
 }
 
 technique Technique1

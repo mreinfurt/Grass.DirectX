@@ -20,8 +20,15 @@ namespace Wheat.Environment
         public SkyBox(GameCore core)
         {
             this.core = core;
-            this.effect = this.core.ContentManager.Load<Effect>("Effects/Terrain");
-            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/skyBox");
+            this.effect = this.core.ContentManager.Load<Effect>("Effects/Sky");
+            //this.texture =
+
+            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/cubeStrip");
+           // texture = TextureCube.New(this.core.GraphicsDevice, );
+            
+            //  this.texture =  TextureCube.New(this.core.GraphicsDevice, blafu.GetData());
+           // this.texture = TextureCube.Load(this.core.GraphicsDevice, "Content/Textures/skyBox.dds");
+           // this.texture = TextureCube.Load(this.core.GraphicsDevice, "Content/Textures/skyBox.dds");
             SetUpVertices();
             SetUpIndices();
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
@@ -104,13 +111,12 @@ namespace Wheat.Environment
 
         public void Draw(Camera camera)
         {
-            this.effect.Parameters["World"].SetValue(Matrix.Identity);
+            this.effect.Parameters["World"].SetValue(Matrix.Scaling(100, 100, 100));
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
-            this.effect.Parameters["Texture"].SetResource(this.texture);
+            this.effect.Parameters["SkyBoxTexture"].SetResource(this.texture);
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
-            this.effect.Parameters["Texture"].SetResource(this.texture);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true);
