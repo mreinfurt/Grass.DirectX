@@ -9,8 +9,8 @@ namespace Wheat.Environment
     class SkyBox
     {
         private GameCore core;
-        private Texture2D texture;
-       // private TextureCube texture;
+        //private Texture2D texture;
+        private TextureCube texture;
         private Effect effect;
         private VertexInputLayout vertexInputLayout;
 
@@ -21,7 +21,7 @@ namespace Wheat.Environment
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Terrain");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/planeGrass");
+            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/skyBox");
             SetUpVertices();
             SetUpIndices();
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
@@ -109,6 +109,8 @@ namespace Wheat.Environment
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
+            this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
+            this.effect.Parameters["Texture"].SetResource(this.texture);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true);

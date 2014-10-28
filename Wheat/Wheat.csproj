@@ -102,6 +102,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\skyBox.dds" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <ToolkitTexture Include="Content\Textures\grassBlade1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitFxc Include="Content\Effects\Sky.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\SharpDX.2.6.2\build\SharpDX.targets" Condition="Exists('packages\SharpDX.2.6.2\build\SharpDX.targets')" />
