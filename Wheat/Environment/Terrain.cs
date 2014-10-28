@@ -14,15 +14,14 @@ namespace Wheat.Environment
         private GameCore core;
         private Texture2D texture;
         private Effect effect;
+
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
-        private VertexPositionNormalTexture[] terrainVertices;
+        private Buffer indexBuffer;
+        private VertexInputLayout vertexInputLayout;
 
         private Texture2D heightMap;
         private float[,] heightData;
-        private int[] indices;
-        private Buffer indexBuffer;
-
-        private VertexInputLayout vertexInputLayout;
+ 
 
 
         #endregion
@@ -40,7 +39,7 @@ namespace Wheat.Environment
             SetUpVertices();
             SetUpIndices();
 
-           this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.terrainVertices);
+          // this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.terrainVertices);
            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
        }
 
@@ -68,15 +67,18 @@ namespace Wheat.Environment
         {
             int width = heightMap.Width;
             int height = heightMap.Height;
-            terrainVertices = new VertexPositionNormalTexture[width * height];
+            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[width * height];
             for (int x = 0; x < width ; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
-                    terrainVertices[x + y * width].Position = new Vector3(x, heightData[x, y], -y);
+                    vertices[x + y * width].Position = new Vector3(x, heightData[x, y], -y);
                     //terrainVertices[x + y * width].Color = new SharpDX.Color(1.0f, 1.0f, 1.0f, 1.0f); ;
                 }
             }
+
+            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
+          
 
         }
 
@@ -85,7 +87,7 @@ namespace Wheat.Environment
             int width = heightMap.Width;
             int height = heightMap.Height;
 
-            indices = new int[(width - 1) * (height - 1) * 6];
+            int[] indices = new int[(width - 1) * (height - 1) * 6];
             int counter = 0;
             for (int y = 0; y < height - 1; y++)
             {
@@ -110,6 +112,8 @@ namespace Wheat.Environment
             }
 
              indexBuffer = Buffer.New(this.core.GraphicsDevice, indices, BufferFlags.IndexBuffer);
+
+
         }
 
 

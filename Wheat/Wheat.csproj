@@ -96,6 +96,7 @@
     <Compile Include="Core\GameCore.cs" />
     <Compile Include="Environment\Terrain.cs" />
     <Compile Include="Grass\Grass.cs" />
+    <Compile Include="Environment\SkyBox.cs" />
     <Compile Include="Wheat.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

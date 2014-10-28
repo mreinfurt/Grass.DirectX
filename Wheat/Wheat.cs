@@ -38,6 +38,7 @@ namespace Wheat
         // Objects
         private Terrain terrain;
         private GrassController grass;
+        private SkyBox skyBox;
 
         // Input
         private readonly KeyboardManager keyboard;
@@ -56,10 +57,10 @@ namespace Wheat
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 2880,
-                PreferredBackBufferHeight = 1800,
+                PreferredBackBufferWidth = 1280,
+                PreferredBackBufferHeight = 720,
                 PreferMultiSampling = true,
-                IsFullScreen = true
+                IsFullScreen = false
             };
 
             Content.RootDirectory = "Content";
@@ -94,6 +95,7 @@ namespace Wheat
 
             terrain = new Terrain(this.gameCore);
             grass = new GrassController(this.gameCore);
+            skyBox = new SkyBox(this.gameCore);
             base.LoadContent();
         }
 
@@ -128,7 +130,8 @@ namespace Wheat
             }
 
             // Objects
-            //terrain.Draw(camera);
+            // terrain.Draw(camera);
+            skyBox.Draw(camera);
             grass.Draw(gameTime, camera);
 
             // Draw string (Mouse position and FPS)
@@ -179,7 +182,7 @@ namespace Wheat
         {
             RasterizerStateDescription stateDescription = new RasterizerStateDescription
             {
-                FillMode = FillMode.Solid,
+                FillMode = FillMode.Wireframe,
                 CullMode = CullMode.None
             };
 
