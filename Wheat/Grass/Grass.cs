@@ -67,7 +67,7 @@ namespace Wheat.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade1");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
             
             this.GenerateRoots();
         }
@@ -110,8 +110,8 @@ namespace Wheat.Grass
             this.NumberOfRows = 100;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
-            this.DistanceSpaceX = new Vector2(0.4f, 0.8f);
-            this.DistanceSpaceZ = new Vector2(0.4f, 0.8f);
+            this.DistanceSpaceX = new Vector2(0.3f, 0.5f);
+            this.DistanceSpaceZ = new Vector2(0.3f, 0.5f);
 
             Random rnd = new Random();
             Vector3 startPosition = new Vector3(this.NumberOfRows * this.StartPositionOffset, 0, this.NumberOfRows * this.StartPositionOffset);
