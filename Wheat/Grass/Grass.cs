@@ -120,6 +120,7 @@ namespace Wheat.Grass
             // Generate roots in a grid
             int currentVertex = 0;
             int rootsPerRow = this.NumberOfRoots / this.NumberOfRows;
+            Double maxDistance = rootsPerRow * 0.5;
 
             for (var i = 0; i < rootsPerRow; i++)
             {
@@ -129,8 +130,8 @@ namespace Wheat.Grass
                     // The Z position should be a bit randomized too, but we have to remain in the grid
                     float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y); 
 
-                    randomizedDistance = (float)rnd.NextDouble(this.DistanceSpaceX.X, this.DistanceSpaceX.Y);
-                    var currentPosition = new Vector3(startPosition.X + (j * randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
+                    randomizedDistance = (float)rnd.NextDouble(0, maxDistance);
+                    var currentPosition = new Vector3(startPosition.X + (randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
                     vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
