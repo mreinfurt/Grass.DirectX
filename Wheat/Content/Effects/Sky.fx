@@ -45,8 +45,6 @@ void VS_Shader(in VSINPUT input, out VSOUTPUT output)
 
 float4 PS_Shader(in VSOUTPUT input) : SV_TARGET
 {
-	//float diffuseLight = 0.2 + saturate(dot(input.VertexToLight, input.Normal));
-	//float3 tcolor = Texture.Sample(TextureSampler, input.TexCoord).rgb * diffuseLight * 100;
 	return SkyBoxTexture.Sample(SkyBoxSampler, input.TextureCoordinate);
 }
 

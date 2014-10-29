@@ -57,10 +57,10 @@ namespace Wheat
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 1280,
-                PreferredBackBufferHeight = 720,
+                PreferredBackBufferWidth = 2880,
+                PreferredBackBufferHeight = 1800,
                 PreferMultiSampling = true,
-                IsFullScreen = false
+                IsFullScreen = true
             };
 
             Content.RootDirectory = "Content";

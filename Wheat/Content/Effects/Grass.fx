@@ -83,7 +83,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	/////////////////////////////////
 	// Generating vertices
 	/////////////////////////////////
-	const float vertexCount = 8;
+	const float vertexCount = 10;
     GEO_OUT v[vertexCount];
 	float3 positionWS[vertexCount];
 
@@ -117,8 +117,10 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 			v[i].TexCoord = float2(1, currentV);
 		}
 
-		// First rotate
+		// First rotate (translate to origin)
+		v[i].Position = float4(v[i].Position.x - root.x, v[i].Position.y - root.y, v[i].Position.z - root.z, 1);
 		v[i].Position = float4(mul(v[i].Position.xyz, rotationMatrix), 1);
+		v[i].Position = float4(v[i].Position.x + root.x, v[i].Position.y + root.y, v[i].Position.z + root.z, 1);
 
 		// Then animate
 		float currentMovement = toTheLeft * currentMovementMultiplier;
@@ -140,7 +142,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	}
 
 	// Connect the vertices
-	for (uint p = 0; p < (vertexCount -2); p++) {
+	for (uint p = 0; p < (vertexCount - 2); p++) {
 		output.Append(v[p]);
 		output.Append(v[p+2]);
 		output.Append(v[p+1]);
