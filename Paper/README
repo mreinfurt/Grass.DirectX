@@ -1,0 +1,30 @@
+This README file accompanies the 2013/12/06 version of the "acmsiggraph"
+LaTeX and BibTeX files, to be used to prepare documents for publication in
+the proceedings of events sponsored by ACM SIGGRAPH.
+
+File Listing
+------------
+
+acmsiggraph.bst          BibTeX template file.
+acmsiggraph.cls          LaTeX template file.
+icons/                   Folder containing hyperlink icons.
+images/                  Folder containing sample images.
+Makefile_latex           Makefile for 'latex / dvips / ps2pdf' workflow.
+Makefile_pdflatex        Makefile for 'pdflatex' workflow.
+README                   This file.
+template.tex             Sample LaTeX file.
+template.annotated.tex   Sample LaTeX file with annotations.
+template.bib             Sample BibTeX file.
+template.conference.pdf  Sample PDF file.
+template.tog.pdf         Sample PDF file.
+
+The "template.annotated.tex" file explains all of the parameters, definitions
+and commands used in the "acmsiggraph" LaTeX class, and if you haven't used
+this class before, it is recommended that you examine that file.
+
+The "template.tex" file contains the same code as "template.annotated.tex" 
+but none of the explanation.
+
+Questions, comments and suggestions should be sent to Stephen Spencer
+at 'spencer@cs.washington.edu' to be considered for inclusion in a future
+version of this package.
