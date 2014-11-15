@@ -8,6 +8,20 @@ sampler TextureSampler = sampler_state
     MaxLOD = 2.0f;
 };
 
+float3 HUEtoRGB(in float H)
+{
+	float R = abs(H * 6 - 3) - 1;
+	float G = 2 - abs(H * 6 - 2);
+	float B = 2 - abs(H * 6 - 4);
+	return saturate(float3(R, G, B));
+}
+
+float3 HSVtoRGB(in float3 HSV)
+{
+	float3 RGB = HUEtoRGB(HSV.x);
+	return ((RGB - 1) * HSV.y + 1) * HSV.z;
+}
+
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
@@ -49,6 +63,7 @@ struct GEO_OUT
 	float3 VertexToLight	: NORMAL1;
 	float3 VertexToCamera	: NORMAL2;
 	float DistanceToCamera  : NORMAL3;
+	float RandomNumber		: NORMAL4;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -69,14 +84,14 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	float randomRotation = random;
 
 	// Properties of the grass blade
-	float minHeight = 0.7;
+	float minHeight = 0.75;
 	float minWidth = 0.125;
 	float sizeX = minWidth + (random / 50);
-	float sizeY = minHeight + (random);
+	float sizeY = minHeight + (random / 5);
 
 	// Animation
-	float toTheLeft = sin(Time.x) * random;
-	float movementMultiplier = 0.5; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
+	float toTheLeft = sin(Time.x);
+	float movementMultiplier = 0.3; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
 
 	// Rotate in Z-axis
 	float3x3 rotationMatrix = {		cos(randomRotation),	0,	sin(randomRotation),
@@ -139,6 +154,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
 		v[i].DistanceToCamera = distanceToCamera;
+		v[i].RandomNumber = random;
 
 		if (i % 2 != 0) {
 			// Every 2 vertices - when we go one size up (Y), do...
@@ -191,8 +207,10 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 		lodColor.b = 1;
 	}
 
-	float3 grassColor = { 0.4, 0.71, 0.19 };
-	return float4(grassColor * light, textureColor.a);
+	float3 grassColorHSV = { 0.1 + (input.RandomNumber / 6), 0.67, 0.68 };
+	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
+
+	return float4(grassColorRGB * light, textureColor.a);
 	// return float4(textureColor.rgb * light, textureColor.a);
 }
 

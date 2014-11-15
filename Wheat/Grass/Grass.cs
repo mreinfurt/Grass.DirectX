@@ -109,7 +109,7 @@ namespace Wheat.Grass
             // Initialize parameters
             this.NumberOfRows = 500;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
-            this.StartPositionOffset = -0.15f;
+            this.StartPositionOffset = -0.20f;
             this.DistanceSpaceX = new Vector2(0.3f, 0.5f);
             this.DistanceSpaceZ = new Vector2(0.3f, 0.5f);
 
