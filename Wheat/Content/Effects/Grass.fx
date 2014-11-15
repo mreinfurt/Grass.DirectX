@@ -3,8 +3,9 @@ sampler TextureSampler = sampler_state
 {
 	AddressU = WRAP;
 	AddressV = WRAP;
-	Filter = D3D11_FILTER_MAXIMUM_ANISOTROPIC;
+	Filter = D3D11_FILTER_COMPARISON_ANISOTROPIC;
 	MaxAnisotropy = 16;
+    MaxLOD = 2.0f;
 };
 
 float4x4 World;
@@ -47,6 +48,7 @@ struct GEO_OUT
 	float4 Normal			: NORMAL0;
 	float3 VertexToLight	: NORMAL1;
 	float3 VertexToCamera	: NORMAL2;
+	float DistanceToCamera  : NORMAL3;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -68,11 +70,12 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 	// Properties of the grass blade
 	float minHeight = 0.7;
-	float sizeX = 0.15 + (random / 50);
+	float minWidth = 0.125;
+	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random);
 
 	// Animation
-	float toTheLeft = sin(Time.x);
+	float toTheLeft = sin(Time.x) * random;
 	float movementMultiplier = 0.5; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
 
 	// Rotate in Z-axis
@@ -83,9 +86,14 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	/////////////////////////////////
 	// Generating vertices
 	/////////////////////////////////
-	const float vertexCount = 10;
+	const float baseVertexCount = 12;
+	const float vertexCount = 12;
     GEO_OUT v[vertexCount];
 	float3 positionWS[vertexCount];
+
+	// Level of detail
+	// We begin at a vertex count of 20 and then go down 2 vertices every 10 units beginning at a distance of 50
+	float distanceToCamera = length(CameraPosition.xyz - root.xyz);
 
 	// This is used to calculate the current V position of our TexCoords.
 	// We know the U position, because even vertices (0, 2, 4, ...) always have X = 0
@@ -99,8 +107,8 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
 	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
 	// Using pow, we can adjust the curve so that we get lower values on the bottom and higher values on the top.
-	float steepnessFactor = 6; 
-
+	float steepnessFactor = 1; 
+	
 	// Transform into projection space and calculate vectors needed for light calculation
 	for( uint i = 0; i < vertexCount; i++)
 	{
@@ -130,6 +138,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
 		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
+		v[i].DistanceToCamera = distanceToCamera;
 
 		if (i % 2 != 0) {
 			// Every 2 vertices - when we go one size up (Y), do...
@@ -153,18 +162,38 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 ////////////////////////////////////////////////////////////////////////////////////
 float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
+	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
+	
 	float3 r = normalize(reflect(input.VertexToLight.xyz, input.Normal.xyz));
-	float shininess = 2000;
+	float shininess = 100;
 
 	float ambientLight = 0.1;
 	float diffuseLight = saturate(dot(input.VertexToLight, input.Normal.xyz));
-	float specularLight = dot(input.VertexToCamera, r);
+	float specularLight = saturate(dot(-input.VertexToCamera, r));
 	specularLight = saturate(pow(specularLight, shininess));
 
-	float light = ambientLight + diffuseLight;
-	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
+	float light = ambientLight + (diffuseLight) + (specularLight * 0.5);
 
-	return float4(textureColor.rgb * light, textureColor.a);
+	float3 lodColor = { 0, 0, 0 };
+
+	if (input.DistanceToCamera <= 50) {
+		lodColor.r = 1;
+	}
+
+	else if (input.DistanceToCamera <= 100) {
+		lodColor.r = 0;
+		lodColor.g = 1;
+	}
+
+	else if (input.DistanceToCamera <= 200) {
+		lodColor.r = 0;
+		lodColor.g = 0;
+		lodColor.b = 1;
+	}
+
+	float3 grassColor = { 0.4, 0.71, 0.19 };
+	return float4(grassColor * light, textureColor.a);
+	// return float4(textureColor.rgb * light, textureColor.a);
 }
 
 technique Technique1

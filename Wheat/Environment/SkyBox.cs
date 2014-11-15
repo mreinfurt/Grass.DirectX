@@ -21,7 +21,7 @@ namespace Wheat.Environment
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Sky");
-            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/cubeStrip");
+            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/skyBox");
             SetUpVertices();
             SetUpIndices();
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
@@ -101,7 +101,9 @@ namespace Wheat.Environment
 
         public void Draw(Camera camera)
         {
-            this.effect.Parameters["World"].SetValue(Matrix.Scaling(100, 100, 100));
+            const float size = 300.0f;
+
+            this.effect.Parameters["World"].SetValue(Matrix.Scaling(size, size, size));
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             this.effect.Parameters["SkyBoxTexture"].SetResource(this.texture);

@@ -67,7 +67,7 @@ namespace Wheat.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/abstractGrass");
             
             this.GenerateRoots();
         }
@@ -107,7 +107,7 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfRows = 100;
+            this.NumberOfRows = 500;
             this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
             this.StartPositionOffset = -0.15f;
             this.DistanceSpaceX = new Vector2(0.3f, 0.5f);

@@ -57,8 +57,8 @@ namespace Wheat
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 2880,
-                PreferredBackBufferHeight = 1800,
+                PreferredBackBufferWidth = 3840,
+                PreferredBackBufferHeight = 2400,
                 PreferMultiSampling = true,
                 IsFullScreen = true
             };
@@ -157,19 +157,19 @@ namespace Wheat
             var blendStateDesc = new BlendStateDescription
             {
                 AlphaToCoverageEnable = true,
-                IndependentBlendEnable = false
+                IndependentBlendEnable = true
             };
 
             blendStateDesc.RenderTarget[0].IsBlendEnabled = true;
             blendStateDesc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.All;
 
             blendStateDesc.RenderTarget[0].SourceBlend = BlendOption.SourceAlpha;
-            blendStateDesc.RenderTarget[0].DestinationBlend = BlendOption.InverseSourceAlpha;
+            blendStateDesc.RenderTarget[0].DestinationBlend = BlendOption.DestinationAlpha;
             blendStateDesc.RenderTarget[0].BlendOperation = BlendOperation.Add;
 
             blendStateDesc.RenderTarget[0].SourceAlphaBlend = BlendOption.SourceAlpha;
             blendStateDesc.RenderTarget[0].DestinationAlphaBlend = BlendOption.DestinationAlpha;
-            blendStateDesc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
+            blendStateDesc.RenderTarget[0].AlphaBlendOperation = BlendOperation.ReverseSubtract;
 
             BlendState blendState = BlendState.New(this.GraphicsDevice, blendStateDesc);
             this.GraphicsDevice.SetBlendState(blendState);
