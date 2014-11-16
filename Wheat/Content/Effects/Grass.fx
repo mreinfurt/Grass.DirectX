@@ -62,9 +62,25 @@ struct GEO_OUT
 	float4 Normal			: NORMAL0;
 	float3 VertexToLight	: NORMAL1;
 	float3 VertexToCamera	: NORMAL2;
-	float DistanceToCamera  : NORMAL3;
-	float RandomNumber		: NORMAL4;
+	float3 LevelOfDetail	: NORMAL3;
+	float Random			: NORMAL4;
 };
+
+GEO_OUT createGEO_OUT() {
+	GEO_OUT output;
+
+	
+	output.Position = float4(0, 0, 0, 0);
+	output.Normal = float4(0, 0, 0, 0);
+	output.TexCoord = float2(0, 0);
+	output.VertexToLight = float3(0, 0, 0);
+	output.VertexToCamera = float3(0, 0, 0);
+	output.LevelOfDetail = float3(0, 0, 0);
+	output.Random = 0;
+	
+
+	return output;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////
 void VS_Shader(in VSINPUT input, out GEO_IN output)
@@ -101,20 +117,33 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	/////////////////////////////////
 	// Generating vertices
 	/////////////////////////////////
-	const float baseVertexCount = 12;
-	const float vertexCount = 12;
-    GEO_OUT v[vertexCount];
-	float3 positionWS[vertexCount];
+
+	const uint vertexCount = 12;
 
 	// Level of detail
 	// We begin at a vertex count of 20 and then go down 2 vertices every 10 units beginning at a distance of 50
+	/*
 	float distanceToCamera = length(CameraPosition.xyz - root.xyz);
+	uint vertexDifference = ((distanceToCamera / 10));
+	float3 levelOfDetail = { 1 - vertexDifference / 12, 1 - vertexDifference / 12, 1 - vertexDifference / 12 };
+	*/
+
+	uint vertexDifference = 0;
+	float3 levelOfDetail = { 0, 0, 0 };
+	const float realVertexCount = (vertexCount - vertexDifference);
+	GEO_OUT v[vertexCount] = {
+		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT(),
+		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT(),
+		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT()
+	};
+
+	float3 positionWS[vertexCount];
 
 	// This is used to calculate the current V position of our TexCoords.
 	// We know the U position, because even vertices (0, 2, 4, ...) always have X = 0
 	// And uneven vertices (1, 3, 5, ...) always have X = 1
 	float currentV = 1;
-	float VOffset = 1 / ((vertexCount / 2) - 1);
+	float VOffset = 1 / ((realVertexCount / 2) - 1);
 	float currentVertexHeight = 0;
 	float currentMovementMultiplier = 0;
 	float currentNormalY = 0;
@@ -125,7 +154,8 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	float steepnessFactor = 1; 
 	
 	// Transform into projection space and calculate vectors needed for light calculation
-	for( uint i = 0; i < vertexCount; i++)
+	[unroll]
+	for(uint i = 0; i < vertexCount - vertexDifference; i++)
 	{
 		// Fake creation of the normal. Pointing downwards on the bottom. Pointing upwards on the top. And then interpolating in between.
 		v[i].Normal = normalize(float4(0, pow(currentNormalY, steepnessFactor), 0, 1));
@@ -153,8 +183,8 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
 		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
-		v[i].DistanceToCamera = distanceToCamera;
-		v[i].RandomNumber = random;
+		v[i].Random = random;
+		v[i].LevelOfDetail = levelOfDetail;
 
 		if (i % 2 != 0) {
 			// Every 2 vertices - when we go one size up (Y), do...
@@ -167,11 +197,11 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	}
 
 	// Connect the vertices
-	for (uint p = 0; p < (vertexCount - 2); p++) {
+	[unroll]
+	for (uint p = 0; p < (vertexCount - vertexDifference - 2); p++) {
 		output.Append(v[p]);
 		output.Append(v[p+2]);
 		output.Append(v[p+1]);
-		output.RestartStrip();
 	}
 }
 
@@ -180,6 +210,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
 	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
 	
+	// Phong
 	float3 r = normalize(reflect(input.VertexToLight.xyz, input.Normal.xyz));
 	float shininess = 100;
 
@@ -187,39 +218,45 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float diffuseLight = saturate(dot(input.VertexToLight, input.Normal.xyz));
 	float specularLight = saturate(dot(-input.VertexToCamera, r));
 	specularLight = saturate(pow(specularLight, shininess));
-
-	float light = ambientLight + (diffuseLight) + (specularLight * 0.5);
-
-	float3 lodColor = { 0, 0, 0 };
-
-	if (input.DistanceToCamera <= 50) {
-		lodColor.r = 1;
-	}
-
-	else if (input.DistanceToCamera <= 100) {
-		lodColor.r = 0;
-		lodColor.g = 1;
-	}
-
-	else if (input.DistanceToCamera <= 200) {
-		lodColor.r = 0;
-		lodColor.g = 0;
-		lodColor.b = 1;
-	}
-
-	float3 grassColorHSV = { 0.1 + (input.RandomNumber / 6), 0.67, 0.68 };
+	
+	float light = ambientLight + (diffuseLight * 2) + (specularLight * 0.5);
+	float3 grassColorHSV = { 0.1 + (input.Random / 6), 0.67, 1 };
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
+	float3 lightColor = float3(1.0, 0.8, 0.8);
 
-	return float4(grassColorRGB * light, textureColor.a);
-	// return float4(textureColor.rgb * light, textureColor.a);
+	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
-technique Technique1
+
+////////////////////////////////////////////////////////////////////////////////////
+[maxvertexcount(40)]
+void GS_LOD1(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output) 
+{
+	GS_Shader(points, output);
+}
+
+[maxvertexcount(40)]
+void GS_LOD2(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
+{
+	GS_Shader(points, output);
+}
+
+technique LevelOfDetail1
 {
 	pass Pass1
 	{
 		VertexShader = compile vs_4_0 VS_Shader();
-		GeometryShader = compile gs_4_0 GS_Shader();
+		GeometryShader = compile gs_4_0 GS_LOD1();
+		PixelShader = compile ps_4_0 PS_Shader();
+	}
+}
+
+technique LevelOfDetail2
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_4_0 VS_Shader();
+		GeometryShader = compile gs_4_0 GS_LOD2();
 		PixelShader = compile ps_4_0 PS_Shader();
 	}
 }
