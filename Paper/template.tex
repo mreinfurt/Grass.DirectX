@@ -1,12 +1,3 @@
-%%% template.tex
-%%%
-%%% This LaTeX source document can be used as the basis for your technical
-%%% paper or abstract. Intentionally stripped of annotation, the parameters
-%%% and commands should be adjusted for your particular paper - title, 
-%%% author, article DOI, etc.
-%%% The accompanying ``template.annotated.tex'' provides copious annotation
-%%% for the commands and parameters found in the source document. (The code
-%%% is identical in ``template.tex'' and ``template.annotated.tex.'')
 
 \documentclass[conference]{acmsiggraph}
 
@@ -19,7 +10,7 @@
 \TOGdataURL{}
 \TOGcodeURL{}
 
-\title{Real-time shader-based rendering of grass}
+\title{Real-time shader-based rendering of wheat}
 
 \author {Kin Liu\\Manuel Reinfurt}
 \pdfauthor{Kin Liu}
@@ -28,10 +19,10 @@
 
 \begin{document}
 
-%% \teaser{
-%%   \includegraphics[height=1.5in]{images/sampleteaser}
-%%   \caption{Spring Training 2009, Peoria, AZ.}
-%% }
+\teaser{
+  \frame{\includegraphics[height=1.5in]{images/final_result}}
+  \caption{End result}
+}
 
 \maketitle
 
@@ -41,16 +32,6 @@ The grass is the best.
 
 \end{abstract}
 
-\begin{CRcatlist}
-  \CRcat{I.3.3}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Display Algorithms}
-  \CRcat{I.3.7}{Computer Graphics}{Three-Dimensional Graphics and Realism}{Radiosity};
-\end{CRcatlist}
-
-\keywordlist
-
-%% Use this only if you're preparing a technical paper to be published in the 
-%% ACM 'Transactions on Graphics' journal.
-
 \TOGlinkslist
 
 %% Required for all content. 
@@ -59,7 +40,7 @@ The grass is the best.
 
 \section{Introduction}
 
-Best
+Content: Something like "Grass has always been an important factor when simulating nature scenes". Already note some difficulties: "Very high number of vertices/objects"
 
 \begin{figure}[ht]
   \centering
@@ -100,11 +81,25 @@ INSERT non-randomized and randomized picture
 Explain: Basic sine animation, Wind
 
 \section{Wheat differences}
-Explain: 
+Explain: Flat plane does not work very well.
 
 \section{Benchmarks}
+We kept randomized values to a minimum to avoid variations in the scene and to have a baseline. All tests were mainly done on the following two systems.
 
-FPS with different machines, root counts, level of detail settings and so on. Grapshs!
+\begin{flushleft}
+\begin{description}
+  \item[System 1 (Desktop)] \hfill \\
+  CPU: Intel Xeon E5-1230v3 \linebreak
+  RAM: 16GB DDR3-1333 \linebreak
+  GPU: nVidia GeForce GTX 780
+  \item[System 2 (Notebook)] \hfill \\
+  CPU: Intel Core I7-4980HQ \linebreak
+  RAM: 16GB DDR3-1333 \linebreak
+  GPU: Intel Iris Pro
+\end{description}
+\end{flushleft}
+
+Content: Show base FPS without performance improvements, then show level of detail, culling and so on.
 
 \section{Conclusion}
 
