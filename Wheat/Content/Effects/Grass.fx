@@ -105,7 +105,6 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 	// Animation
 	float toTheLeft = sin(Time.x);
-	float movementMultiplier = 0.2; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
 
 	// Rotate in Z-axis
 	float3x3 rotationMatrix = {		cos(randomRotation),	0,	sin(randomRotation),
@@ -134,7 +133,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float VOffset = 1 / ((realVertexCount / 2) - 1);
 	float currentNormalY = 0;
 	float currentMovementMultiplier = sqrt(sizeY);
-	float currentHeightOffset = sqrt(sizeY);
+	float currentHeightOffset = currentMovementMultiplier;
 	float currentVertexHeight = 0;
 	float currentMovement = 0;
 

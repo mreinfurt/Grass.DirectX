@@ -23,6 +23,7 @@ namespace Wheat.Grass
         private VertexInputLayout vertexInputLayout;
         private VertexPositionNormalTexture[] vertices;
 
+        private BoundingFrustum boundingFrustum;
         private readonly GameCore core;
 
         #endregion
@@ -98,6 +99,8 @@ namespace Wheat.Grass
             {
                 this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             }
+
+            this.boundingFrustum = new BoundingFrustum(this.core.Camera.View * this.core.Camera.Projection);
         }
 
         /// <summary>
@@ -110,7 +113,7 @@ namespace Wheat.Grass
             this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
-            this.effect.Parameters["Texture"]?.SetResource(this.texture);
+            if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
@@ -123,30 +126,39 @@ namespace Wheat.Grass
             
             for (int i = 0; i < this.NumberOfPatches; i++)
             {
-                Vector3 cameraPosition = this.core.Camera.Position;
-                cameraPosition.Y = 0;
-                Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
-                float distance = difference.Length();
+                BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 3.0f);
 
-                if (distance > (int) LevelOfDetail.Level4)
+                if (!this.boundingFrustum.Intersects(ref boundingSphere))
                 {
-                    this.effect.Techniques["LevelOfDetail4"].Passes[0].Apply();
-                }
-                else if (distance > (int)LevelOfDetail.Level3)
-                {
-                    this.effect.Techniques["LevelOfDetail3"].Passes[0].Apply();
-                }
-                else if (distance > (int)LevelOfDetail.Level2)
-                {
-                    this.effect.Techniques["LevelOfDetail2"].Passes[0].Apply();
+                    startRoot += this.NumberOfRootsInPatch;
                 }
                 else
                 {
-                    this.effect.Techniques["LevelOfDetail1"].Passes[0].Apply();
-                }
+                    Vector3 cameraPosition = this.core.Camera.Position;
+                    cameraPosition.Y = 0;
+                    Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
+                    float distance = difference.Length();
 
-                this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.NumberOfRootsInPatch, startRoot);
-                startRoot += this.NumberOfRootsInPatch;
+                    if (distance > (int)LevelOfDetail.Level4)
+                    {
+                        this.effect.Techniques["LevelOfDetail4"].Passes[0].Apply();
+                    }
+                    else if (distance > (int)LevelOfDetail.Level3)
+                    {
+                        this.effect.Techniques["LevelOfDetail3"].Passes[0].Apply();
+                    }
+                    else if (distance > (int)LevelOfDetail.Level2)
+                    {
+                        this.effect.Techniques["LevelOfDetail2"].Passes[0].Apply();
+                    }
+                    else
+                    {
+                        this.effect.Techniques["LevelOfDetail1"].Passes[0].Apply();
+                    }
+
+                    this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.NumberOfRootsInPatch, startRoot);
+                    startRoot += this.NumberOfRootsInPatch;
+                }
             }
         }
 
@@ -160,7 +172,7 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfPatchRows = 40;
+            this.NumberOfPatchRows = 50;
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
             this.NumberOfRootsInPatch = 100;
             this.NumberOfRowsInPatch = 10;
