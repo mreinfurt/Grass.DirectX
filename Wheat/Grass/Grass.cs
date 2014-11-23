@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpDX;
+using SharpDX.Toolkit.Input;
 using Wheat.Components;
 using Wheat.Core;
 
@@ -17,7 +18,7 @@ namespace Wheat.Grass
         #region Fields
 
         private readonly Texture2D texture;
-        private readonly Effect effect;
+        private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private VertexInputLayout vertexInputLayout;
         private VertexPositionNormalTexture[] vertices;
@@ -87,6 +88,17 @@ namespace Wheat.Grass
             
             this.GenerateRoots();
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Update()
+        {
+            if (this.core.KeyboardState.IsKeyPressed(Keys.F5))
+            {
+                this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
+            }
+        }
 
         /// <summary>
         /// Draws grass field.
@@ -98,7 +110,7 @@ namespace Wheat.Grass
             this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
-            if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
+            this.effect.Parameters["Texture"]?.SetResource(this.texture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
@@ -116,11 +128,15 @@ namespace Wheat.Grass
                 Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
                 float distance = difference.Length();
 
-                if (distance > 60)
+                if (distance > (int) LevelOfDetail.Level4)
+                {
+                    this.effect.Techniques["LevelOfDetail4"].Passes[0].Apply();
+                }
+                else if (distance > (int)LevelOfDetail.Level3)
                 {
                     this.effect.Techniques["LevelOfDetail3"].Passes[0].Apply();
                 }
-                else if (distance > 30)
+                else if (distance > (int)LevelOfDetail.Level2)
                 {
                     this.effect.Techniques["LevelOfDetail2"].Passes[0].Apply();
                 }
@@ -144,10 +160,10 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfPatchRows = 20;
+            this.NumberOfPatchRows = 40;
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
-            this.NumberOfRootsInPatch = 400;
-            this.NumberOfRowsInPatch = 20;
+            this.NumberOfRootsInPatch = 100;
+            this.NumberOfRowsInPatch = 10;
             this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
 
             this.DistanceSpaceX = new Vector2(0.3f, 0.5f);
@@ -160,6 +176,7 @@ namespace Wheat.Grass
             Vector3 startPosition = new Vector3(0, 0, 0);
             int rootsPerRow = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch;
 
+            // Generate grid of patches
             for (int x = 0; x < this.NumberOfPatchRows; x++)
             {
                 for (int y = 0; y < this.NumberOfPatchRows; y++)
@@ -176,9 +193,18 @@ namespace Wheat.Grass
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
         }
 
+        /// <summary>
+        /// Generates all the roots for one patch.
+        /// </summary>
+        /// <param name="numberOfRoots">Number of roots in total for this patch</param>
+        /// <param name="rootsPerRow">How many roots are in one row of the patch</param>
+        /// <param name="startPosition">Start of the roots in object space</param>
+        /// <param name="currentVertex">Index of the vertex</param>
+        /// <param name="rnd">Random seed</param>
+        /// <returns></returns>
         private int AddPatch(int numberOfRoots, int rootsPerRow, Vector3 startPosition, int currentVertex, Random rnd)
         {
-            Double maxDistance = rootsPerRow * 0.5;
+            double maxDistance = rootsPerRow * 0.5;
 
             for (var i = 0; i < this.NumberOfRowsInPatch; i++)
             {

@@ -100,7 +100,7 @@ namespace Wheat.Components
                 moveVector += new Vector3(-1, 0, 0);                
             }
 
-            if (keyState.IsKeyDown(Keys.Q))
+            if (keyState.IsKeyDown(Keys.Q) || keyState.IsKeyDown(Keys.Space))
             {
                 moveVector += new Vector3(0, 1, 0);                
             }

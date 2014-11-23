@@ -98,7 +98,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float randomRotation = random;
 
 	// Properties of the grass blade
-	float minHeight = 0.75;
+	float minHeight = 1.9;
 	float minWidth = 0.125;
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
@@ -132,10 +132,11 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	// And uneven vertices (1, 3, 5, ...) always have X = 1
 	float currentV = 1;
 	float VOffset = 1 / ((realVertexCount / 2) - 1);
-	float sizeOffset = sizeY / ((realVertexCount / 2) - 1);
-	float currentVertexHeight = 0;
-	float currentMovementMultiplier = 0;
 	float currentNormalY = 0;
+	float currentMovementMultiplier = sqrt(sizeY);
+	float currentHeightOffset = sqrt(sizeY);
+	float currentVertexHeight = 0;
+	float currentMovement = 0;
 
 	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
 	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
@@ -165,8 +166,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 		v[i].Position = float4(v[i].Position.x + root.x, v[i].Position.y + root.y, v[i].Position.z + root.z, 1);
 
 		// Then animate
-		float currentMovement = toTheLeft * currentMovementMultiplier;
-		v[i].Position.x += currentMovement;
+		v[i].Position.x += toTheLeft * currentMovement * 0.75;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
@@ -176,14 +176,18 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 		v[i].LevelOfDetail = levelOfDetail;
 
 		if (i % 2 != 0) {
-			// Every 2 vertices - when we go one size up (Y), do...
-			currentMovementMultiplier += movementMultiplier;
+			// General
 			currentV -= VOffset;
 			currentNormalY += VOffset * 2;
+			levelOfDetail.x += 0.2;
 
-			//currentVertexHeight += sizeOffset;
-			currentVertexHeight += sizeY;
-			sizeY /= 1.5; // Vertices on the top should be nearer together
+			// Height
+			currentHeightOffset -= VOffset;
+			float currentHeight = sizeY - (currentHeightOffset * currentHeightOffset);
+			currentVertexHeight = currentHeight;
+
+			// Animation
+			currentMovement = currentHeight;
 		}
 	}
 
@@ -215,7 +219,8 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
-	return float4(light * input.LevelOfDetail.xyz , 1);
+	// Debugging: Show level of detail
+	//return float4(light * input.LevelOfDetail.xyz , 1);
 	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
@@ -235,6 +240,12 @@ void GS_LOD2(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 [maxvertexcount(40)]
 void GS_LOD3(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
+{
+	GS_Shader(points, 6, output);
+}
+
+[maxvertexcount(40)]
+void GS_LOD4(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {
 	GS_Shader(points, 8, output);
 }
@@ -265,6 +276,16 @@ technique LevelOfDetail3
 	{
 		VertexShader = compile vs_4_0 VS_Shader();
 		GeometryShader = compile gs_4_0 GS_LOD3();
+		PixelShader = compile ps_4_0 PS_Shader();
+	}
+}
+
+technique LevelOfDetail4
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_4_0 VS_Shader();
+		GeometryShader = compile gs_4_0 GS_LOD4();
 		PixelShader = compile ps_4_0 PS_Shader();
 	}
 }

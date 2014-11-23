@@ -92,7 +92,7 @@ namespace Wheat
             camera = new Camera(this.GraphicsDevice, this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight, keyboard, mouse);
             shadowCamera = new ShadowCamera(this.graphicsDeviceManager.PreferredBackBufferWidth, this.graphicsDeviceManager.PreferredBackBufferHeight);
 
-            gameCore = new GameCore(this.GraphicsDevice, this.Content, this.camera, this.shadowCamera);
+            gameCore = new GameCore(this.GraphicsDevice, this.Content, this.camera, this.shadowCamera, this.keyboard, this.mouse);
 
             terrain = new Terrain(this.gameCore);
             grass = new GrassController(this.gameCore);
@@ -108,9 +108,11 @@ namespace Wheat
         {
             base.Update(gameTime);
 
+            gameCore.Update();
             keyboardState = keyboard.GetState();
             mouseState = mouse.GetState();
             camera.Update(gameTime, this.IsActive);
+            grass.Update();
         }
 
         /// <summary>
