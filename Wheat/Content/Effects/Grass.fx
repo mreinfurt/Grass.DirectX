@@ -68,7 +68,6 @@ struct GEO_OUT
 
 GEO_OUT createGEO_OUT() {
 	GEO_OUT output;
-
 	
 	output.Position = float4(0, 0, 0, 0);
 	output.Normal = float4(0, 0, 0, 0);
@@ -77,7 +76,6 @@ GEO_OUT createGEO_OUT() {
 	output.VertexToCamera = float3(0, 0, 0);
 	output.LevelOfDetail = float3(0, 0, 0);
 	output.Random = 0;
-	
 
 	return output;
 }
@@ -91,7 +89,7 @@ void VS_Shader(in VSINPUT input, out GEO_IN output)
 
 ////////////////////////////////////////////////////////////////////////////////////
 [maxvertexcount(40)]
-void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
+void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleStream<GEO_OUT> output)
 {
 	float4 root = points[0].Position;
 
@@ -107,7 +105,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 
 	// Animation
 	float toTheLeft = sin(Time.x);
-	float movementMultiplier = 0.3; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
+	float movementMultiplier = 0.2; // The movementMultiplier is used, because the vertex on the top is bending more to left and right
 
 	// Rotate in Z-axis
 	float3x3 rotationMatrix = {		cos(randomRotation),	0,	sin(randomRotation),
@@ -119,17 +117,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	/////////////////////////////////
 
 	const uint vertexCount = 12;
-
-	// Level of detail
-	// We begin at a vertex count of 20 and then go down 2 vertices every 10 units beginning at a distance of 50
-	/*
-	float distanceToCamera = length(CameraPosition.xyz - root.xyz);
-	uint vertexDifference = ((distanceToCamera / 10));
-	float3 levelOfDetail = { 1 - vertexDifference / 12, 1 - vertexDifference / 12, 1 - vertexDifference / 12 };
-	*/
-
-	uint vertexDifference = 0;
-	float3 levelOfDetail = { 0, 0, 0 };
+	float3 levelOfDetail = { vertexDifference * 0.125, 0, 0 };
 	const float realVertexCount = (vertexCount - vertexDifference);
 	GEO_OUT v[vertexCount] = {
 		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT(),
@@ -144,6 +132,7 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 	// And uneven vertices (1, 3, 5, ...) always have X = 1
 	float currentV = 1;
 	float VOffset = 1 / ((realVertexCount / 2) - 1);
+	float sizeOffset = sizeY / ((realVertexCount / 2) - 1);
 	float currentVertexHeight = 0;
 	float currentMovementMultiplier = 0;
 	float currentNormalY = 0;
@@ -190,9 +179,11 @@ void GS_Shader(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 			// Every 2 vertices - when we go one size up (Y), do...
 			currentMovementMultiplier += movementMultiplier;
 			currentV -= VOffset;
+			currentNormalY += VOffset * 2;
+
+			//currentVertexHeight += sizeOffset;
 			currentVertexHeight += sizeY;
 			sizeY /= 1.5; // Vertices on the top should be nearer together
-			currentNormalY += VOffset * 2;
 		}
 	}
 
@@ -224,6 +215,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
+	//return float4(textureColor.rgb * grassColorRGB * light * lightColor * 1.5 + input.LevelOfDetail.xyz , textureColor.a);
 	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
@@ -232,13 +224,19 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 [maxvertexcount(40)]
 void GS_LOD1(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output) 
 {
-	GS_Shader(points, output);
+	GS_Shader(points, 0, output);
 }
 
 [maxvertexcount(40)]
 void GS_LOD2(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
 {
-	GS_Shader(points, output);
+	GS_Shader(points, 4, output);
+}
+
+[maxvertexcount(40)]
+void GS_LOD3(point GEO_IN points[1], inout TriangleStream<GEO_OUT> output)
+{
+	GS_Shader(points, 8, output);
 }
 
 technique LevelOfDetail1
@@ -257,6 +255,16 @@ technique LevelOfDetail2
 	{
 		VertexShader = compile vs_4_0 VS_Shader();
 		GeometryShader = compile gs_4_0 GS_LOD2();
+		PixelShader = compile ps_4_0 PS_Shader();
+	}
+}
+
+technique LevelOfDetail3
+{
+	pass Pass1
+	{
+		VertexShader = compile vs_4_0 VS_Shader();
+		GeometryShader = compile gs_4_0 GS_LOD3();
 		PixelShader = compile ps_4_0 PS_Shader();
 	}
 }

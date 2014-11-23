@@ -20,6 +20,7 @@ namespace Wheat.Grass
         private readonly Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private VertexInputLayout vertexInputLayout;
+        private VertexPositionNormalTexture[] vertices;
 
         private readonly GameCore core;
 
@@ -36,12 +37,27 @@ namespace Wheat.Grass
         /// <summary>
         /// The number of rows for x and y of the grid
         /// </summary>
-        public int NumberOfRows { get; private set; }
+        public int NumberOfPatchRows { get; private set; }
 
         /// <summary>
         /// Returns the number of roots.
         /// </summary>
         public int NumberOfRoots { get; private set; }
+
+        /// <summary>
+        /// Returns the number of patches.
+        /// </summary>
+        public int NumberOfPatches { get; private set; }
+
+        /// <summary>
+        /// Returns the number of roots in in one patch.
+        /// </summary>
+        public int NumberOfRootsInPatch { get; private set; }
+
+        /// <summary>
+        /// Returns the number of rows in in one patch.
+        /// </summary>
+        public int NumberOfRowsInPatch { get; private set; }
 
         /// <summary>
         /// Space for the random displacement (distance between roots) for the X axis.
@@ -90,10 +106,31 @@ namespace Wheat.Grass
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
 
-            foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
+            // Draw patches
+            int startRoot = 0;
+            
+            for (int i = 0; i < this.NumberOfPatches; i++)
             {
-                pass.Apply();
-                this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.NumberOfRoots);
+                Vector3 cameraPosition = this.core.Camera.Position;
+                cameraPosition.Y = 0;
+                Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
+                float distance = difference.Length();
+
+                if (distance > 60)
+                {
+                    this.effect.Techniques["LevelOfDetail3"].Passes[0].Apply();
+                }
+                else if (distance > 30)
+                {
+                    this.effect.Techniques["LevelOfDetail2"].Passes[0].Apply();
+                }
+                else
+                {
+                    this.effect.Techniques["LevelOfDetail1"].Passes[0].Apply();
+                }
+
+                this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.NumberOfRootsInPatch, startRoot);
+                startRoot += this.NumberOfRootsInPatch;
             }
         }
 
@@ -107,32 +144,53 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfRows = 200;
-            this.NumberOfRoots = this.NumberOfRows * this.NumberOfRows;
-            this.StartPositionOffset = -0.20f;
+            this.NumberOfPatchRows = 10;
+            this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
+            this.NumberOfRootsInPatch = 400;
+            this.NumberOfRowsInPatch = 20;
+            this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
+
             this.DistanceSpaceX = new Vector2(0.3f, 0.5f);
             this.DistanceSpaceZ = new Vector2(0.3f, 0.5f);
+            this.vertices = new VertexPositionNormalTexture[this.NumberOfRoots];
 
             Random rnd = new Random();
-            Vector3 startPosition = new Vector3(this.NumberOfRows * this.StartPositionOffset, 0, this.NumberOfRows * this.StartPositionOffset);
-            VertexPositionNormalTexture[] vertices = new VertexPositionNormalTexture[this.NumberOfRoots];
-
-            // Generate roots in a grid
             int currentVertex = 0;
-            int rootsPerRow = this.NumberOfRoots / this.NumberOfRows;
+
+            Vector3 startPosition = new Vector3(0, 0, 0);
+            int rootsPerRow = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch;
+
+            for (int x = 0; x < this.NumberOfPatchRows; x++)
+            {
+                for (int y = 0; y < this.NumberOfPatchRows; y++)
+                {
+                    currentVertex = this.AddPatch(this.NumberOfRowsInPatch, rootsPerRow, startPosition, currentVertex, rnd);
+                    startPosition.X += rootsPerRow * 0.5f;
+                }
+
+                startPosition.X = 0;
+                startPosition.Z += rootsPerRow * 0.4f;
+            }
+
+            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.vertices);
+            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
+        }
+
+        private int AddPatch(int numberOfRoots, int rootsPerRow, Vector3 startPosition, int currentVertex, Random rnd)
+        {
             Double maxDistance = rootsPerRow * 0.5;
 
-            for (var i = 0; i < rootsPerRow; i++)
+            for (var i = 0; i < this.NumberOfRowsInPatch; i++)
             {
                 float randomizedDistance;
                 for (var j = 0; j < rootsPerRow; j++)
                 {
                     // The Z position should be a bit randomized too, but we have to remain in the grid
-                    float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y); 
+                    float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y);
 
                     randomizedDistance = (float)rnd.NextDouble(0, maxDistance);
                     var currentPosition = new Vector3(startPosition.X + (randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
-                    vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
+                    this.vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
 
@@ -140,8 +198,7 @@ namespace Wheat.Grass
                 startPosition.Z += randomizedDistance;
             }
 
-            this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, vertices);
-            this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
+            return currentVertex;
         }
 
         #endregion
