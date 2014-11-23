@@ -144,7 +144,7 @@ namespace Wheat.Grass
         private void GenerateRoots()
         {
             // Initialize parameters
-            this.NumberOfPatchRows = 10;
+            this.NumberOfPatchRows = 20;
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
             this.NumberOfRootsInPatch = 400;
             this.NumberOfRowsInPatch = 20;

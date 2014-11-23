@@ -117,7 +117,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	/////////////////////////////////
 
 	const uint vertexCount = 12;
-	float3 levelOfDetail = { vertexDifference * 0.125, 0, 0 };
+	float3 levelOfDetail = { vertexDifference * 0.125, 1, vertexDifference * 0.25 };
 	const float realVertexCount = (vertexCount - vertexDifference);
 	GEO_OUT v[vertexCount] = {
 		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT(),
@@ -215,7 +215,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
-	//return float4(textureColor.rgb * grassColorRGB * light * lightColor * 1.5 + input.LevelOfDetail.xyz , textureColor.a);
+	return float4(light * input.LevelOfDetail.xyz , 1);
 	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
