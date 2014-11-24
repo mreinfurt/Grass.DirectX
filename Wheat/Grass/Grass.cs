@@ -265,7 +265,7 @@ namespace Wheat.Grass
                 for (int x = 0; x < width; x++)
                 {
                     PixelData.R8G8B8A8 pixel = image.PixelBuffer[0].GetPixel<PixelData.R8G8B8A8>(x, y);
-                    heightData[x, y] = pixel.R/5f;
+                    heightData[x, y] = (pixel.R - 225f)/5f;
                 }
             }
 
