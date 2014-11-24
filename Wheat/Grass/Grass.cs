@@ -22,6 +22,9 @@ namespace Wheat.Grass
         private VertexInputLayout vertexInputLayout;
         private VertexPositionNormalTexture[] vertices;
 
+        private Texture2D heightMap;
+        private float[,] heightData;
+
         private readonly GameCore core;
 
         #endregion
@@ -84,7 +87,8 @@ namespace Wheat.Grass
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
-            
+            this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
+            this.LoadHeightData(this.heightMap);
             this.GenerateRoots();
         }
 
@@ -141,6 +145,7 @@ namespace Wheat.Grass
         /// <summary>
         /// Generates the roots.
         /// </summary>
+        
         private void GenerateRoots()
         {
             // Initialize parameters
@@ -172,6 +177,7 @@ namespace Wheat.Grass
                 startPosition.Z += rootsPerRow * 0.4f;
             }
 
+
             this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.vertices);
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
         }
@@ -189,7 +195,16 @@ namespace Wheat.Grass
                     float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y);
 
                     randomizedDistance = (float)rnd.NextDouble(0, maxDistance);
-                    var currentPosition = new Vector3(startPosition.X + (randomizedDistance), startPosition.Y, startPosition.Z + randomizedZOffset);
+
+                    float maxPositionX = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch * this.NumberOfPatchRows * 0.5f;
+                    float maxPositionZ = this.NumberOfPatchRows * this.NumberOfRowsInPatch * this.DistanceSpaceZ.Y;
+
+                    
+                    int indexX = (int)((startPosition.X + randomizedDistance));
+                    int indexZ = (int)((startPosition.Z + randomizedZOffset ));
+
+
+                    var currentPosition = new Vector3(startPosition.X + (randomizedDistance), heightData[indexX, indexZ], startPosition.Z + randomizedZOffset);
                     this.vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
                     currentVertex++;
                 }
@@ -199,6 +214,26 @@ namespace Wheat.Grass
             }
 
             return currentVertex;
+        }
+
+        private void LoadHeightData(Texture2D heightMap)
+        {
+            int width = heightMap.Width;
+            int height = heightMap.Height;
+
+            Image image = heightMap.GetDataAsImage();
+            heightData = new float[width, height];
+
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    PixelData.R8G8B8A8 pixel = image.PixelBuffer[0].GetPixel<PixelData.R8G8B8A8>(x, y);
+                    heightData[x, y] = pixel.R/5f;
+                }
+            }
+
         }
 
         #endregion

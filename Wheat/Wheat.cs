@@ -57,10 +57,10 @@ namespace Wheat
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 3840,
-                PreferredBackBufferHeight = 2400,
+                PreferredBackBufferWidth = 1120,
+                PreferredBackBufferHeight = 630,
                 PreferMultiSampling = true,
-                IsFullScreen = true,
+                IsFullScreen = false,
                 SynchronizeWithVerticalRetrace = false
             };
 
@@ -131,9 +131,11 @@ namespace Wheat
             }
 
             // Objects
-            // terrain.Draw(camera);
+           
             skyBox.Draw(camera);
+            terrain.Draw(camera);
             grass.Draw(gameTime, camera);
+           
 
             // Draw string (Mouse position and FPS)
             spriteBatch.Begin();
