@@ -234,11 +234,7 @@ namespace Wheat.Grass
                     float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y);
 
                     randomizedDistance = (float)rnd.NextDouble(0, maxDistance);
-
-                    float maxPositionX = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch * this.NumberOfPatchRows * 0.5f;
-                    float maxPositionZ = this.NumberOfPatchRows * this.NumberOfRowsInPatch * this.DistanceSpaceZ.Y;
-
-                    
+   
                     int indexX = (int)((startPosition.X + randomizedDistance));
                     int indexZ = (int)((startPosition.Z + randomizedZOffset ));
 
