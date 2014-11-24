@@ -29,8 +29,6 @@ namespace Wheat.Environment
         private Texture2D heightMap;
         private float[,] heightData;
 
-        private Model model;
-
 
         #endregion
 
@@ -87,8 +85,6 @@ namespace Wheat.Environment
                         Vector3.Up, uv);
                 }
             }
-
-
 
         }
 
@@ -169,20 +165,6 @@ public void Draw(Camera camera)
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetIndexBuffer(this.indexBuffer, true);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
-
-
-            Matrix world = new Matrix();
-            Matrix trans = new Matrix();
-            Matrix rot = new Matrix();
-            Matrix.Scaling(70, out world );
-            Matrix.Translation(70, 10, 70, out trans);
-            Matrix.RotationY(0, out rot);
-            
-
-            Matrix transfomrMatrix = rot * world*trans;
-
-//            model.Draw(this.core.GraphicsDevice, camera.View, camera.View, camera.Projection, this.effect);
- 
 
             foreach (EffectPass pass in this.effect.CurrentTechnique.Passes)
             {
