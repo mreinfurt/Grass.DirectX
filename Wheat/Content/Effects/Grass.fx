@@ -1,4 +1,5 @@
 ﻿Texture2D Texture;
+Texture2D AlphaTexture;
 sampler TextureSampler = sampler_state
 {
 	AddressU = WRAP;
@@ -97,11 +98,14 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
 	float randomRotation = random;
 
+	float cameraDistance = length(CameraPosition.xz - root.xz);
+
 	// Properties of the grass blade
 	float minHeight = 1.9;
-	float minWidth = 0.125;
+	float minWidth = 0.125 + (cameraDistance * 0.008);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
+
 
 	// Animation
 	float toTheLeft = sin(Time.x);
@@ -116,7 +120,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	/////////////////////////////////
 
 	const uint vertexCount = 12;
-	float3 levelOfDetail = { vertexDifference * 0.125, 1, vertexDifference * 0.25 };
+	float3 levelOfDetail = { vertexDifference * 0.0, 1, vertexDifference * 0.0 };
 	const float realVertexCount = (vertexCount - vertexDifference);
 	GEO_OUT v[vertexCount] = {
 		createGEO_OUT(), createGEO_OUT(), createGEO_OUT(), createGEO_OUT(),
@@ -178,7 +182,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 			// General
 			currentV -= VOffset;
 			currentNormalY += VOffset * 2;
-			levelOfDetail.x += 0.2;
+			levelOfDetail.r += VOffset;
 
 			// Height
 			currentHeightOffset -= VOffset;
@@ -203,7 +207,8 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
 	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
-	
+	float4 alphaColor = AlphaTexture.Sample(TextureSampler, input.TexCoord);
+
 	// Phong
 	float3 r = normalize(reflect(input.VertexToLight.xyz, input.Normal.xyz));
 	float shininess = 100;
@@ -214,12 +219,18 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	specularLight = saturate(pow(specularLight, shininess));
 	
 	float light = ambientLight + (diffuseLight * 2) + (specularLight * 0.5);
+	
 	float3 grassColorHSV = { 0.1 + (input.Random / 6), 0.67, 1 };
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
+
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
 	// Debugging: Show level of detail
-	//return float4(light * input.LevelOfDetail.xyz , 1);
+	if (alphaColor.g <= 0.95) {
+		alphaColor.g = 0;
+	}
+
+	return float4(light * input.LevelOfDetail.xyz , alphaColor.g);
 	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 

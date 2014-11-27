@@ -18,6 +18,7 @@ namespace Wheat.Grass
         #region Fields
 
         private readonly Texture2D texture;
+        private readonly Texture2D alphaTexture;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private VertexInputLayout vertexInputLayout;
@@ -26,9 +27,10 @@ namespace Wheat.Grass
         private Texture2D heightMap;
         private float[,] heightData;
 
-
         private BoundingFrustum boundingFrustum;
         private readonly GameCore core;
+
+        private const float TerranSize = 256;
 
         #endregion
 
@@ -90,6 +92,7 @@ namespace Wheat.Grass
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeDrawn");
+            this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
             this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
             this.LoadHeightData(this.heightMap);
             this.GenerateRoots();
@@ -119,6 +122,7 @@ namespace Wheat.Grass
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
             if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
+            if (this.effect.Parameters["AlphaTexture"] != null) this.effect.Parameters["AlphaTexture"].SetResource(this.alphaTexture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
@@ -131,7 +135,7 @@ namespace Wheat.Grass
             
             for (int i = 0; i < this.NumberOfPatches; i++)
             {
-                BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 3.0f);
+                BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 5.0f);
 
                 if (!this.boundingFrustum.Intersects(ref boundingSphere))
                 {
@@ -143,6 +147,7 @@ namespace Wheat.Grass
                     cameraPosition.Y = 0;
                     Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
                     float distance = difference.Length();
+                    int rootsToDraw = this.NumberOfRootsInPatch - (int) (distance*0.4f);
 
                     if (distance > (int)LevelOfDetail.Level4)
                     {
@@ -159,9 +164,17 @@ namespace Wheat.Grass
                     else
                     {
                         this.effect.Techniques["LevelOfDetail1"].Passes[0].Apply();
+                        rootsToDraw = this.NumberOfRootsInPatch;
                     }
 
-                    this.core.GraphicsDevice.Draw(PrimitiveType.PointList, this.NumberOfRootsInPatch, startRoot);
+                    if (rootsToDraw < 20)
+                    {
+                        rootsToDraw = 20;
+                    }
+
+                    //rootsToDraw = this.NumberOfRootsInPatch;
+
+                    this.core.GraphicsDevice.Draw(PrimitiveType.PointList, rootsToDraw, startRoot);
                     startRoot += this.NumberOfRootsInPatch;
                 }
             }
@@ -180,7 +193,7 @@ namespace Wheat.Grass
             // Initialize parameters
             this.NumberOfPatchRows = 50;
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
-            this.NumberOfRootsInPatch = 100;
+            this.NumberOfRootsInPatch = 150;
             this.NumberOfRowsInPatch = 10;
             this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
 
@@ -194,19 +207,20 @@ namespace Wheat.Grass
             Vector3 startPosition = new Vector3(0, 0, 0);
             int rootsPerRow = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch;
 
+            Vector3 patchSize = new Vector3(TerranSize / this.NumberOfPatchRows, 0, TerranSize / this.NumberOfPatchRows);
+
             // Generate grid of patches
             for (int x = 0; x < this.NumberOfPatchRows; x++)
             {
                 for (int y = 0; y < this.NumberOfPatchRows; y++)
                 {
-                    currentVertex = this.AddPatch(this.NumberOfRowsInPatch, rootsPerRow, startPosition, currentVertex, rnd);
-                    startPosition.X += rootsPerRow * 0.5f;
+                    currentVertex = this.AddPatch(startPosition, patchSize, currentVertex, rnd);
+                    startPosition.X += patchSize.X;
                 }
 
                 startPosition.X = 0;
-                startPosition.Z += rootsPerRow * 0.4f;
+                startPosition.Z += patchSize.Z;
             }
-
 
             this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.vertices);
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
@@ -221,36 +235,32 @@ namespace Wheat.Grass
         /// <param name="currentVertex">Index of the vertex</param>
         /// <param name="rnd">Random seed</param>
         /// <returns></returns>
-        private int AddPatch(int numberOfRoots, int rootsPerRow, Vector3 startPosition, int currentVertex, Random rnd)
+        private int AddPatch(Vector3 startPosition, Vector3 terrainSize, int currentVertex, Random rnd)
         {
-            double maxDistance = rootsPerRow * 0.5;
+            float randomizedXDistance = 0;
+            float randomizedZDistance = 0;
 
-            for (var i = 0; i < this.NumberOfRowsInPatch; i++)
+            for (var i = 0; i < this.NumberOfRootsInPatch; i++)
             {
-                float randomizedDistance;
-                for (var j = 0; j < rootsPerRow; j++)
-                {
-                    // The Z position should be a bit randomized too, but we have to remain in the grid
-                    float randomizedZOffset = (float)rnd.NextDouble(DistanceSpaceZ.X, DistanceSpaceZ.Y);
-
-                    randomizedDistance = (float)rnd.NextDouble(0, maxDistance);
+                // Generate random numbers within the patch size
+                randomizedZDistance = (float) rnd.NextDouble(0, terrainSize.Z);
+                randomizedXDistance = (float) rnd.NextDouble(0, terrainSize.X);
    
-                    int indexX = (int)((startPosition.X + randomizedDistance));
-                    int indexZ = (int)((startPosition.Z + randomizedZOffset ));
+                int indexX = (int)((startPosition.X + randomizedXDistance));
+                int indexZ = (int)((startPosition.Z + randomizedZDistance));
 
-
-                    var currentPosition = new Vector3(startPosition.X + (randomizedDistance), heightData[indexX, indexZ], startPosition.Z + randomizedZOffset);
-                    this.vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
-                    currentVertex++;
-                }
-
-                randomizedDistance = (float)rnd.NextDouble(this.DistanceSpaceX.X, this.DistanceSpaceX.Y);
-                startPosition.Z += randomizedDistance;
+                var currentPosition = new Vector3(startPosition.X + (randomizedXDistance), heightData[indexX, indexZ], startPosition.Z + randomizedZDistance);
+                this.vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));
+                currentVertex++;
             }
 
             return currentVertex;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="heightMap"></param>
         private void LoadHeightData(Texture2D heightMap)
         {
             int width = heightMap.Width;
@@ -258,7 +268,6 @@ namespace Wheat.Grass
 
             Image image = heightMap.GetDataAsImage();
             heightData = new float[width, height];
-
 
             for (int y = 0; y < height; y++)
             {

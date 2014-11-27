@@ -14,8 +14,8 @@ namespace Wheat.Core
     {
         Level1 = 0,
         Level2 = 30,
-        Level3 = 50,
-        Level4 = 70
+        Level3 = 40,
+        Level4 = 50
     }
 
     class GameCore
