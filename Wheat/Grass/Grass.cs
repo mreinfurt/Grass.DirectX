@@ -24,7 +24,7 @@ namespace Wheat.Grass
         private VertexInputLayout vertexInputLayout;
         private VertexPositionNormalTexture[] vertices;
 
-        private Texture2D heightMap;
+        private Texture2D terrainHeightMap;
         private float[,] heightData;
 
         private BoundingFrustum boundingFrustum;
@@ -35,12 +35,6 @@ namespace Wheat.Grass
         #endregion
 
         #region Properties
-
-        /// <summary>
-        /// The offset where the grid starts. 
-        /// Used so the roots are distributed fairly equal around the object space origin.
-        /// </summary>
-        public float StartPositionOffset { get; private set;  }
 
         /// <summary>
         /// The number of rows for x and y of the grid
@@ -67,18 +61,6 @@ namespace Wheat.Grass
         /// </summary>
         public int NumberOfRowsInPatch { get; private set; }
 
-        /// <summary>
-        /// Space for the random displacement (distance between roots) for the X axis.
-        /// X is minimum, Y is maximum.
-        /// </summary>
-        public Vector2 DistanceSpaceX { get; private set; }
-
-        /// <summary>
-        /// Space for the random displacement (distance between roots) for the Z axis.
-        /// X is minimum, Y is maximum.
-        /// </summary>
-        public Vector2 DistanceSpaceZ { get; private set; }
-
         #endregion
 
         #region Public Methods
@@ -93,9 +75,9 @@ namespace Wheat.Grass
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/abstractGrass");
             this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
-            this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
-            this.LoadHeightData(this.heightMap);
-            this.GenerateRoots();
+            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
+            this.LoadHeightData();
+            this.GenerateField();
         }
         
         /// <summary>
@@ -172,8 +154,6 @@ namespace Wheat.Grass
                         rootsToDraw = 20;
                     }
 
-                    //rootsToDraw = this.NumberOfRootsInPatch;
-
                     this.core.GraphicsDevice.Draw(PrimitiveType.PointList, rootsToDraw, startRoot);
                     startRoot += this.NumberOfRootsInPatch;
                 }
@@ -185,28 +165,23 @@ namespace Wheat.Grass
         #region Private Methods
 
         /// <summary>
-        /// Generates the roots.
+        /// Generates the complete grass field.
         /// </summary>
-        
-        private void GenerateRoots()
+        private void GenerateField(int numberOfPatchRows = 50, int numberOfRootsInPatch = 150, int numberOfRowsInPatch = 10)
         {
-            // Initialize parameters
-            this.NumberOfPatchRows = 50;
+            this.NumberOfPatchRows = numberOfPatchRows;
+            this.NumberOfRootsInPatch = numberOfRootsInPatch;
+            this.NumberOfRowsInPatch = numberOfRowsInPatch;
+
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
-            this.NumberOfRootsInPatch = 150;
-            this.NumberOfRowsInPatch = 10;
             this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
 
-            this.DistanceSpaceX = new Vector2(0.3f, 0.5f);
-            this.DistanceSpaceZ = new Vector2(0.3f, 0.5f);
             this.vertices = new VertexPositionNormalTexture[this.NumberOfRoots];
 
             Random rnd = new Random();
             int currentVertex = 0;
 
             Vector3 startPosition = new Vector3(0, 0, 0);
-            int rootsPerRow = this.NumberOfRootsInPatch / this.NumberOfRowsInPatch;
-
             Vector3 patchSize = new Vector3(TerranSize / this.NumberOfPatchRows, 0, TerranSize / this.NumberOfPatchRows);
 
             // Generate grid of patches
@@ -214,7 +189,7 @@ namespace Wheat.Grass
             {
                 for (int y = 0; y < this.NumberOfPatchRows; y++)
                 {
-                    currentVertex = this.AddPatch(startPosition, patchSize, currentVertex, rnd);
+                    currentVertex = this.GeneratePatch(startPosition, patchSize, currentVertex, rnd);
                     startPosition.X += patchSize.X;
                 }
 
@@ -229,22 +204,18 @@ namespace Wheat.Grass
         /// <summary>
         /// Generates all the roots for one patch.
         /// </summary>
-        /// <param name="numberOfRoots">Number of roots in total for this patch</param>
-        /// <param name="rootsPerRow">How many roots are in one row of the patch</param>
         /// <param name="startPosition">Start of the roots in object space</param>
+        /// <param name="patchSize">Size of the patch</param>
         /// <param name="currentVertex">Index of the vertex</param>
         /// <param name="rnd">Random seed</param>
         /// <returns></returns>
-        private int AddPatch(Vector3 startPosition, Vector3 terrainSize, int currentVertex, Random rnd)
+        private int GeneratePatch(Vector3 startPosition, Vector3 patchSize, int currentVertex, Random rnd)
         {
-            float randomizedXDistance = 0;
-            float randomizedZDistance = 0;
-
             for (var i = 0; i < this.NumberOfRootsInPatch; i++)
             {
                 // Generate random numbers within the patch size
-                randomizedZDistance = (float) rnd.NextDouble(0, terrainSize.Z);
-                randomizedXDistance = (float) rnd.NextDouble(0, terrainSize.X);
+                var randomizedZDistance = (float) rnd.NextDouble(0, patchSize.Z);
+                var randomizedXDistance = (float) rnd.NextDouble(0, patchSize.X);
    
                 int indexX = (int)((startPosition.X + randomizedXDistance));
                 int indexZ = (int)((startPosition.Z + randomizedZDistance));
@@ -261,12 +232,12 @@ namespace Wheat.Grass
         /// 
         /// </summary>
         /// <param name="heightMap"></param>
-        private void LoadHeightData(Texture2D heightMap)
+        private void LoadHeightData()
         {
-            int width = heightMap.Width;
-            int height = heightMap.Height;
+            int width = this.terrainHeightMap.Width;
+            int height = this.terrainHeightMap.Height;
 
-            Image image = heightMap.GetDataAsImage();
+            Image image = this.terrainHeightMap.GetDataAsImage();
             heightData = new float[width, height];
 
             for (int y = 0; y < height; y++)
@@ -277,7 +248,6 @@ namespace Wheat.Grass
                     heightData[x, y] = (pixel.R - 225f)/5f;
                 }
             }
-
         }
 
         #endregion
