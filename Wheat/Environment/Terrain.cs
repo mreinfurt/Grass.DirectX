@@ -46,7 +46,7 @@ namespace Wheat.Environment
             LoadHeightData(this.heightMap);
             SetUpVertices();
             SetUpIndices();
-            GenNormals();
+            GenerateNormals();
 
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
         }
@@ -120,7 +120,7 @@ namespace Wheat.Environment
 
         }
 
-        private void GenNormals()
+        private void GenerateNormals()
         {
             for (int i = 0; i < nIndices; i += 3)
             {
