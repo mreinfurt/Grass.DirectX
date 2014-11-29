@@ -42,7 +42,6 @@ struct PSINPUT {
 
 void VS_Shader(in VSINPUT input, out PSINPUT output)
 {
-	// Position
 	float4 worldPosition = mul(input.Position, World);
 	float4 viewPosition = mul(worldPosition, View);
 	output.Position = mul(viewPosition, Projection);
@@ -50,13 +49,12 @@ void VS_Shader(in VSINPUT input, out PSINPUT output)
 	output.VertexToLight = normalize(LightPosition - worldPosition.xyz);
 	output.VertexToCamera = normalize(CameraPosition - worldPosition.xyz);
 	output.Normal = input.Normal;
-	output.Color.rgb = input.Normal.rgb * 0.5 + 0.5;
+	output.Color = float4(input.Normal.rgb * 0.5 + 0.5, 1);
 }
 
 float4 PS_Shader(in PSINPUT input) : SV_TARGET
 {
 	float ambientLight = 0.1f;
-
 
 	float diffuseLight = saturate(dot(input.VertexToLight, input.Normal));
 	float3 textureColor = Texture.Sample(TextureSampler, frac(input.TexCoord * TileFactor)).rgb * diffuseLight;
@@ -66,7 +64,6 @@ float4 PS_Shader(in PSINPUT input) : SV_TARGET
 	specularLight = pow(specularLight, 100);
 
     float3 outputColor = ambientLight + textureColor  + float3(0.6, 0.2, 0) * specularLight ;
-	
 	return float4(outputColor * 0.4, 1);
 
 }

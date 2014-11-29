@@ -24,7 +24,7 @@ namespace Wheat.Grass
         private VertexInputLayout vertexInputLayout;
         private VertexPositionNormalTexture[] vertices;
 
-        private Texture2D terrainHeightMap;
+        private readonly Texture2D terrainHeightMap;
         private float[,] heightData;
 
         private BoundingFrustum boundingFrustum;
@@ -148,6 +148,8 @@ namespace Wheat.Grass
                     {
                         rootsToDraw = 20;
                     }
+
+                    rootsToDraw = this.NumberOfRootsInPatch;
 
                     this.core.GraphicsDevice.Draw(PrimitiveType.PointList, rootsToDraw, startRoot);
                     startRoot += this.NumberOfRootsInPatch;
