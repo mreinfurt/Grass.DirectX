@@ -74,5 +74,6 @@ technique Technique1
 	{
 		VertexShader = compile vs_4_0 VS_Shader();
 		PixelShader = compile ps_4_0 PS_Shader();
+		GeometryShader = 0;
 	}
 }

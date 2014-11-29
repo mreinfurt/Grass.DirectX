@@ -171,13 +171,8 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 		v[i].Position = float4(v[i].Position.x + root.x, v[i].Position.y + root.y, v[i].Position.z + root.z, 1);
 
 		// Then animate
-		// v[i].Position.x += toTheLeft * currentMovement * 0.75;
-
-		// xz += WindVec * WindCoEff
-		// y -= length(WindVec) * WindCoEff * 0.5
 		float3 windVec = { sin(Time.x), 0, 0 };
-		v[i].Position.x += windVec.x * windCoEff;
-		v[i].Position.z += windVec.z * windCoEff;
+		v[i].Position.xz += windVec.xz * windCoEff;
 		v[i].Position.y -= length(windVec) * windCoEff * 0.5;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
