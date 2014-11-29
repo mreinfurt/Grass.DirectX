@@ -102,10 +102,9 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 	// Properties of the grass blade
 	float minHeight = 1.9;
-	float minWidth = 0.125 + (cameraDistance * 0.008);
+	float minWidth = 0.125 + (cameraDistance * 0.001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
-
 
 	// Animation
 	float toTheLeft = sin(Time.x);
@@ -141,6 +140,9 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float currentVertexHeight = 0;
 	float currentMovement = 0;
 
+	// Wind
+	float windCoEff = 0;
+
 	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
 	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
 	// Using pow, we can adjust the curve so that we get lower values on the bottom and higher values on the top.
@@ -169,7 +171,14 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 		v[i].Position = float4(v[i].Position.x + root.x, v[i].Position.y + root.y, v[i].Position.z + root.z, 1);
 
 		// Then animate
-		v[i].Position.x += toTheLeft * currentMovement * 0.75;
+		// v[i].Position.x += toTheLeft * currentMovement * 0.75;
+
+		// xz += WindVec * WindCoEff
+		// y -= length(WindVec) * WindCoEff * 0.5
+		float3 windVec = { sin(Time.x), 0, 0 };
+		v[i].Position.x += windVec.x * windCoEff;
+		v[i].Position.z += windVec.z * windCoEff;
+		v[i].Position.y -= length(windVec) * windCoEff * 0.5;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
@@ -189,8 +198,9 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 			float currentHeight = sizeY - (currentHeightOffset * currentHeightOffset);
 			currentVertexHeight = currentHeight;
 
-			// Animation
+			// Wind
 			currentMovement = currentHeight;
+			windCoEff += VOffset;
 		}
 	}
 

@@ -56,11 +56,6 @@ namespace Wheat.Grass
         /// </summary>
         public int NumberOfRootsInPatch { get; private set; }
 
-        /// <summary>
-        /// Returns the number of rows in in one patch.
-        /// </summary>
-        public int NumberOfRowsInPatch { get; private set; }
-
         #endregion
 
         #region Public Methods
@@ -167,11 +162,10 @@ namespace Wheat.Grass
         /// <summary>
         /// Generates the complete grass field.
         /// </summary>
-        private void GenerateField(int numberOfPatchRows = 50, int numberOfRootsInPatch = 150, int numberOfRowsInPatch = 10)
+        private void GenerateField(int numberOfPatchRows = 50, int numberOfRootsInPatch = 100)
         {
             this.NumberOfPatchRows = numberOfPatchRows;
             this.NumberOfRootsInPatch = numberOfRootsInPatch;
-            this.NumberOfRowsInPatch = numberOfRowsInPatch;
 
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
             this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
@@ -229,9 +223,8 @@ namespace Wheat.Grass
         }
 
         /// <summary>
-        /// 
+        /// Loads the height data from the given height map which is used to displace the grass' y position.
         /// </summary>
-        /// <param name="heightMap"></param>
         private void LoadHeightData()
         {
             int width = this.terrainHeightMap.Width;
