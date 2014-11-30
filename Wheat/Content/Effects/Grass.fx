@@ -172,11 +172,13 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Wind
 		float2 windVec = WindVector;
+		windVec.x += sin(Time.x + root.x / 10);
+		//windVec.y += cos(Time.x + root.z / 2.5);
 		windVec *= lerp(0.7, 1.0, 1.0 - random);
 
 		// Oscillate wind
-		float sinSkewCoeff = 0;
-		float oscillationStrength = 5.0f;
+		float sinSkewCoeff = random;
+		float oscillationStrength = 4.0f;
 		float lerpCoeff = (sin(oscillationStrength * Time.x + sinSkewCoeff) + 1.0) / 2;
 		float2 leftWindBound = windVec * (1.0 - kOscillateDelta);
 		float2 rightWindBound = windVec * (1.0 + kOscillateDelta);
