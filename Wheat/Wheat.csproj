@@ -159,6 +159,12 @@
     <ToolkitTexture Include="Content\Textures\heightMap1024.png" />
     <ToolkitTexture Include="Content\Textures\heightMap512.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grass2_alpha.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grass2.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\SharpDX.2.6.2\build\SharpDX.targets" Condition="Exists('packages\SharpDX.2.6.2\build\SharpDX.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
