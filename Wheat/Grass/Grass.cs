@@ -71,7 +71,7 @@ namespace Wheat.Grass
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/abstractWheat");
             this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
-            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap1024");
+            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap512");
             this.LoadHeightData();
             this.TerranSize = this.terrainHeightMap.Width;
             this.GenerateField();

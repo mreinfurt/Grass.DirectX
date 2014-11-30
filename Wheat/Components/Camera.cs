@@ -46,7 +46,7 @@ namespace Wheat.Components
             this.mouse = mouse;
 
             // Create default camera position
-            this.Position = new Vector3(512, 0, 512);
+            this.Position = new Vector3(256, 0, 256);
             this.World = Matrix.Identity;
 
             // Calculates the world and the view based on the model size

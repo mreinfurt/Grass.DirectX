@@ -39,7 +39,7 @@ namespace Wheat.Environment
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Terrain");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grass");
-            this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap1024");
+            this.heightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap512");
 
             nIndices = (this.heightMap.Width - 1) * (this.heightMap.Height - 1) * 6;
 
