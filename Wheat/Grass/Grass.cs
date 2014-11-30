@@ -178,7 +178,7 @@ namespace Wheat.Grass
         /// <summary>
         /// Generates the complete grass field.
         /// </summary>
-        private void GenerateField(int numberOfPatchRows = 50, int numberOfRootsInPatch = 100)
+        private void GenerateField(int numberOfPatchRows = 50, int numberOfRootsInPatch = 70)
         {
             this.NumberOfPatchRows = numberOfPatchRows;
             this.NumberOfRootsInPatch = numberOfRootsInPatch;
