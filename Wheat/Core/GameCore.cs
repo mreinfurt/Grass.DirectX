@@ -13,9 +13,9 @@ namespace Wheat.Core
     public enum LevelOfDetail
     {
         Level1 = 0,
-        Level2 = 30,
-        Level3 = 40,
-        Level4 = 50
+        Level2 = 50,
+        Level3 = 60,
+        Level4 = 70
     }
 
     class GameCore

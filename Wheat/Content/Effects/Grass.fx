@@ -37,10 +37,13 @@ float3 LightPosition;
 float3 CameraPosition;
 
 float2 Time;
+float2 WindVector;
 
 // Our constants
-static const float halfPi = 1.5707;
-static const float quarterPi = 0.7853;
+static const float kHalfPi = 1.5707;
+static const float kQuarterPi = 0.7853;
+static const float kOscillateDelta = 0.35;
+static const float kWindCoeff = 87.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 struct VSINPUT
@@ -89,13 +92,12 @@ void VS_Shader(in VSINPUT input, out GEO_IN output)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-[maxvertexcount(40)]
 void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleStream<GEO_OUT> output)
 {
 	float4 root = points[0].Position;
 
 	// Generate a random number between 0.0 to 1.0 by using the root position (which is randomized by the CPU)
-	float random = sin(halfPi * frac(root.x) + halfPi * frac(root.z));
+	float random = sin(kHalfPi * frac(root.x) + kHalfPi * frac(root.z));
 	float randomRotation = random;
 
 	float cameraDistance = length(CameraPosition.xz - root.xz);
@@ -135,10 +137,8 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float currentV = 1;
 	float VOffset = 1 / ((realVertexCount / 2) - 1);
 	float currentNormalY = 0;
-	float currentMovementMultiplier = sqrt(sizeY);
-	float currentHeightOffset = currentMovementMultiplier;
+	float currentHeightOffset = sqrt(sizeY);
 	float currentVertexHeight = 0;
-	float currentMovement = 0;
 
 	// Wind
 	float windCoEff = 0;
@@ -170,12 +170,32 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 		v[i].Position = float4(mul(v[i].Position.xyz, rotationMatrix), 1);
 		v[i].Position = float4(v[i].Position.x + root.x, v[i].Position.y + root.y, v[i].Position.z + root.z, 1);
 
-		// Then animate
-		float3 windVec = { sin(Time.x), 0, 0 };
-		v[i].Position.xz += windVec.xz * windCoEff;
-		v[i].Position.y -= length(windVec) * windCoEff * 0.5;
+		// Wind
+		float2 windVec = WindVector;
+		windVec *= lerp(0.7, 1.0, 1.0 - random);
+
+		// Oscillate wind
+		float sinSkewCoeff = 0;
+		float oscillationStrength = 5.0f;
+		float lerpCoeff = (sin(oscillationStrength * Time.x + sinSkewCoeff) + 1.0) / 2;
+		float2 leftWindBound = windVec * (1.0 - kOscillateDelta);
+		float2 rightWindBound = windVec * (1.0 + kOscillateDelta);
+		windVec = lerp(leftWindBound, rightWindBound, lerpCoeff);
+
+		// Randomize wind by adding a random wind vector
+		float randAngle = lerp(-3.14, 3.14, random);
+		float randMagnitude = lerp(0, 1.0, random);
+		float2 randWindDir = float2(sin(randAngle), cos(randAngle));
+		windVec += randWindDir * randMagnitude;
+
+		float windForce = length(windVec);
+
+		// Calculate final vertex position based on wind
+		v[i].Position.xz += windVec.xy * windCoEff;
+		v[i].Position.y -= windForce * windCoEff * 0.5;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
+		// Calculate output
 		v[i].Position = mul(mul(mul(v[i].Position, World), View), Projection);
 		v[i].VertexToLight = normalize(LightPosition - positionWS[i].xyz);
 		v[i].VertexToCamera = normalize(CameraPosition - positionWS[i].xyz);
@@ -194,8 +214,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 			currentVertexHeight = currentHeight;
 
 			// Wind
-			currentMovement = currentHeight;
-			windCoEff += VOffset;
+			windCoEff += VOffset; // TODO: Check these values
 		}
 	}
 
@@ -235,7 +254,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 		alphaColor.g = 0;
 	}
 
-	return float4(light * textureColor.rgb, alphaColor.g);
+	return float4(light * textureColor.rgb * grassColorRGB, alphaColor.g);
 	//return float4(light * input.LevelOfDetail.xyz , alphaColor.g);
 	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }

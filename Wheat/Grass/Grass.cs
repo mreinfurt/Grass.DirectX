@@ -31,6 +31,7 @@ namespace Wheat.Grass
         private readonly GameCore core;
 
         private const float TerranSize = 256;
+        private Wind[,] windField;
 
         #endregion
 
@@ -78,7 +79,7 @@ namespace Wheat.Grass
         /// <summary>
         /// 
         /// </summary>
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             if (this.core.KeyboardState.IsKeyPressed(Keys.F5))
             {
@@ -86,6 +87,7 @@ namespace Wheat.Grass
             }
 
             this.boundingFrustum = new BoundingFrustum(this.core.Camera.View * this.core.Camera.Projection);
+            this.UpdateWind(gameTime);
         }
 
         /// <summary>
@@ -98,18 +100,17 @@ namespace Wheat.Grass
             this.effect.Parameters["World"].SetValue(Matrix.Identity);
             this.effect.Parameters["View"].SetValue(camera.View);
             this.effect.Parameters["Projection"].SetValue(camera.Projection);
-            if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
-            if (this.effect.Parameters["AlphaTexture"] != null) this.effect.Parameters["AlphaTexture"].SetResource(this.alphaTexture);
             this.effect.Parameters["Time"].SetValue(new Vector2((float)gameTime.TotalGameTime.TotalMilliseconds / 1000, gameTime.ElapsedGameTime.Milliseconds));
             this.effect.Parameters["LightPosition"].SetValue(this.core.ShadowCamera.Position);
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
+            if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
+            if (this.effect.Parameters["AlphaTexture"] != null) this.effect.Parameters["AlphaTexture"].SetResource(this.alphaTexture);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
 
             // Draw patches
             int startRoot = 0;
-            
             for (int i = 0; i < this.NumberOfPatches; i++)
             {
                 BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 5.0f);
@@ -120,11 +121,21 @@ namespace Wheat.Grass
                 }
                 else
                 {
+                    // Wind
+                    int patchX = (i / this.NumberOfPatchRows);
+                    int patchY = (i % this.NumberOfPatchRows);
+
+                    var thisWind = this.windField[patchX, patchY];
+                    this.effect.Parameters["WindVector"].SetValue(thisWind.Velocity);
+
+                    // Level of detail
                     Vector3 cameraPosition = this.core.Camera.Position;
                     cameraPosition.Y = 0;
                     Vector3 difference = cameraPosition - this.vertices[startRoot].Position;
                     float distance = difference.Length();
-                    int rootsToDraw = this.NumberOfRootsInPatch - (int) (distance*0.4f);
+                    int rootsToDraw = this.NumberOfRootsInPatch - (int) (distance * 0.4f);
+
+                    #region Level of Detail
 
                     if (distance > (int)LevelOfDetail.Level4)
                     {
@@ -150,6 +161,8 @@ namespace Wheat.Grass
                     }
 
                     rootsToDraw = this.NumberOfRootsInPatch;
+
+                    #endregion
 
                     this.core.GraphicsDevice.Draw(PrimitiveType.PointList, rootsToDraw, startRoot);
                     startRoot += this.NumberOfRootsInPatch;
@@ -195,6 +208,8 @@ namespace Wheat.Grass
 
             this.vertexBuffer = Buffer.Vertex.New(this.core.GraphicsDevice, this.vertices);
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
+
+            this.InitializeWind();
         }
 
         /// <summary>
@@ -241,6 +256,46 @@ namespace Wheat.Grass
                 {
                     PixelData.R8G8B8A8 pixel = image.PixelBuffer[0].GetPixel<PixelData.R8G8B8A8>(x, y);
                     heightData[x, y] = (pixel.R - 225f)/5f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Initializes the wind field
+        /// </summary>
+        private void InitializeWind()
+        {
+            this.windField = new Wind[this.NumberOfPatchRows, this.NumberOfPatchRows];
+
+            for (int x = 0; x < this.NumberOfPatchRows; x++)
+            {
+                for (int y = 0; y < this.NumberOfPatchRows; y++)
+                {
+                    this.windField[x, y] = new Wind(Vector2.Zero, new Vector2((float)x / this.NumberOfPatchRows + 0.1f, (float)y / this.NumberOfPatchRows));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the wind field
+        /// </summary>
+        private void UpdateWind(GameTime gameTime)
+        {
+            for (int x = 0; x < this.NumberOfPatchRows; x++)
+            {
+                for (int y = 0; y < this.NumberOfPatchRows; y++)
+                {
+                    Wind wind = this.windField[x, y];
+                    wind.Acceleration.Saturate();
+                    wind.Velocity.Saturate();
+
+                    // Calculate new velocity
+                    wind.Velocity = wind.Velocity + (wind.Acceleration * (float) gameTime.ElapsedGameTime.TotalMilliseconds);
+
+                    // TODO: Dampen the acceleration vector
+                    //wind.Acceleration = new Vector2(wind.Acceleration.X - (float) gameTime.ElapsedGameTime.TotalSeconds / 1000.0f, wind.Acceleration.Y - (float) gameTime.ElapsedGameTime.TotalSeconds / 1000.0f);
+
+                    // TODO: Diffuse the velocity by using surrounding vectors
                 }
             }
         }
