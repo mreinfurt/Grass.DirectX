@@ -12,7 +12,7 @@ namespace Wheat.Components
         #region Fields
 
         // Camera Movement
-        const float RotationSpeed = 0.15f;
+        const float RotationSpeed = 0.05f;
         const float MovementSpeed = 10.0f;
 
         float horizontalRotation = MathUtil.PiOverTwo;
@@ -46,7 +46,7 @@ namespace Wheat.Components
             this.mouse = mouse;
 
             // Create default camera position
-            this.Position = new Vector3(128, 0, 128);
+            this.Position = new Vector3(512, 0, 512);
             this.World = Matrix.Identity;
 
             // Calculates the world and the view based on the model size

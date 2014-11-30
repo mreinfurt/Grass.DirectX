@@ -30,7 +30,7 @@ namespace Wheat.Grass
         private BoundingFrustum boundingFrustum;
         private readonly GameCore core;
 
-        private const float TerranSize = 256;
+        private float TerranSize = 1024;
         private Wind[,] windField;
 
         #endregion
@@ -71,8 +71,9 @@ namespace Wheat.Grass
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
             this.texture = this.core.ContentManager.Load<Texture2D>("Textures/abstractWheat");
             this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
-            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap");
+            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap1024");
             this.LoadHeightData();
+            this.TerranSize = this.terrainHeightMap.Width;
             this.GenerateField();
         }
         
@@ -113,7 +114,7 @@ namespace Wheat.Grass
             int startRoot = 0;
             for (int i = 0; i < this.NumberOfPatches; i++)
             {
-                BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 5.0f);
+                BoundingSphere boundingSphere = new BoundingSphere(this.vertices[startRoot + this.NumberOfRootsInPatch / 2].Position, 7.0f);
 
                 if (!this.boundingFrustum.Intersects(ref boundingSphere))
                 {
@@ -181,6 +182,19 @@ namespace Wheat.Grass
         {
             this.NumberOfPatchRows = numberOfPatchRows;
             this.NumberOfRootsInPatch = numberOfRootsInPatch;
+
+            if (this.TerranSize > 1000)
+            {
+                this.NumberOfPatchRows = 150;
+            }
+            else if (this.TerranSize > 500)
+            {
+                this.NumberOfPatchRows = 100;
+            }
+            else
+            {
+                this.NumberOfPatchRows = 50;
+            }
 
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;
             this.NumberOfRoots = this.NumberOfPatches * this.NumberOfRootsInPatch;
