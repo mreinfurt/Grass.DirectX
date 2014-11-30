@@ -172,8 +172,8 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Wind
 		float2 windVec = WindVector;
-		windVec.x += (sin(Time.x + root.x / 50) + sin((Time.x + root.x / 75) + 50)) * 0.5;
-		windVec.y += cos(Time.x + root.z / 100);
+		windVec.x += (sin(Time.x + root.x / 25) + sin((Time.x + root.x / 15) + 50)) * 0.5;
+		windVec.y += cos(Time.x + root.z / 80);
 		windVec *= lerp(0.7, 1.0, 1.0 - random);
 
 		// Oscillate wind
