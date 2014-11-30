@@ -103,7 +103,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float cameraDistance = length(CameraPosition.xz - root.xz);
 
 	// Properties of the grass blade
-	float minHeight = 2.3;
+	float minHeight = 4.9;
 	float minWidth = 0.1 + (cameraDistance * 0.001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
@@ -172,13 +172,13 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Wind
 		float2 windVec = WindVector;
-		windVec.x += sin(Time.x + root.x / 10);
-		//windVec.y += cos(Time.x + root.z / 2.5);
+		windVec.x += (sin(Time.x + root.x / 50) + sin((Time.x + root.x / 75) + 50)) * 0.5;
+		windVec.y += cos(Time.x + root.z / 100);
 		windVec *= lerp(0.7, 1.0, 1.0 - random);
 
 		// Oscillate wind
 		float sinSkewCoeff = random;
-		float oscillationStrength = 4.0f;
+		float oscillationStrength = 5.0f;
 		float lerpCoeff = (sin(oscillationStrength * Time.x + sinSkewCoeff) + 1.0) / 2;
 		float2 leftWindBound = windVec * (1.0 - kOscillateDelta);
 		float2 rightWindBound = windVec * (1.0 + kOscillateDelta);
@@ -194,7 +194,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Calculate final vertex position based on wind
 		v[i].Position.xz += windVec.xy * windCoEff;
-		v[i].Position.y -= windForce * windCoEff * 0.5;
+		v[i].Position.y -= windForce * windCoEff * 0.9;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
 		// Calculate output
@@ -256,10 +256,10 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 		alphaColor.g = 0;
 	}
 
-	//return float4(light * textureColor.rgb, alphaColor.g);
-	return float4(light * textureColor.rgb * grassColorRGB, alphaColor.g);
+	return float4(light * textureColor.rgb * 0.6, alphaColor.g);
+	//return float4(light * textureColor.rgb * grassColorRGB * 0.6, alphaColor.g);
 	//return float4(light * input.LevelOfDetail.xyz , alphaColor.g);
-	return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
+	//return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
 

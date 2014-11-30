@@ -22,7 +22,7 @@ float DiffuseIntensity;
 float3 LightPosition;
 float3 CameraPosition;
 
-float TileFactor = 5.0f;
+float TileFactor = 40.0f;
 
 struct VSINPUT
 {

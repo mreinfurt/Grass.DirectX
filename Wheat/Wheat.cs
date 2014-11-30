@@ -2,7 +2,6 @@
 
 using SharpDX;
 using SharpDX.Direct3D11;
-
 using Wheat.Components;
 using Wheat.Core;
 using Wheat.Environment;
@@ -141,7 +140,7 @@ namespace Wheat
             spriteBatch.Begin();
             var text = new StringBuilder("");
             float frameRate = 1 / (float)gameTime.ElapsedGameTime.TotalSeconds;
-            text.AppendFormat("Mouse ({0},{1}); FPS: {2}", mouseState.X, mouseState.Y, frameRate).AppendLine();
+            text.AppendFormat("FPS: {0}", frameRate).AppendLine();
             spriteBatch.DrawString(arial16Font, text.ToString(), new Vector2(16, 16), Color.White);
             spriteBatch.End();
 
