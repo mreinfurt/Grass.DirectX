@@ -272,7 +272,7 @@ namespace Wheat.Grass
                 for (int y = 0; y < this.NumberOfPatchRows; y++)
                 {
                     this.windField[x, y] = new Wind(Vector2.Zero, new Vector2((float)x / this.NumberOfPatchRows + 0.1f, (float)y / this.NumberOfPatchRows));
-                    this.windField[x, y] = new Wind(Vector2.Zero, new Vector2(1, 0));
+                    this.windField[x, y] = new Wind(Vector2.Zero, new Vector2(0, 0));
 
                 }
             }

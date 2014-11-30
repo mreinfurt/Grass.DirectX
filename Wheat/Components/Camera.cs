@@ -12,8 +12,8 @@ namespace Wheat.Components
         #region Fields
 
         // Camera Movement
-        const float RotationSpeed = 0.35f;
-        const float MovementSpeed = 30.0f;
+        const float RotationSpeed = 0.15f;
+        const float MovementSpeed = 10.0f;
 
         float horizontalRotation = MathUtil.PiOverTwo;
         float verticalRotation = -MathUtil.Pi / 10.0f;
