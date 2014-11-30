@@ -46,12 +46,12 @@ namespace Wheat.Components
             this.mouse = mouse;
 
             // Create default camera position
-            this.Position = new Vector3(0, 10, 10);
+            this.Position = new Vector3(128, 0, 128);
             this.World = Matrix.Identity;
 
             // Calculates the world and the view based on the model size
             this.View = Matrix.LookAtRH(this.Position, new Vector3(0, 0, 0), Vector3.UnitY);
-            this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.01f, 1000.0f);
+            this.Projection = Matrix.PerspectiveFovRH(0.9f, (float)graphicsDevice.BackBuffer.Width / graphicsDevice.BackBuffer.Height, 0.1f, 10000.0f);
 
             mouse.SetPosition(new Vector2(0.5f, 0.5f));
             originalMouseState = mouse.GetState();

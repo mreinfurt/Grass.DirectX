@@ -101,7 +101,7 @@ namespace Wheat.Environment
 
         public void Draw(Camera camera)
         {
-            const float size = 300.0f;
+            const float size = 1000.0f;
 
             this.effect.Parameters["World"].SetValue(Matrix.Scaling(size, size, size));
             this.effect.Parameters["View"].SetValue(camera.View);

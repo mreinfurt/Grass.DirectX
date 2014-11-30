@@ -103,8 +103,8 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float cameraDistance = length(CameraPosition.xz - root.xz);
 
 	// Properties of the grass blade
-	float minHeight = 1.9;
-	float minWidth = 0.125 + (cameraDistance * 0.001);
+	float minHeight = 2.3;
+	float minWidth = 0.1 + (cameraDistance * 0.001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
 
