@@ -28,7 +28,7 @@
 
 \begin{abstract}
 
-The grass is the best.
+Grass has always been an important factor when it comes to simulate realistic nature scenes. However, due to the sheer amount of individual grass blades and the need to animate them, it is very difficult to implement in real time applications. This paper tries to give an overview of the existing techniques that are used to render grass. It then goes in-depth about using the geometry shader to generate and render grass effectively in real time. Basics like grass vertex generation are explained, as well as animation using a simulated wind field. To conclude, the technique is being benchmarked as well as being looked at in terms of shortcomings and further improvements.
 
 \end{abstract}
 
@@ -62,7 +62,7 @@ make up the grass grid - which is the grass field.
 
  \begin{figure}[ht]
    \centering
-   \includegraphics[width=2.5in]{images/grass_grid}
+   \includegraphics[width=3.5in]{images/grass_grid}
    \caption{Grass grid visualized}
  \end{figure}
 
@@ -139,13 +139,17 @@ A very prevalent problem while implementing this approach was flickering. Due to
 
 The scene looks very artificial if the grass is laid out with exact distances, when each grass blade has the same tint, height or width. However, it is fairly difficult to generate random numbers on the GPU, which is why we have to use certain tricks to have fairly random grass properties. When laying out the root points, we can generate random positions using the CPU.
 
+ \begin{figure}[ht]
+   \centering
+   \includegraphics[width=3.5in]{images/no_randomness}
+   \caption{Scene without randomness: Seems artificial}
+ \end{figure}
+
 Since these root points are given to the geometry shader, and we kow that these positions are random, we can generate a random number between -1 and 1 using the following equation.
 
 \begin{equation}
 r = sin(\frac{\pi}2 * frac(root.x) + \frac{\pi}2 * frac(root.z))
 \end{equation}
-
-[INSERT non-randomized and randomized picture]
 
 Using this randomized value, several grass properties can be influenced. Some of those are: width, height, color tint, rotation, wind effect.
 
@@ -225,7 +229,7 @@ We kept randomized values to a minimum to avoid variations in the scene and to h
 
  \begin{figure}[ht]
    \centering
-   \includegraphics[width=3.5in]{images/benchmark1}
+   \includegraphics[width=3.6in]{images/benchmark1}
    \caption{Benchmark on System 1}
  \end{figure}    
 
