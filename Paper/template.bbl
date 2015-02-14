@@ -13,9 +13,24 @@
 \newblock {\em Realistic Real-Time Grass Rendering}.
 \newblock Master's thesis, University of California.
 
+\bibitem[\protect\citename{Microsoft }a]{Rasterizer}
+{\sc Microsoft}.
+\newblock Rasterizer stage.
+\newblock
+  https://msdn.microsoft.com/en-us/library/windows/desktop/bb205125%28v=vs.85%29.aspx,
+  05.02.2015.
+
+\bibitem[\protect\citename{Microsoft }b]{TerrainUVs}
+{\sc Microsoft}.
+\newblock Texture coordinates.
+\newblock
+  https://msdn.microsoft.com/en-us/library/windows/desktop/bb206245(v=vs.85).aspx,
+  01.02.2015.
+
 \bibitem[\protect\citename{Nvidia }]{NvidiaTurfEffects}
 {\sc Nvidia}.
 \newblock Nvidia turf effects.
+\newblock https://developer.nvidia.com/turfeffects, 02.02.2015.
 
 \bibitem[\protect\citename{thatgamecompany }]{Flower}
 {\sc thatgamecompany}.
@@ -26,5 +41,17 @@
 \newblock 2013.
 \newblock {\em Procedural Rendering of Geometry-Based Grass in Real-Time}.
 \newblock Master's thesis, Blekinge Institute of Technology.
+
+\bibitem[\protect\citename{Uniqsoft }]{TerrainNormals}
+{\sc Uniqsoft}.
+\newblock Terrain generation.
+\newblock http://www.uniqsoft.co.uk/directx/html/tut5/fig6.jpg, 23.01.2015.
+
+\bibitem[\protect\citename{University }]{TerrainGrid}
+{\sc University, R.}
+\newblock Trianglegrid.
+\newblock
+  http://goanna.cs.rmit.edu.au/~gl/teaching/cosc1226/tutorials/triangles_grid.png,
+  07.02.2015.
 
 \end{thebibliography}
