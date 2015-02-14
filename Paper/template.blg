@@ -3,44 +3,49 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: template.aux
 The style file: acmsiggraph.bst
 Database file #1: template.bib
-You've used 2 entries,
+Warning--entry type for "NvidiaTurfEffects" isn't style-file defined
+--line 23 of file template.bib
+Warning--entry type for "Flower" isn't style-file defined
+--line 31 of file template.bib
+You've used 5 entries,
             2748 wiz_defined-function locations,
-            609 strings with 4676 characters,
-and the built_in function-call counts, 772 in all, are:
-= -- 78
-> -- 37
+            619 strings with 4816 characters,
+and the built_in function-call counts, 1331 in all, are:
+= -- 131
+> -- 45
 < -- 0
-+ -- 12
-- -- 13
-* -- 68
-:= -- 143
-add.period$ -- 8
-call.type$ -- 2
-change.case$ -- 13
-chr.to.int$ -- 2
-cite$ -- 2
-duplicate$ -- 24
-empty$ -- 49
-format.name$ -- 14
-if$ -- 147
++ -- 10
+- -- 15
+* -- 81
+:= -- 247
+add.period$ -- 16
+call.type$ -- 5
+change.case$ -- 22
+chr.to.int$ -- 5
+cite$ -- 5
+duplicate$ -- 58
+empty$ -- 106
+format.name$ -- 15
+if$ -- 260
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 1
-newline$ -- 15
-num.names$ -- 6
-pop$ -- 9
+missing$ -- 0
+newline$ -- 29
+num.names$ -- 15
+pop$ -- 29
 preamble$ -- 1
-purify$ -- 12
+purify$ -- 20
 quote$ -- 0
-skip$ -- 18
+skip$ -- 51
 stack$ -- 0
-substring$ -- 35
-swap$ -- 6
+substring$ -- 25
+swap$ -- 15
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 16
+type$ -- 40
 warning$ -- 0
-while$ -- 7
-width$ -- 3
-write$ -- 30
+while$ -- 15
+width$ -- 7
+write$ -- 62
+(There were 2 warnings)

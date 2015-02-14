@@ -1,16 +1,30 @@
-\begin{thebibliography}{\protect\citename{Park et~al\mbox{.} }2006}
+\begin{thebibliography}{\protect\citename{thatgamecompany }}
+
+\bibitem[\protect\citename{Boulanger }2005]{KevinBoulanger}
+{\sc Boulanger, K.}
+\newblock 2005.
+\newblock {\em Real-Time Realistic Rendering of Nature Scenes with Dynamic
+  Lighting}.
+\newblock Master's thesis, University of Rennes.
 
 \bibitem[\protect\citename{Lee }2010]{EddieLee}
 {\sc Lee, E.}
 \newblock 2010.
-\newblock {\em REALISTIC REAL-TIME GRASS RENDERING}.
+\newblock {\em Realistic Real-Time Grass Rendering}.
 \newblock Master's thesis, University of California.
 
-\bibitem[\protect\citename{Park et~al\mbox{.} }2006]{Park:2006:DSI}
-{\sc Park, S.~W., Linsen, L., Kreylos, O., Owens, J.~D., and Hamann, B.}
-\newblock 2006.
-\newblock Discrete sibson interpolation.
-\newblock {\em IEEE Transactions on Visualization and Computer Graphics 12}, 2
-  (Mar.\slash Apr.), 243--253.
+\bibitem[\protect\citename{Nvidia }]{NvidiaTurfEffects}
+{\sc Nvidia}.
+\newblock Nvidia turf effects.
+
+\bibitem[\protect\citename{thatgamecompany }]{Flower}
+{\sc thatgamecompany}.
+\newblock Flower.
+
+\bibitem[\protect\citename{Tillmann }2013]{Tillmann}
+{\sc Tillmann, M.~R.}
+\newblock 2013.
+\newblock {\em Procedural Rendering of Geometry-Based Grass in Real-Time}.
+\newblock Master's thesis, Blekinge Institute of Technology.
 
 \end{thebibliography}
