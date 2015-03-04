@@ -1,4 +1,4 @@
-COGR
+Grass - DX11
 ====
 Computer Graphics assignment for a masters course at the Hochschule Darmstadt. The goal is to implement realistic real time rendering of grass / wheat fields.
 
