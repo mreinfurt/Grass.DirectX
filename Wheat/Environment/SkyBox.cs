@@ -10,9 +10,9 @@ namespace Wheat.Environment
     {
         private GameCore core;
         //private Texture2D texture;
-        private TextureCube texture;
-        private Effect effect;
-        private VertexInputLayout vertexInputLayout;
+        private readonly TextureCube texture;
+        private readonly Effect effect;
+        private readonly VertexInputLayout vertexInputLayout;
 
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private Buffer indexBuffer;
@@ -48,7 +48,7 @@ namespace Wheat.Environment
 
             int[] cubeIndices = new int[36];
 
-            //bottom face
+            // Bottom face
             cubeIndices[0] = 0;
             cubeIndices[1] = 2;
             cubeIndices[2] = 3;
@@ -56,7 +56,7 @@ namespace Wheat.Environment
             cubeIndices[4] = 1;
             cubeIndices[5] = 2;
 
-            //top face
+            // Top face
             cubeIndices[6] = 4;
             cubeIndices[7] = 6;
             cubeIndices[8] = 5;
@@ -64,7 +64,7 @@ namespace Wheat.Environment
             cubeIndices[10] = 7;
             cubeIndices[11] = 6;
 
-            //front face
+            // Front face
             cubeIndices[12] = 5;
             cubeIndices[13] = 2;
             cubeIndices[14] = 1;
@@ -72,7 +72,7 @@ namespace Wheat.Environment
             cubeIndices[16] = 6;
             cubeIndices[17] = 2;
 
-            //back face
+            // Back face
             cubeIndices[18] = 0;
             cubeIndices[19] = 7;
             cubeIndices[20] = 4;
@@ -80,7 +80,7 @@ namespace Wheat.Environment
             cubeIndices[22] = 3;
             cubeIndices[23] = 7;
 
-            //left face
+            // Left face
             cubeIndices[24] = 0;
             cubeIndices[25] = 4;
             cubeIndices[26] = 1;
@@ -88,7 +88,7 @@ namespace Wheat.Environment
             cubeIndices[28] = 4;
             cubeIndices[29] = 5;
 
-            //right face
+            // Right face
             cubeIndices[30] = 2;
             cubeIndices[31] = 6;
             cubeIndices[32] = 3;

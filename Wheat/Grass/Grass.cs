@@ -30,7 +30,7 @@ namespace Wheat.Grass
         private BoundingFrustum boundingFrustum;
         private readonly GameCore core;
 
-        private float TerranSize = 1024;
+        private readonly float terranSize = 1024;
         private Wind[,] windField;
 
         #endregion
@@ -73,7 +73,7 @@ namespace Wheat.Grass
             this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
             this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap512");
             this.LoadHeightData();
-            this.TerranSize = this.terrainHeightMap.Width;
+            this.terranSize = this.terrainHeightMap.Width;
             this.GenerateField();
         }
         
@@ -183,11 +183,11 @@ namespace Wheat.Grass
             this.NumberOfPatchRows = numberOfPatchRows;
             this.NumberOfRootsInPatch = numberOfRootsInPatch;
 
-            if (this.TerranSize > 1000)
+            if (this.terranSize > 1000)
             {
                 this.NumberOfPatchRows = 150;
             }
-            else if (this.TerranSize > 500)
+            else if (this.terranSize > 500)
             {
                 this.NumberOfPatchRows = 95;
             }
@@ -205,7 +205,7 @@ namespace Wheat.Grass
             int currentVertex = 0;
 
             Vector3 startPosition = new Vector3(0, 0, 0);
-            Vector3 patchSize = new Vector3(TerranSize / this.NumberOfPatchRows, 0, TerranSize / this.NumberOfPatchRows);
+            Vector3 patchSize = new Vector3(terranSize / this.NumberOfPatchRows, 0, terranSize / this.NumberOfPatchRows);
 
             // Generate grid of patches
             for (int x = 0; x < this.NumberOfPatchRows; x++)
