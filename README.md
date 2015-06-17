@@ -1,6 +1,6 @@
 COGR
 ====
-Realistic grass simulation using the geometry shader to render millions of grass blades simulatenously.
+Realistic grass simulation using the geometry shader to render millions of grass blades simulatenously. This was created as part of a masters course on the Hochschule Darmstadt.
 
 ## Installation
 - Visual Studio 2013
