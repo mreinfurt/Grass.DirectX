@@ -251,15 +251,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
-	// Debugging: Show level of detail
-	if (alphaColor.g <= 0.95) {
-		alphaColor.g = 0;
-	}
-
-	//return float4(light * textureColor.rgb * 0.6, alphaColor.g);
 	return float4(light * textureColor.rgb * grassColorRGB * 0.6, alphaColor.g);
-	//return float4(light * input.LevelOfDetail.xyz , alphaColor.g);
-	//return float4((textureColor.rgb * grassColorRGB) * (light * lightColor), textureColor.a);
 }
 
 

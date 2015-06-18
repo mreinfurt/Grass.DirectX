@@ -56,10 +56,10 @@ namespace Wheat
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 3840,
-                PreferredBackBufferHeight = 2400,
+                PreferredBackBufferWidth = 1680,
+                PreferredBackBufferHeight = 1050,
                 PreferMultiSampling = true,
-                IsFullScreen = true,
+                IsFullScreen = false,
                 SynchronizeWithVerticalRetrace = false
             };
 
