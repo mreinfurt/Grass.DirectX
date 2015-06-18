@@ -1,9 +1,6 @@
 COGR
 ====
-Computer Graphics assignment for a masters course at the Hochschule Darmstadt. The goal is to implement realistic real time rendering of grass / wheat fields.
-
-## Project organization
-- [Planning / Next steps](https://github.com/mreinfurt/COGR/issues/15)
+Realistic grass simulation using the geometry shader to render millions of grass blades simultaneously. This was created as part of a masters course on the Hochschule Darmstadt.
 
 ## Installation
 - Visual Studio 2013
