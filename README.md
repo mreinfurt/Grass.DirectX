@@ -1,6 +1,7 @@
 COGR
 ====
 Realistic grass simulation using the geometry shader to render millions of grass blades simultaneously. This was created as part of a masters course on the Hochschule Darmstadt.
+![Render example](https://raw.githubusercontent.com/mreinfurt/Grass-DX11/master/Paper/images/final_result.png)
 
 ## Installation
 - Visual Studio 2013
@@ -14,7 +15,6 @@ Realistic grass simulation using the geometry shader to render millions of grass
 * [Grass your world](http://grassyourworld.blogspot.de/)
 
 ## Other Grass Resources
-* [Very Short Paper](http://stijndelaruelle.com/pdf/grass.pdf)
 * [Blog Article: Summary](http://users.csc.calpoly.edu/~zwood/teaching/csc471/finalprojw12/rsteiger/)
 * [GPU Gems](http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html)
 * [TU Wien: Instant Animated Grass](http://www.cg.tuwien.ac.at/research/publications/2007/Habel_2007_IAG/)
