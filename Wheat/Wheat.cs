@@ -60,7 +60,7 @@ namespace Wheat
                 PreferredBackBufferHeight = 1050,
                 PreferMultiSampling = true,
                 IsFullScreen = false,
-                SynchronizeWithVerticalRetrace = false
+                SynchronizeWithVerticalRetrace = false,
             };
 
             Content.RootDirectory = "Content";

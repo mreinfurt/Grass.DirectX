@@ -185,15 +185,15 @@ namespace Wheat.Grass
 
             if (this.terranSize > 1000)
             {
-                this.NumberOfPatchRows = 150;
+                this.NumberOfPatchRows = 160;
             }
             else if (this.terranSize > 500)
             {
-                this.NumberOfPatchRows = 95;
+                this.NumberOfPatchRows = 110;
             }
             else
             {
-                this.NumberOfPatchRows = 50;
+                this.NumberOfPatchRows = 75;
             }
 
             this.NumberOfPatches = this.NumberOfPatchRows * this.NumberOfPatchRows;

@@ -42,7 +42,7 @@ float2 WindVector;
 // Our constants
 static const float kHalfPi = 1.5707;
 static const float kQuarterPi = 0.7853;
-static const float kOscillateDelta = 0.35;
+static const float kOscillateDelta = 0.55;
 static const float kWindCoeff = 87.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +103,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	float cameraDistance = length(CameraPosition.xz - root.xz);
 
 	// Properties of the grass blade
-	float minHeight = 4.9;
+	float minHeight = 4.5;
 	float minWidth = 0.1 + (cameraDistance * 0.001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
@@ -178,7 +178,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Oscillate wind
 		float sinSkewCoeff = random;
-		float oscillationStrength = 5.0f;
+		float oscillationStrength = 2.5f;
 		float lerpCoeff = (sin(oscillationStrength * Time.x + sinSkewCoeff) + 1.0) / 2;
 		float2 leftWindBound = windVec * (1.0 - kOscillateDelta);
 		float2 rightWindBound = windVec * (1.0 + kOscillateDelta);
@@ -194,7 +194,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 		// Calculate final vertex position based on wind
 		v[i].Position.xz += windVec.xy * windCoEff;
-		v[i].Position.y -= windForce * windCoEff * 0.9;
+		v[i].Position.y -= windForce * windCoEff * 0.8;
 		positionWS[i] = mul(v[i].Position, World).xyz;
 
 		// Calculate output
@@ -244,12 +244,17 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float specularLight = saturate(dot(-input.VertexToCamera, r));
 	specularLight = saturate(pow(specularLight, shininess));
 	
-	float light = ambientLight + (diffuseLight * 2) + (specularLight * 0.5);
+	float light = ambientLight + (diffuseLight * 1.75) + (specularLight * 0.5);
 	
-	float3 grassColorHSV = { 0.1 + (input.Random / 6), 0.67, 1 };
+	float3 grassColorHSV = { 0.1 + (input.Random / 15), 0.67, 0.9 };
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 
 	float3 lightColor = float3(1.0, 0.8, 0.8);
+
+	// Debugging: Show level of detail
+	if (alphaColor.g <= 0.95) {
+		alphaColor.g = 0;
+	}
 
 	return float4(light * textureColor.rgb * grassColorRGB * 0.6, alphaColor.g);
 }
