@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <!-- Common Properties -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5E77FCE8-AF9F-496A-8C44-F6AFDE88DFA6}</ProjectGuid>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GrassRendering</RootNamespace>
+    <AssemblyName>GrassRendering</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <!-- Platform Dependent Properties -->
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <NuGetPackageImportStamp>0687dd6f</NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging">
+      <HintPath>packages\Ninject.Extensions.Logging.3.2.0.0\lib\net45-full\Ninject.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Extensions.Logging.Log4Net">
+      <HintPath>packages\Ninject.Extensions.Logging.Log4net.3.2.1.0\lib\net45-full\Ninject.Extensions.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Game, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Game.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Graphics, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Graphics.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Toolkit.Input, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.Toolkit.Input.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput, Version=2.6.2.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(SharpDXPackageBinDir)\SharpDX.XInput.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\Camera.cs" />
+    <Compile Include="Components\InputController.cs" />
+    <Compile Include="Components\ShadowCamera.cs" />
+    <Compile Include="Core\GameCore.cs" />
+    <Compile Include="Environment\Terrain.cs" />
+    <Compile Include="Grass\Grass.cs" />
+    <Compile Include="Environment\SkyBox.cs" />
+    <Compile Include="Grass\Wind.cs" />
+    <Compile Include="Grass_Rendering.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\skyBox.dds" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitFont Include="Content\Fonts\Arial16.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitFxc Include="Content\Effects\Terrain.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\planeGrass.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitFxc Include="Content\Effects\Grass.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grassBlade.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </ToolkitTexture>
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\heightMap.png" />
+    <ToolkitTexture Include="Content\Textures\grassBladeDrawn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\testTexture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grassBlade1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitFxc Include="Content\Effects\Sky.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\cubeStrip.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\abstractGrass.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grassBladeDrawnMipMaps.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grass.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grassAlphaLOD1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\abstractWheat.dds" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\heightMap1024.png" />
+    <ToolkitTexture Include="Content\Textures\heightMap512.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grass2_alpha.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ToolkitTexture Include="Content\Textures\grass2.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\SharpDX.2.6.2\build\SharpDX.targets" Condition="Exists('packages\SharpDX.2.6.2\build\SharpDX.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\SharpDX.2.6.2\build\SharpDX.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SharpDX.2.6.2\build\SharpDX.targets'))" />
+    <Error Condition="!Exists('packages\SharpDX.Toolkit.2.6.2\build\SharpDX.Toolkit.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SharpDX.Toolkit.2.6.2\build\SharpDX.Toolkit.targets'))" />
+  </Target>
+  <Import Project="packages\SharpDX.Toolkit.2.6.2\build\SharpDX.Toolkit.targets" Condition="Exists('packages\SharpDX.Toolkit.2.6.2\build\SharpDX.Toolkit.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
