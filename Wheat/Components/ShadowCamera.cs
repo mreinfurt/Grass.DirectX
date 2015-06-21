@@ -1,6 +1,6 @@
 ﻿using SharpDX;
 
-namespace Wheat.Components
+namespace GrassRendering.Components
 {
     // Use these namespaces here to override SharpDX.Direct3D11
     using SharpDX.Toolkit;

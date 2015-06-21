@@ -1,9 +1,9 @@
 ﻿using System;
 
-namespace Wheat
+namespace GrassRendering
 {
     /// <summary>
-    /// Simple Wheat application using SharpDX.Toolkit.
+    /// Simple GrassRenderingApplication application using SharpDX.Toolkit.
     /// </summary>
     class Program
     {
@@ -17,7 +17,7 @@ namespace Wheat
 #endif
         static void Main()
         {
-            using (var program = new Wheat())
+            using (var program = new GrassRenderingApplication())
                 program.Run();
         }
     }

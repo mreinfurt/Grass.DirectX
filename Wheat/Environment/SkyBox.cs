@@ -1,8 +1,8 @@
-﻿using SharpDX;
-using Wheat.Components;
-using Wheat.Core;
+﻿using GrassRendering.Components;
+using GrassRendering.Core;
+using SharpDX;
 
-namespace Wheat.Environment
+namespace GrassRendering.Environment
 {
     using SharpDX.Toolkit.Graphics;
 

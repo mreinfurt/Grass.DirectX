@@ -1,4 +1,4 @@
-﻿namespace Wheat.Components
+﻿namespace GrassRendering.Components
 {
     class InputController
     {

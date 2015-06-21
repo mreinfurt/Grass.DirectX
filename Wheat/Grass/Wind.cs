@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX;
 
-namespace Wheat.Grass
+namespace GrassRendering.Grass
 {
     class Wind
     {

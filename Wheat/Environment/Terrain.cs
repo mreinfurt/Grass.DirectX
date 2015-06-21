@@ -1,11 +1,11 @@
 ﻿using System.Runtime.CompilerServices;
+using GrassRendering.Components;
+using GrassRendering.Core;
 using SharpDX;
 using SharpDX.Toolkit;
-using Wheat.Components;
-using Wheat.Core;
 
 
-namespace Wheat.Environment
+namespace GrassRendering.Environment
 {
     // Use these namespaces here to override SharpDX.Direct3D11
     using SharpDX.Toolkit.Graphics;

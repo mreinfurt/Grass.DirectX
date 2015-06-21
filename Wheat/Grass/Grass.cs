@@ -1,10 +1,10 @@
 ﻿using System;
+using GrassRendering.Components;
+using GrassRendering.Core;
 using SharpDX;
 using SharpDX.Toolkit.Input;
-using Wheat.Components;
-using Wheat.Core;
 
-namespace Wheat.Grass
+namespace GrassRendering.Grass
 {
     // Use these namespaces here to override SharpDX.Direct3D11
     using SharpDX.Toolkit;
