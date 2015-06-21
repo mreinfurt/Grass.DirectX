@@ -1,6 +1,6 @@
 Realistic Grass Rendering - DirectX 11
 ====
-Realistic grass simulation using the geometry shader to render millions of grass blades simultaneously. This was created as part of a masters course on the Hochschule Darmstadt.
+Realistic grass simulation using the geometry shader to render millions of grass blades simultaneously.
 
 ![Render example](https://raw.githubusercontent.com/mreinfurt/Grass-DX11/master/Paper/images/final_result_small.png)
 
