@@ -70,10 +70,10 @@ namespace GrassRendering.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
-            this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeAlpha");
-            this.alphaTextureAlternative = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeAlpha2");
-            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap512");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/Grass/grassBlade");
+            this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/Grass/grassBladeAlpha");
+            this.alphaTextureAlternative = this.core.ContentManager.Load<Texture2D>("Textures/Grass/grassBladeAlpha2");
+            this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/Terrain/heightMap512");
             this.LoadHeightData();
             this.terranSize = this.terrainHeightMap.Width;
             this.GenerateField();

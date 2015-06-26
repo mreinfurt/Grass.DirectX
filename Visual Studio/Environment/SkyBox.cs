@@ -21,7 +21,7 @@ namespace GrassRendering.Environment
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Sky");
-            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/skyBox");
+            this.texture = this.core.ContentManager.Load<TextureCube>("Textures/World/skyBox");
             SetUpVertices();
             SetUpIndices();
             this.vertexInputLayout = VertexInputLayout.FromBuffer(0, this.vertexBuffer);
