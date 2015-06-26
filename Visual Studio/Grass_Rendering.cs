@@ -55,10 +55,10 @@ namespace GrassRendering
         {
             this.graphicsDeviceManager = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 1680,
-                PreferredBackBufferHeight = 1050,
+                PreferredBackBufferWidth = 3840,
+                PreferredBackBufferHeight = 2400,
                 PreferMultiSampling = true,
-                IsFullScreen = false,
+                IsFullScreen = true,
                 SynchronizeWithVerticalRetrace = false,
             };
 

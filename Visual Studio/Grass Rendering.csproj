@@ -120,50 +120,26 @@
     <ToolkitFxc Include="Content\Effects\Grass.fx" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grassBlade.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </ToolkitTexture>
-  </ItemGroup>
-  <ItemGroup>
     <ToolkitTexture Include="Content\Textures\heightMap.png" />
-    <ToolkitTexture Include="Content\Textures\grassBladeDrawn.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\testTexture.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grassBlade1.png" />
   </ItemGroup>
   <ItemGroup>
     <ToolkitFxc Include="Content\Effects\Sky.fx" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\cubeStrip.dds" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\abstractGrass.dds" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grassBladeDrawnMipMaps.dds" />
-  </ItemGroup>
-  <ItemGroup>
     <ToolkitTexture Include="Content\Textures\grass.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grassAlphaLOD1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\abstractWheat.dds" />
+    <ToolkitTexture Include="Content\Textures\grassBladeAlpha.png" />
   </ItemGroup>
   <ItemGroup>
     <ToolkitTexture Include="Content\Textures\heightMap1024.png" />
     <ToolkitTexture Include="Content\Textures\heightMap512.png" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grass2_alpha.png" />
+    <ToolkitTexture Include="Content\Textures\grassBladeAlpha2.png" />
   </ItemGroup>
   <ItemGroup>
-    <ToolkitTexture Include="Content\Textures\grass2.png" />
+    <ToolkitTexture Include="Content\Textures\grassBlade.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\SharpDX.2.6.2\build\SharpDX.targets" Condition="Exists('packages\SharpDX.2.6.2\build\SharpDX.targets')" />

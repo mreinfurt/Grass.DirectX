@@ -1,5 +1,6 @@
 ﻿Texture2D Texture;
 Texture2D AlphaTexture;
+Texture2D AlphaTexture2;
 sampler TextureSampler = sampler_state
 {
 	AddressU = WRAP;
@@ -42,8 +43,8 @@ float2 WindVector;
 // Our constants
 static const float kHalfPi = 1.5707;
 static const float kQuarterPi = 0.7853;
-static const float kOscillateDelta = 0.55;
-static const float kWindCoeff = 87.0f;
+static const float kOscillateDelta = 0.25;
+static const float kWindCoeff = 50.0f;
 
 ////////////////////////////////////////////////////////////////////////////////////
 struct VSINPUT
@@ -104,7 +105,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 	// Properties of the grass blade
 	float minHeight = 4.5;
-	float minWidth = 0.1 + (cameraDistance * 0.001);
+	float minWidth = 0.08 + (cameraDistance * 0.0001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
 
@@ -146,7 +147,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
 	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
 	// Using pow, we can adjust the curve so that we get lower values on the bottom and higher values on the top.
-	float steepnessFactor = 1; 
+	float steepnessFactor = 1.5; 
 	
 	// Transform into projection space and calculate vectors needed for light calculation
 	[unroll]
@@ -234,6 +235,7 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 {
 	float4 textureColor = Texture.Sample(TextureSampler, input.TexCoord);
 	float4 alphaColor = AlphaTexture.Sample(TextureSampler, input.TexCoord);
+	float4 alphaColor2 = AlphaTexture.Sample(TextureSampler, input.TexCoord);
 
 	// Phong
 	float3 r = normalize(reflect(input.VertexToLight.xyz, input.Normal.xyz));
@@ -246,17 +248,16 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	
 	float light = ambientLight + (diffuseLight * 1.75) + (specularLight * 0.5);
 	
-	float3 grassColorHSV = { 0.1 + (input.Random / 15), 0.67, 0.9 };
+	float3 grassColorHSV = { 0.15 + (input.Random / 15), 1, 1 };
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 
 	float3 lightColor = float3(1.0, 0.8, 0.8);
 
-	// Debugging: Show level of detail
-	if (alphaColor.g <= 0.95) {
+	if (alphaColor.g <= 0.8) {
 		alphaColor.g = 0;
 	}
 
-	return float4(light * textureColor.rgb * grassColorRGB * 0.6, alphaColor.g);
+	return float4(light * textureColor.rgb * grassColorRGB, alphaColor2.g);
 }
 
 

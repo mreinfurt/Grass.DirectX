@@ -19,6 +19,7 @@ namespace GrassRendering.Grass
 
         private readonly Texture2D texture;
         private readonly Texture2D alphaTexture;
+        private readonly Texture2D alphaTextureAlternative;
         private Effect effect;
         private Buffer<VertexPositionNormalTexture> vertexBuffer;
         private VertexInputLayout vertexInputLayout;
@@ -69,8 +70,9 @@ namespace GrassRendering.Grass
         {
             this.core = core;
             this.effect = this.core.ContentManager.Load<Effect>("Effects/Grass");
-            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/abstractGrass");
-            this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassAlphaLOD1");
+            this.texture = this.core.ContentManager.Load<Texture2D>("Textures/grassBlade");
+            this.alphaTexture = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeAlpha");
+            this.alphaTextureAlternative = this.core.ContentManager.Load<Texture2D>("Textures/grassBladeAlpha2");
             this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/heightMap512");
             this.LoadHeightData();
             this.terranSize = this.terrainHeightMap.Width;
@@ -106,6 +108,7 @@ namespace GrassRendering.Grass
             this.effect.Parameters["CameraPosition"].SetValue(this.core.Camera.Position);
             if (this.effect.Parameters["Texture"] != null) this.effect.Parameters["Texture"].SetResource(this.texture);
             if (this.effect.Parameters["AlphaTexture"] != null) this.effect.Parameters["AlphaTexture"].SetResource(this.alphaTexture);
+            if (this.effect.Parameters["AlphaTexture2"] != null) this.effect.Parameters["AlphaTexture2"].SetResource(this.alphaTextureAlternative);
 
             this.core.GraphicsDevice.SetVertexBuffer(this.vertexBuffer);
             this.core.GraphicsDevice.SetVertexInputLayout(this.vertexInputLayout);
@@ -189,7 +192,7 @@ namespace GrassRendering.Grass
             }
             else if (this.terranSize > 500)
             {
-                this.NumberOfPatchRows = 110;
+                this.NumberOfPatchRows = 150;
             }
             else
             {

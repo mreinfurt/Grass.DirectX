@@ -64,8 +64,7 @@ float4 PS_Shader(in PSINPUT input) : SV_TARGET
 	specularLight = pow(specularLight, 100);
 
     float3 outputColor = ambientLight + textureColor  + float3(0.6, 0.2, 0) * specularLight ;
-	return float4(outputColor * 0.4, 1);
-
+	return float4(outputColor * 0.1, 1);
 }
 
 technique Technique1
