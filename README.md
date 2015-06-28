@@ -20,7 +20,6 @@ I mainly used and combined ideas from the following papers (sorted by importance
 
 However, there are a few more notable articles, mostly describing alternative ways to render grass:
 * [GPU Gems: Rendering Countless Blades of Waving Grass](http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html)
-* [Grass your world](http://grassyourworld.blogspot.de/)
 * [Outerra: Procedural Grass Rendering](http://outerra.blogspot.cz/2012/05/procedural-grass-rendering.html)
 
 ## References
