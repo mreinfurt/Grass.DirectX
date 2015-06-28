@@ -13,13 +13,13 @@ The project is using SharpDX with DirectX 11 settings. A video of an older state
 - Building the project will automatically download all dependencies thanks to NuGet.
 
 ## Resources
-I mainly used and combined ideas from the following papers:
-* [Edward Lee: Master’s Thesis: Real-Time Grass](http://illogictree.com/blog/projects/)
-* [Kevin Boulanger](http://kevinboulanger.net/grass.html)
-* [Tillmann](http://www.bth.se/fou/cuppsats.nsf/all/9b18626fa27d52c9c1257bae002ca00d/$file/BTH2013Tillman.pdf)
+I mainly used and combined ideas from the following papers (sorted by importance):
+* [Edward Lee: Real-Time Grass (Master Thesis)](http://illogictree.com/blog/projects/)
+* [Kevin Boulanger: Rendering Grass in Real Time with Dynamic Lighting (PhD Thesis)](http://kevinboulanger.net/grass.html)
+* [Markus R. Tillmann: Procedural Rendering of Geometry-Based Grass in Real-Time (Bachelor Thesis)](http://www.bth.se/fou/cuppsats.nsf/all/9b18626fa27d52c9c1257bae002ca00d/$file/BTH2013Tillman.pdf)
 
 However, there are a few more notable articles, mostly describing alternative ways to render grass:
-* [GPU Gems](http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html)
+* [GPU Gems: Rendering Countless Blades of Waving Grass](http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html)
 * [Grass your world](http://grassyourworld.blogspot.de/)
 * [Outerra: Procedural Grass Rendering](http://outerra.blogspot.cz/2012/05/procedural-grass-rendering.html)
 
