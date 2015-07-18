@@ -12,8 +12,8 @@ namespace GrassRendering.Components
         #region Fields
 
         // Camera Movement
-        const float RotationSpeed = 0.1f;
-        const float MovementSpeed = 5.0f;
+        const float RotationSpeed = 0.01f;
+        const float MovementSpeed = 2.5f;
 
         float horizontalRotation = MathUtil.PiOverTwo;
         float verticalRotation = -MathUtil.Pi / 10.0f;

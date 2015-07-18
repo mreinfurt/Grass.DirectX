@@ -31,7 +31,7 @@ namespace GrassRendering.Grass
         private BoundingFrustum boundingFrustum;
         private readonly GameCore core;
 
-        private readonly float terranSize = 1024;
+        private readonly float terrainSize = 1024;
         private Wind[,] windField;
 
         #endregion
@@ -75,7 +75,7 @@ namespace GrassRendering.Grass
             this.alphaTextureAlternative = this.core.ContentManager.Load<Texture2D>("Textures/Grass/grassBladeAlpha2");
             this.terrainHeightMap = this.core.ContentManager.Load<Texture2D>("Textures/Terrain/heightMap512");
             this.LoadHeightData();
-            this.terranSize = this.terrainHeightMap.Width;
+            this.terrainSize = this.terrainHeightMap.Width;
             this.GenerateField();
         }
         
@@ -186,13 +186,13 @@ namespace GrassRendering.Grass
             this.NumberOfPatchRows = numberOfPatchRows;
             this.NumberOfRootsInPatch = numberOfRootsInPatch;
 
-            if (this.terranSize > 1000)
+            if (this.terrainSize > 1000)
             {
                 this.NumberOfPatchRows = 160;
             }
-            else if (this.terranSize > 500)
+            else if (this.terrainSize > 500)
             {
-                this.NumberOfPatchRows = 150;
+                this.NumberOfPatchRows = 190;
             }
             else
             {
@@ -208,7 +208,7 @@ namespace GrassRendering.Grass
             int currentVertex = 0;
 
             Vector3 startPosition = new Vector3(0, 0, 0);
-            Vector3 patchSize = new Vector3(terranSize / this.NumberOfPatchRows, 0, terranSize / this.NumberOfPatchRows);
+            Vector3 patchSize = new Vector3(terrainSize / this.NumberOfPatchRows, 0, terrainSize / this.NumberOfPatchRows);
 
             // Generate grid of patches
             for (int x = 0; x < this.NumberOfPatchRows; x++)
@@ -247,6 +247,16 @@ namespace GrassRendering.Grass
    
                 int indexX = (int)((startPosition.X + randomizedXDistance));
                 int indexZ = (int)((startPosition.Z + randomizedZDistance));
+
+                if (indexX >= terrainSize)
+                {
+                    indexX = (int)terrainSize - 1;
+                }
+
+                if (indexZ >= terrainSize)
+                {
+                    indexZ = (int)terrainSize - 1;
+                }
 
                 var currentPosition = new Vector3(startPosition.X + (randomizedXDistance), heightData[indexX, indexZ], startPosition.Z + randomizedZDistance);
                 this.vertices[currentVertex] = new VertexPositionNormalTexture(currentPosition, Vector3.Up, new Vector2(0, 0));

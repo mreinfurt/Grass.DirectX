@@ -7,7 +7,7 @@ sampler TextureSampler = sampler_state
 	AddressV = WRAP;
 	Filter = D3D11_FILTER_COMPARISON_ANISOTROPIC;
 	MaxAnisotropy = 16;
-    MaxLOD = 2.0f;
+	MaxLOD = 2.0f;
 };
 
 float3 HUEtoRGB(in float H)
@@ -56,14 +56,14 @@ struct VSINPUT
 
 struct GEO_IN
 {
-    float4 Position			: SV_POSITION;
+	float4 Position			: SV_POSITION;
 	float4 Normal			: NORMAL0;
 };
 
 struct GEO_OUT
 {
-    float4 Position			: SV_POSITION;
-    float2 TexCoord			: TEXCOORD;
+	float4 Position			: SV_POSITION;
+	float2 TexCoord			: TEXCOORD;
 	float4 Normal			: NORMAL0;
 	float3 VertexToLight	: NORMAL1;
 	float3 VertexToCamera	: NORMAL2;
@@ -105,7 +105,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 
 	// Properties of the grass blade
 	float minHeight = 4.5;
-	float minWidth = 0.08 + (cameraDistance * 0.0001);
+	float minWidth = 0.03 + (cameraDistance * 0.0001);
 	float sizeX = minWidth + (random / 50);
 	float sizeY = minHeight + (random / 5);
 
@@ -147,7 +147,7 @@ void GS_Shader(point GEO_IN points[1], in uint vertexDifference, inout TriangleS
 	// We don't want to interpolate linearly for the normals. The bottom vertex should be 0, top vertex should be 1.
 	// If we interpolate linearly and we have 4 vertices, we get 0, 0.33, 0.66, 1. 
 	// Using pow, we can adjust the curve so that we get lower values on the bottom and higher values on the top.
-	float steepnessFactor = 1.5; 
+	float steepnessFactor = 1.75; 
 	
 	// Transform into projection space and calculate vectors needed for light calculation
 	[unroll]
@@ -246,9 +246,9 @@ float4 PS_Shader(in GEO_OUT input) : SV_TARGET
 	float specularLight = saturate(dot(-input.VertexToCamera, r));
 	specularLight = saturate(pow(specularLight, shininess));
 	
-	float light = ambientLight + (diffuseLight * 1.75) + (specularLight * 0.5);
+	float light = ambientLight + (diffuseLight * 1.55) + (specularLight * 0.5);
 	
-	float3 grassColorHSV = { 0.15 + (input.Random / 15), 1, 1 };
+	float3 grassColorHSV = { 0.17 + (input.Random / 20), 1, 1 };
 	float3 grassColorRGB = HSVtoRGB(grassColorHSV);
 
 	float3 lightColor = float3(1.0, 0.8, 0.8);
