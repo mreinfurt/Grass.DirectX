@@ -6,7 +6,7 @@ Realistic grass simulation using the geometry shader to render millions of grass
   <img src="https://raw.githubusercontent.com/mreinfurt/Grass-DX11/master/Paper/images/preview2.png">
 </p>
 
-The project is using SharpDX with DirectX 11 settings. A video is available on YouTube: https://youtu.be/hXqcbepTSGM
+The project is using SharpDX with DirectX 11 settings. A video is available on YouTube: https://youtu.be/jxnacUBaG7c
 
 ## Installation
 - Visual Studio 2013
